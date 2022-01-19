@@ -11,6 +11,7 @@ export class LoginComponent implements OnInit {
   email = '';
   password = '';
   errorMessage = '';
+  SigningIn: Boolean = false;
   error: { name: string; message: string } = { name: '', message: '' };
   constructor(
     public authService: AuthenticationService,
@@ -35,15 +36,23 @@ export class LoginComponent implements OnInit {
 
   onLoginEmail(): void {
     this.clearErrorMessage();
+    this.SigningIn = true;
     console.log('inside login');
     if (this.validateForm(this.email, this.password)) {
       this.authService
         .login(this.email, this.password)
-        .then(() => this.router.navigate(['/home']))
+        .then(() => {
+          this.SigningIn = false;
+          this.router.navigate(['/home']);
+        })
         .catch((_error) => {
+          console.log(_error);
           this.error = _error;
-          this.router.navigate(['/']);
+          this.SigningIn = false;
+          this.router.navigate(['/login']);
         });
+    } else {
+      this.SigningIn = false;
     }
   }
 

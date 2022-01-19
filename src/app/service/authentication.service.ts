@@ -37,16 +37,13 @@ export class AuthenticationService {
   }
 
   async login(email: string, password: string) {
-    try {
-      const user = await this.angularFireAuth.signInWithEmailAndPassword(
-        email,
-        password
-      );
-      this.authState = user;
-     
-    } catch (err: any) {
-      window.alert('error during sign in ' + err.message);
-    }
+    
+    const user = await this.angularFireAuth.signInWithEmailAndPassword(
+      email,
+      password
+    );
+    this.authState = user;
+    return this.authState;
   }
 
   async signOut() {
@@ -54,7 +51,6 @@ export class AuthenticationService {
       const signOut = await this.angularFireAuth.signOut();
       console.log('signed out', signOut);
       this.authState = signOut;
-     
     } catch (err: any) {
       window.alert('error during sign in ' + err.message);
     }
