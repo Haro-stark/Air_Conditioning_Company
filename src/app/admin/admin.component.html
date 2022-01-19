@@ -1,6 +1,9 @@
 <div>
-
-    <div class="sidebar">
+<div class="header" >
+   <button (click)="toggleSidebar()">toggle</button>
+    header
+</div>
+    <div class="sidebar" *ngIf="displaySideBar">
          <a class="active">Home</a>
   <a >News</a>
   <a >Contact</a>
