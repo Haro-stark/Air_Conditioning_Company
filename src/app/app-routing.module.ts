@@ -18,6 +18,8 @@ const routes: Routes = [
   { path: 'employees', component: AdminComponent },
   { path: 'budgets', component: AdminComponent },
   { path: 'officer', component: AdminComponent },
+  { path: 'assitant', component: AssistantComponent },
+
   {
     path: 'admin',
     component: AdminComponent,
@@ -44,4 +46,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
