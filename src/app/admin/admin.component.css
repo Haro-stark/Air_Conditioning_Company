@@ -1,14 +1,14 @@
 .sidebar {
   margin: 0;
   padding: 0;
-  width: 200px;
+ width: 250px;
   background-color: #f1f1f1;
-  position: fixed;
   height: 100%;
   overflow: auto;
+  z-index: 10;
+  border-right:1px solid #555;
 }
 
-/* Sidebar links */
 .sidebar a {
   display: block;
   color: black;
@@ -16,46 +16,87 @@
   text-decoration: none;
 }
 
-/* Active/current link */
-.sidebar a.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
-/* Links on mouse-over */
 .sidebar a:hover:not(.active) {
-  background-color: #555;
+  background-color: rgb(27, 25, 25);
   color: white;
+  transition: all 0.6s;
 }
 
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
 }
 
-
 @media screen and (max-width: 700px) {
   .sidebar {
-    width: 100%;
     height: auto;
-    position: relative;
   }
-  .sidebar a {float: left;}
-  div.content {margin-left: 0;}
+ 
+  div.content {
+    margin-left: 0;
+  }
 }
 
-/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
 @media screen and (max-width: 400px) {
+ 
   .sidebar a {
     text-align: center;
     float: none;
   }
 }
 
-.header{
-    height: 60px;
-    background-color:#04AA6D;
-    
+.header {
+  height: 60px;
+  background-color: #04aa6d;
+  z-index: 15;
+}
+
+.sidebar > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar > ul > li {
+  text-align: center;
+  border-bottom: 1px solid rgb(41, 41, 41);
+}
+
+.sidebar > ul > li:active,
+.sidebar > ul > li:focus,
+.sidebar > ul > li:focus-within {
+  background-color: #555;
+}
+
+.sidebar > ul > li:active,
+.sidebar > ul > li:focus,
+.sidebar > ul > li:focus-within a {
+  color: #fff;
+}
+
+div.main {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100%;
+}
+
+div.body {
+  height: auto;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hideSidebar{
+  transform: translateX(-250px);
+  transition : all 0.7s;
+
+}
+.showSidebar{
+  transform: translateX(0);
+  transition : all 0.7s;
 }

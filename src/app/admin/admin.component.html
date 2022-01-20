@@ -1,14 +1,22 @@
 <div>
-<div class="header" >
-   <button (click)="toggleSidebar()">toggle</button>
-    header
-</div>
-    <div class="sidebar" *ngIf="displaySideBar">
-         <a class="active">Home</a>
-  <a >News</a>
-  <a >Contact</a>
-  <a >About</a>
+  <div class="header">
+    <button class="btn btn-toolbar"(click)="toggleSidebar()">toggle</button>
+  </div>
 
+  <div class="main">
+    <div class="sidebar"  [ngClass]="displaySideBar? 'showSidebar':'hideSidebar'">
+      <ul>
+        <li><a [routerLink]="['employees']">Employees </a></li>
+        <li><a [routerLink]="['orders']">Orders </a></li>
+        <li><a [routerLink]="['products']">Products </a></li>
+        <li><a [routerLink]="['suppliers']">Suppliers </a></li>
+        <li><a [routerLink]="['budgets']">Budgets </a></li>
+      </ul>
     </div>
 
+    <div class="body">
+      <h1>Admin panel</h1>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

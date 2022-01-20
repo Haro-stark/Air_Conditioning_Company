@@ -17,9 +17,14 @@ import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { OfficerComponent } from './officer/officer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { EmployeesComponent } from './employees/employees.component';
+import { OrdersComponent } from './orders/orders.component';
+import { SuppliersComponent } from './suppliers/suppliers.component';
+import { ProductsComponent } from './products/products.component';
+import { BudgetsComponent } from './budgets/budgets.component';
 
 @NgModule({
-  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent],
+  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent],
   imports: [
     BrowserModule,
     FormsModule ,
