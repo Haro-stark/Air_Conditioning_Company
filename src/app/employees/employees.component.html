@@ -1,9 +1,15 @@
-<h1> Employee Management</h1>
+<h1 class="m-5"> Employee Management</h1>
 
 <table>
      <ng-container *ngFor="let employee of employees">
-         <tr><td><h2>{{employee.}}</h2></td></tr>
-         <tr *ngFor="let item of group.items"><td>{{item}}</td></tr>
+         <thead>
+         <tr>
+             <th scope="col"> </th>
+         </tr>
+         </thead>
+         <tbody>
+         <tr><td><h2>{{employee.username}}</h2></td></tr>
+         </tbody>
      </ng-container>
 </table>
 
