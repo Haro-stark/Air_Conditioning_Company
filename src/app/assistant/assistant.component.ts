@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WorkLog } from '../models/WorkLog';
 
 @Component({
   selector: 'app-assistant',
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssistantComponent implements OnInit {
 
+  workLogs!: WorkLog[];
   constructor() { }
 
   ngOnInit(): void {

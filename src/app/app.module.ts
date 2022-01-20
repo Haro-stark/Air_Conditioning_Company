@@ -27,7 +27,7 @@ import { BudgetsComponent } from './budgets/budgets.component';
   declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent],
   imports: [
     BrowserModule,
-    FormsModule ,
+    FormsModule,
     AppRoutingModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -36,4 +36,4 @@ import { BudgetsComponent } from './budgets/budgets.component';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
