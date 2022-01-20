@@ -1,0 +1,45 @@
+<div class=" d-flex justify-content-center form-container-div">
+  <div class="form" style="width: 60%;">
+
+    <p class="text-center">your logo/heading here</p>
+    <p *ngIf="error.message.length > 0" class="text-danger">
+      {{ error.message }}
+    </p>
+
+    <form (ngSubmit)="onLoginEmail()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          required
+          [(ngModel)]="email"
+          minlength="5"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          required
+          [(ngModel)]="password"
+          minlength="1"
+          required
+        />
+      </div>
+
+      <button *ngIf="!SigningIn" type="submit" class="btn btn-success">Log In</button>
+      <button *ngIf="SigningIn" class="btn btn-primary" type="button" disabled>
+  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+  <span class="visually-hidden">Logging in...</span>
+</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<p>home works!</p>
+
+<ng-container *ngIf="!isLoggedIn"
+  >
+  <a routerLink="/login"
+    ><button class="btn btn-success pull-right">login</button></a
+  >
+</ng-container>
+
+
+<ng-container *ngIf="isLoggedIn"
+  >
+  <p >you are login</p>
+<a routerLink="/signup"><button class="btn">Add employee</button></a>
+<button class="btn btn-primary" (click)="signOut()">signout employee</button>
+
+</ng-container>
+
+<a routerLink="/admin"><button class="btn btn-primary">Admin</button></a>
+
+

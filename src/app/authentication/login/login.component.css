@@ -1,0 +1,14 @@
+.form-container-div{
+    padding:100px;
+    height:100vh;
+    width: 100vw;
+    background-color: darkgrey
+}
+
+.form{
+    width: 100%;
+    padding: 30px;
+    height: fit-content;
+    background-color: white;
+    box-shadow: 5px 2px 15px 5px rgb(211 211 211);
+}
