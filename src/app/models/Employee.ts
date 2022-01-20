@@ -1,7 +1,7 @@
 import { WorkLog } from "./WorkLog";
 
 export interface Employee {
-    employeeId: Long;
+    employeeId: number;
     type: String;
     username: String;
     password: String;

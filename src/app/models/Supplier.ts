@@ -1,7 +1,7 @@
 import { Product } from "./Product";
 
 export interface Supplier {
-    supplierId: Long;
+    supplierId: number;
     orderNumber: string;
     basePrice: number;
     tax: number;

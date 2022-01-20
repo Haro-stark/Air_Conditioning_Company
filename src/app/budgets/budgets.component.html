@@ -1,1 +1,102 @@
-<p>budgets works!</p>
+<div class="text-center m-3">
+  <button class="btn badge-success">Create New Budget</button>
+</div>
+<form
+  *ngIf="showAddBudgetForm"
+  #inputForm="ngForm"
+  (ngSubmit)="onSubmit(); inputForm.reset()"
+>
+  <div class="form-group">
+    <label for="text" class="form-label">Add new item</label>
+    <input
+      required
+      id="budgetName"
+      type="text"
+      name="budgetName"
+      placeholder="enter here"
+      [(ngModel)]="budgetName"
+      class="form-control"
+    />
+  </div>
+  <div class="form-group">
+    <label for="customer">Category</label>
+    <select
+      class="form-select form-control"
+      name="customer"
+      id="customer"
+      [(ngModel)]="customer"
+    >
+      <option >office</option>
+     
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="priorities">Priority</label>
+    <select
+      class="form-select form-control"
+      name="priority"
+      id="priorities"
+      [(ngModel)]="priority"
+    >
+      <option ngValue="low">low</option>
+      <option ngValue="medium" selected>medium</option>
+      <option ngValue="high">high</option>
+    </select>
+  </div>
+ 
+  <span class="d-flex">
+    <button class="btn btn-outline-success" type="submit">Save</button>
+
+    <button
+      class="btn btn-danger ml-auto"
+      type="button"
+      (click)="onClickHideAddTaskForm()"
+    >
+      Cancel
+    </button>
+  </span>
+</form>
+
+<table class="table">
+  <ng-container *ngIf="budgets">
+    <thead>
+      <tr>
+        <th scope="col">BudgetNumber</th>
+        <th scope="col">BudgetName</th>
+        <th scope="col">Total Price</th>
+        <th scope="col">BudgetStatus</th>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Report(pdf)</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let budget of budgets">
+      <tr>
+        <td>{{ budget.budgetId }}</td>
+        <td>{{ budget.totalPrice }}</td>
+
+        <td>{{ budget.budgetStatus }}</td>
+
+        <td>
+          <a [routerLink]="['/productList', budget.budgetId]"> Products</a>
+        </td>
+        <td><a [routerLink]="['/customer', budget.budgetId]"> Customers</a></td>
+
+        <td>
+          <button
+            class="btn btn-sm badge-secondary"
+            (click)="budgetPdfDownload(budget.budgetId, budget)"
+          >
+            Download
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </ng-container>
+
+  <ng-container *ngIf="!budgets">
+    <p class="emptyBudget">
+      There are no budgets available at this moment
+    </p></ng-container
+  >
+</table>
+<router-outlet></router-outlet>

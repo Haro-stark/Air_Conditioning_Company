@@ -1,45 +1,32 @@
-<h1 class="m-5"> Employee Management</h1>
-
-<table>
-     <ng-container *ngFor="let employee of employees">
-         <thead>
-         <tr>
-             <th scope="col"> </th>
-         </tr>
-         </thead>
-         <tbody>
-         <tr><td><h2>{{employee.username}}</h2></td></tr>
-         </tbody>
-     </ng-container>
-</table>
+<h1 class="m-5">Employee Management</h1>
 
 <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
+  <ng-container *ngIf="employees" >
+    <thead>
+      <tr>
+        <th scope="col">employeeId</th>
+        <th scope="col">type</th>
+        <th scope="col">username</th>
+        <th scope="col">password</th>
+        <th scope="col">priceTime</th>
+        <th scope="col">workLogList</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let employee of employees">
+      <tr>
+        <td>{{ employee.employeeId }}</td>
+        <td>{{ employee.type }}</td>
+
+        <td>{{ employee.username }}</td>
+
+        <td>{{ employee.password }}</td>
+
+        <td>{{ employee.priceTime }}</td>
+
+        <td> <a [routerLink]="['/logs',employee.employeeId] "> list</a></td>
+      </tr>
+    </tbody>
+  </ng-container>
 </table>
+
+<router-outlet></router-outlet>

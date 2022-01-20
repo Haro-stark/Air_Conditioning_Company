@@ -1,7 +1,7 @@
 import * as Long from "long";
 
 export interface Product {
-    productId: Long;
+    productId: number;
     name: string;
     characteristics: string;
     price: number;

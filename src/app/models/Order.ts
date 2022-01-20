@@ -3,7 +3,7 @@ import { Product } from "./Product";
 import { ServicesEnum } from "./ServicesEnum";
 
 export interface Order {
-    orderId: Long;
+    orderId: number;
     type: ServicesEnum;
     productList: Product[];
     customer: Customer;

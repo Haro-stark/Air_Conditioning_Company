@@ -1,10 +1,11 @@
-import { Customer } from "./Customer";
-import { Product } from "./Product";
+import { Customer } from './Customer';
+import { Product } from './Product';
 
 export interface Budget {
-    budgetId: Long;
-    totalPrice: number;
-    budgetStatus: String;
-    productList: Product[];
-    customer: Customer;
+  budgetId: number;
+  budgetName: String;
+  totalPrice: number;
+  budgetStatus: String;
+  productList: Product[];
+  customer: Customer;
 }
