@@ -25,14 +25,33 @@
     />
   </div>
   <div class="form-group">
-    <label for="customer">Category</label>
+    <label for="customer">Customer</label>
     <select
       class="form-select form-control"
       name="customer"
       id="customer"
-      [(ngModel)]="customer"
+      [(ngModel)]="customers"
     >
-      <option>office</option>
+
+      <option *ngFor="customer; of: customers" ngValue="installation">
+        New Customer
+      </option>
+
+      <option ngValue="installation">New Customer</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="services">Services</label>
+    <select
+      class="form-select form-control"
+      name="services"
+      id="services"
+      [(ngModel)]="services"
+    >
+      <option ngValue="installation">installation</option>
+      <option ngValue="maintenance ">maintenance</option>
+      <option ngValue="labour">labour</option>
     </select>
   </div>
 
@@ -48,49 +67,52 @@
     </button>
   </span>
 </form>
-  <ng-container *ngIf="!showAddBudgetForm">
+<div *ngIf="!showAddBudgetForm">
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container *ngIf="budgets">
+        <thead>
+          <tr>
+            <th scope="col">BudgetNumber</th>
+            <th scope="col">BudgetName</th>
+            <th scope="col">Total Price</th>
+            <th scope="col">BudgetStatus</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Report(pdf)</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let budget of budgets">
+          <tr>
+            <td>{{ budget.budgetId }}</td>
+            <td>{{ budget.totalPrice }}</td>
 
-<table class="table">
-  <ng-container *ngIf="budgets">
-    <thead>
-      <tr>
-        <th scope="col">BudgetNumber</th>
-        <th scope="col">BudgetName</th>
-        <th scope="col">Total Price</th>
-        <th scope="col">BudgetStatus</th>
-        <th scope="col">Customer Name</th>
-        <th scope="col">Report(pdf)</th>
-      </tr>
-    </thead>
-    <tbody *ngFor="let budget of budgets">
-      <tr>
-        <td>{{ budget.budgetId }}</td>
-        <td>{{ budget.totalPrice }}</td>
+            <td>{{ budget.budgetStatus }}</td>
 
-        <td>{{ budget.budgetStatus }}</td>
+            <td>
+              <a [routerLink]="['/productList', budget.budgetId]"> Products</a>
+            </td>
+            <td>
+              <a [routerLink]="['/customer', budget.budgetId]"> Customers</a>
+            </td>
 
-        <td>
-          <a [routerLink]="['/productList', budget.budgetId]"> Products</a>
-        </td>
-        <td><a [routerLink]="['/customer', budget.budgetId]"> Customers</a></td>
+            <td>
+              <button
+                class="btn btn-sm badge-secondary"
+                (click)="budgetPdfDownload(budget.budgetId, budget)"
+              >
+                Download
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
 
-        <td>
-          <button
-            class="btn btn-sm badge-secondary"
-            (click)="budgetPdfDownload(budget.budgetId, budget)"
-          >
-            Download
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </ng-container>
-
-  <ng-container *ngIf="!budgets">
-    <p class="emptyBudget">
-      There are no budgets available at this moment
-    </p></ng-container
-  >
-</table>
-  </ng-container>
-<router-outlet></router-outlet>
+      <ng-container *ngIf="!budgets">
+        <p class="emptyBudget">
+          There are no budgets available at this moment
+        </p></ng-container
+      >
+    </table>
+  </div>
+  <router-outlet></router-outlet>
+</div>

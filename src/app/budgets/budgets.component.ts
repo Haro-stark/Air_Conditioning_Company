@@ -14,9 +14,12 @@ export class BudgetsComponent implements OnInit {
   budgetStatus!: String;
   budgetName!: String;
   productList!: Product[];
+  customers!: Customer[];
   customer!: Customer;
+
   showAddBudgetForm: Boolean = false;
   errorMessage!: String;
+  services!: String | String[];
 
   budgets: Budget[] = [
     {
@@ -37,7 +40,7 @@ export class BudgetsComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("inside submit");
+    console.log('inside submit');
     if (
       this.budgetName.trim().length === 0 ||
       !this.totalPrice ||
