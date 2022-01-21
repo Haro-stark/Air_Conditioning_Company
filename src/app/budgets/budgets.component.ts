@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import * as Long from 'long';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Budget } from '../models/Budget';
 import { Customer } from '../models/Customer';
 import { Product } from '../models/Product';
@@ -17,8 +16,8 @@ export class BudgetsComponent implements OnInit {
   productList!: Product[];
   customer!: Customer;
   showAddBudgetForm: Boolean = false;
+  errorMessage!: String;
 
-  private errorMessage!: any;
   budgets: Budget[] = [
     {
       budgetId: 1,
@@ -29,7 +28,7 @@ export class BudgetsComponent implements OnInit {
       customer: { csutomerId: 112, name: 'cus1' },
     },
   ];
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {}
 
@@ -38,19 +37,24 @@ export class BudgetsComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log("inside submit");
     if (
-      this.budgetStatus.trim().length === 0 ||
+      this.budgetName.trim().length === 0 ||
       !this.totalPrice ||
       !this.productList ||
       !this.customer
     ) {
       this.errorMessage = 'Please enter correct fields';
-      return this.errorMessage;
     }
+    return this.errorMessage;
   }
 
-  onClickHideAddTaskForm() {
-    this.showAddBudgetForm = false;
+  onClickToggleAddTaskForm() {
+    setTimeout(() => {
+      this.showAddBudgetForm = !this.showAddBudgetForm;
+      this.cd.markForCheck();
+    }, 200);
+    setTimeout(() => {}, 200);
   }
   /* const task: Task = {
     text: this.text,

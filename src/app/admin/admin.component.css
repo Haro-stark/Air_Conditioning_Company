@@ -3,7 +3,7 @@
   padding: 0;
  width: 250px;
   background-color: #f1f1f1;
-  height: 100%;
+    height: 100vh;
   overflow: auto;
   z-index: 10;
   border-right:1px solid #555;
@@ -30,7 +30,9 @@ div.content {
 
 @media screen and (max-width: 700px) {
   .sidebar {
-    height: auto;
+    height: 100vh;
+     width: 200px;
+
   }
  
   div.content {
@@ -39,7 +41,11 @@ div.content {
 }
 
 @media screen and (max-width: 400px) {
- 
+  .sidebar {
+    height: auto;
+     width: 150px;
+
+  }
   .sidebar a {
     text-align: center;
     float: none;
@@ -94,9 +100,12 @@ div.body {
 .hideSidebar{
   transform: translateX(-250px);
   transition : all 0.7s;
-
+position: absolute;
+    height: inherit;
 }
 .showSidebar{
   transform: translateX(0);
   transition : all 0.7s;
+position: absolute;
+    height: inherit;
 }
