@@ -1,42 +1,18 @@
-<div class="container">
+<div>
+    <div class="header">
+        <button class="btn btn-toolbar" (click)="toggleSidebar()">toggle</button>
+    </div>
 
-    <div class="table-responsive">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h2>Assistant</h2>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="#createWorkLogModal" class="btn btn-success" data-toggle="modal">
-                            <i class="material-icons">&#xE147;</i>
-                            <span>Create new Work Log</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <br>
+    <div class="main">
+        <div class="sidebar" [ngClass]="displaySideBar? 'showSidebar':'hideSidebar'">
+            <ul>
+                <li><a [routerLink]="['employees']">Work Logs</a></li>
+            </ul>
+        </div>
 
-            <div class="row">
-                <table class="table table-striped table-hover" id="servers">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Order Id</th>
-                            <th>Order Type</th>
-                            <th>Number Of Hours</th>
-                        </tr>
-                    </thead>
-                    <tbody *ngFor="let log of workLogs; let i= index;">
-                        <tr>
-                            <td>{{log.date}}</td>
-                            <td>{{log.order.orderId}}</td>
-                            <td>{{log.order.type}}</td>
-                            <td>{{log.numberOfHours}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="body">
+            <h1>Assistant panel</h1>
+            <router-outlet></router-outlet>
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { WorkLog } from '../models/WorkLog';
 
 @Component({
@@ -7,11 +8,19 @@ import { WorkLog } from '../models/WorkLog';
   styleUrls: ['./assistant.component.css']
 })
 export class AssistantComponent implements OnInit {
+  displaySideBar: boolean = true;
+  workLogs$!: Observable<WorkLog[]>;
+  constructor() {
 
-  workLogs!: WorkLog[];
-  constructor() { }
+  }
 
   ngOnInit(): void {
+
+  }
+  toggleSidebar() {
+    console.log('Toggling sidebar,', this.displaySideBar);
+    this.displaySideBar = !this.displaySideBar;
+    return this.displaySideBar;
   }
 
 }

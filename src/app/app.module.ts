@@ -22,9 +22,10 @@ import { OrdersComponent } from './orders/orders.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { ProductsComponent } from './products/products.component';
 import { BudgetsComponent } from './budgets/budgets.component';
+import { WorklogComponent } from './worklog/worklog.component';
 
 @NgModule({
-  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent],
+  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent],
   imports: [
     BrowserModule,
     FormsModule,

@@ -16,9 +16,9 @@ export class LoginComponent implements OnInit {
   constructor(
     public authService: AuthenticationService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   checkUserInfo() {
     if (this.authService.isUserEmailLoggedIn) {
