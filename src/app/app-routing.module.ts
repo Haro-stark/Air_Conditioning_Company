@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
+import { WorklogComponent } from './worklog/worklog.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -24,17 +25,20 @@ const routes: Routes = [
     path: 'admin',
     component: AdminComponent,
     children: [
-      {
-        path: 'employees',
-        component: EmployeesComponent,
-      },
+      { path: 'employees', component: EmployeesComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'products', component: ProductsComponent },
       { path: 'suppliers', component: SuppliersComponent },
       { path: 'budgets', component: BudgetsComponent },
     ],
   },
-
+  {
+    path: 'assistant',
+    component: AssistantComponent,
+    children: [
+      { path: 'workLog', component: WorklogComponent }
+    ],
+  },
   {
     path: '',
     redirectTo: '/home',
@@ -46,4 +50,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
