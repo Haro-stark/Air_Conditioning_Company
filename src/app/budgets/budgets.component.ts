@@ -22,11 +22,6 @@ export class BudgetsComponent implements OnInit {
   checkIcon = faCheck;
   closeIcon = faWindowClose;
 
-  budgetId!: number;
-  totalPrice!: number;
-  budgetStatus!: string;
-  budgetName!: string;
-  productList!: Product[];
   customers: Customer[] = [
     { customerId: 1, name: 'rand' },
     { customerId: 2, name: 'asd' },
@@ -37,10 +32,20 @@ export class BudgetsComponent implements OnInit {
   showAddBudgetForm: Boolean = false;
   errorMessage!: string;
   services!: string | string[];
-  updatedBudget!: Budget;
   showEditBudgetForm: Boolean = false;
   formSubmitted = false;
   generateOrder = false;
+  showProducts = false;
+  otherServicesSelected = false;
+  updatedBudget!: Budget;
+  newBudget: Budget = {
+    budgetId: 0,
+    name: '',
+    totalPrice: 0,
+    status: '',
+    productList: [],
+    customer: { customerId: 0, name: '' },
+  };
 
   budgets: Budget[] = [
     {
@@ -52,6 +57,29 @@ export class BudgetsComponent implements OnInit {
       customer: { customerId: 112, name: 'cus1' },
     },
   ];
+  products: Product[] = [
+    {
+      productId: 0,
+      name: 'asdsa',
+      characteristics: 'gh',
+      price: 0,
+      quantityInStock: 0,
+    },
+    {
+      productId: 0,
+      name: 'czxfzx',
+      characteristics: 'gh',
+      price: 0,
+      quantityInStock: 0,
+    },
+    {
+      productId: 0,
+      name: 'wqetrth',
+      characteristics: 'gh',
+      price: 0,
+      quantityInStock: 0,
+    },
+  ];
   constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {}
@@ -61,13 +89,9 @@ export class BudgetsComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('inside submit', this.customerName, this.services);
-    if (
-      !this.budgetName ||
-      this.budgetName.trim().length === 0 ||
-      !this.totalPrice ||
-      !this.productList
-    ) {
+    console.log('inside submit', this.newBudget, this.services);
+    console.log(this.newBudget.name,this.newBudget.productList);
+    if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else this.formSubmitted = true;
@@ -108,11 +132,7 @@ export class BudgetsComponent implements OnInit {
 
   onUpdateBudget(updatedBudget: Budget) {
     this.errorMessage = '';
-    if (
-      !this.budgetName ||
-      this.budgetName.trim().length === 0 ||
-      !this.totalPrice
-    ) {
+    if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
@@ -145,5 +165,9 @@ export class BudgetsComponent implements OnInit {
 
   createOrder(order: Order) {
     console.log('Order generated', order);
+  }
+
+  toggleShowProducts() {
+    this.showProducts = !this.showProducts;
   }
 }

@@ -60,7 +60,9 @@
       </ng-container>
     </table>
     <ng-container *ngIf="!budgets || !budgets.length">
-      <div class="emptyBudget alert-warning text-center " >There are no budgets available at this moment</div>
+      <div class="emptyBudget alert-warning text-center">
+        There are no budgets available at this moment
+      </div>
     </ng-container>
   </div>
   <router-outlet></router-outlet>
@@ -83,7 +85,7 @@
         type="text"
         name="budgetName"
         placeholder="enter budget name"
-        [(ngModel)]="budgetName"
+        [(ngModel)]="newBudget.name"
         class="form-control"
       />
     </div>
@@ -105,7 +107,6 @@
         </option>
       </select>
     </div>
-
     <div class="form-group">
       <label for="services">Services</label>
       <select
@@ -115,10 +116,46 @@
         [(ngModel)]="services"
         [multiple]="true"
       >
-        <option ngValue="installation">installation</option>
+        <option
+          ngValue="installation"
+          (click)="toggleShowProducts()"
+          [selected]="showProducts"
+        >
+          installation
+        </option>
         <option ngValue="maintenance ">maintenance</option>
         <option ngValue="labour">labour</option>
       </select>
+    </div>
+    <ng-container *ngIf="showProducts">
+      <div class="form-group">
+        <label for="services">products</label>
+        <select
+          class="form-select form-control"
+          name="services"
+          id="services"
+          [(ngModel)]="newBudget.productList"
+          [multiple]="true"
+        >
+          <option *ngFor="let product of products" ngValue="{{ product.name }}">
+            {{ product.name }}
+          </option>
+        </select>
+      </div>
+    </ng-container>
+
+ <div class="form-group">
+      <label for="totalPrice" class="form-label">Total Price</label>
+      <input
+      disabled
+      readonly
+        required
+        id="totalPrice"
+        type="text"
+        name="totalPrice"
+        [(ngModel)]="newBudget.totalPrice"
+        class="form-control"
+      />
     </div>
 
     <span class="d-flex">
