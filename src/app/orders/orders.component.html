@@ -1,1 +1,163 @@
-<p>orders works!</p>
+<div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
+  <button class="btn badge-success" (click)="onClickToggleAddOrderForm()">
+    Create New Order
+  </button>
+</div>
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<div *ngIf="!showAddOrderForm && !showEditOrderForm">
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container *ngIf="orders && orders.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">OrderNumber</th>
+            <th scope="col">OrderName</th>
+            <th scope="col">OrderStatus</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Report(pdf)</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let order of orders">
+          <tr>
+            <td>{{ order.orderId }}</td>
+            <td>{{ order.name }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.customer.name }}</td>
+            <td>
+              <button
+                class="btn btn-sm badge-secondary"
+                (click)="orderPdfDownload(order.orderId, order)"
+              >
+                Download
+              </button>
+            </td>
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="onEditOrder(order.orderId, order)"
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteOrder(order.orderId, order)"
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="!orders || !orders.length">
+      <div class="emptyOrder text-center alert-warning">
+        There are no orders currently available ...
+      </div>
+    </ng-container>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="showAddOrderForm && !showEditOrderForm">
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new order</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="orderForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Order Name</label>
+      <input
+        required
+        id="orderName"
+        type="text"
+        name="orderName"
+        placeholder="enter order name"
+        [(ngModel)]="orderName"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="orderStatus">orderStatus</label>
+      <select
+        class="form-select form-control"
+        name="orderStatus"
+        id="orderStatus"
+        [(ngModel)]="orderStatus"
+      >
+        <option ngValue="finished">finished</option>
+        <option ngValue="inProgress ">inProgress</option>
+        <option ngValue="canceled">canceled</option>
+      </select>
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleAddOrderForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<ng-container *ngIf="showEditOrderForm && !showAddOrderForm">
+  <h1 style="color: greenyellow" class="mb-3">Editing a order</h1>
+
+  <hr />
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onUpdateOrder(updatedOrder)"
+    class="form"
+    name="orderForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Order Name</label>
+      <input
+        required
+        id="orderName"
+        type="text"
+        name="orderName"
+        placeholder="enter order name"
+        [(ngModel)]="updatedOrder.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="orderStatus">orderStatus</label>
+      <select
+        class="form-select form-control"
+        name="orderStatus"
+        id="orderStatus"
+        [(ngModel)]="updatedOrder.status"
+      >
+        <option ngValue="finished">finished</option>
+        <option ngValue="inProgress ">inProgress</option>
+        <option ngValue="canceled">canceled</option>
+      </select>
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleEditOrderForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>

@@ -1,15 +1,115 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  faEdit,
+  faTrashAlt,
+  faCheck,
+  faWindowClose,
+} from '@fortawesome/free-solid-svg-icons';
+import { Order } from '../models/Order';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.css']
+  styleUrls: ['./orders.component.css'],
 })
 export class OrdersComponent implements OnInit {
+  editIcon = faEdit;
+  deleteIcon = faTrashAlt;
+  checkIcon = faCheck;
+  closeIcon = faWindowClose;
 
-  constructor() { }
+  orderNumber!: number;
+  orderName!: string;
+  customerName!: string;
+  orderStatus!: string;
+  orders: Order[] = [
+    {
+      orderId: 1,
+      name: 'abc',
+      status: 'accepted',
+      productList: [],
+      customer: { customerId: 112, name: 'cus1' },
+    },
+  ];
+  showAddOrderForm: Boolean = false;
+  errorMessage!: string;
+  updatedOrder!: Order;
+  showEditOrderForm: Boolean = false;
+  formSubmitted = false;
+  constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  orderPdfDownload(id: number, order: Order): void {
+    console.log('order to download with id ', id, 'object ', order);
   }
 
+  onSubmit() {
+    console.log(
+      'inside submit',
+      this.customerName,
+      this.orderName,
+      this.orderNumber
+    );
+    if (
+      !this.orderName ||
+      this.orderName.trim().length === 0
+      //   ||
+      //   !this.customerName ||
+      //   this.customerName.trim().length < 2
+    ) {
+      this.errorMessage =
+        'Please enter correct fields , All fields are necessary';
+    } else this.formSubmitted = true;
+    return this.errorMessage;
+  }
+
+  onClickToggleAddOrderForm() {
+    setTimeout(() => {
+      this.errorMessage = '';
+      this.showAddOrderForm = !this.showAddOrderForm;
+
+      this.cd.markForCheck();
+    }, 200);
+  }
+  onClickToggleEditOrderForm() {
+    setTimeout(() => {
+      this.errorMessage = '';
+      this.showEditOrderForm = !this.showEditOrderForm;
+
+      this.cd.markForCheck();
+    }, 200);
+  }
+  onEditOrder(id: number, order: Order) {
+    this.updatedOrder = order;
+    setTimeout(() => {
+      this.showEditOrderForm = true;
+      this.cd.markForCheck();
+    }, 250);
+    console.log('edit', id, order);
+  }
+
+  onDeleteOrder(id: number, order: Order) {
+    console.log('delete', id, order);
+  }
+
+  onUpdateOrder(updatedOrder: Order) {
+    this.errorMessage = '';
+    console.log('update', updatedOrder);
+    console.log('customer is ', updatedOrder.customer);
+
+    if (!this.orderName || this.orderName.trim().length === 0) {
+      this.errorMessage =
+        'Please enter correct fields , All fields are necessary';
+
+      return this.errorMessage;
+    }
+
+    setTimeout(() => {
+      this.showEditOrderForm = false;
+      this.cd.markForCheck();
+    }, 250);
+
+    return this.errorMessage;
+  }
 }

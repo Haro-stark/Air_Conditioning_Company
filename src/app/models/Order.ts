@@ -1,10 +1,12 @@
-import { Customer } from "./Customer";
-import { Product } from "./Product";
-import { ServicesEnum } from "./ServicesEnum";
+import { Optional } from '@angular/core';
+import { Customer } from './Customer';
+import { Product } from './Product';
 
 export interface Order {
-    orderId: number;
-    type: ServicesEnum;
-    productList: Product[];
-    customer: Customer;
+  orderId: number;
+  name: string;
+  status: string;
+  type?: string[];
+  productList: Product[];
+  customer: Customer;
 }

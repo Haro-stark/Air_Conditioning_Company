@@ -22,9 +22,25 @@ import { OrdersComponent } from './orders/orders.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { ProductsComponent } from './products/products.component';
 import { BudgetsComponent } from './budgets/budgets.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
-  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent],
+  declarations: [
+    AppComponent,
+    AuthenticationComponent,
+    LoginComponent,
+    SignupComponent,
+    HomeComponent,
+    AdminComponent,
+    AssistantComponent,
+    OfficerComponent,
+    SidebarComponent,
+    EmployeesComponent,
+    OrdersComponent,
+    SuppliersComponent,
+    ProductsComponent,
+    BudgetsComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -32,8 +48,9 @@ import { BudgetsComponent } from './budgets/budgets.component';
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

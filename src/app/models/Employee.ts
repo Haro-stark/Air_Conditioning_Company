@@ -2,9 +2,9 @@ import { WorkLog } from "./WorkLog";
 
 export interface Employee {
     employeeId: number;
-    type: String;
-    username: String;
-    password: String;
+    type: string;
+    userName: string;
+    password: string;
     priceTime: number;
     workLogList: WorkLog[];
 }

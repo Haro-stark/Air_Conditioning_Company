@@ -1,7 +1,7 @@
 .sidebar {
   margin: 0;
   padding: 0;
-  width: 250px;
+  width: 200px;
   background-color: #f1f1f1;
   height: 100vh;
   overflow: auto;
@@ -17,7 +17,7 @@
 }
 
 .sidebar a:hover:not(.active) {
-  background-color: rgb(27, 25, 25);
+  background-color: rgb(61, 61, 61);
   color: white;
   transition: all 0.6s;
 }
@@ -31,7 +31,7 @@ div.content {
 @media screen and (max-width: 700px) {
   .sidebar {
     height: 100vh;
-    width: 200px;
+    width: 180px;
   }
 
   div.content {
@@ -42,7 +42,7 @@ div.content {
 @media screen and (max-width: 400px) {
   .sidebar {
     height: auto;
-    width: 150px;
+    width: 130px;
   }
   .sidebar a {
     text-align: center;
@@ -54,6 +54,7 @@ div.content {
   height: 60px;
   background-color: #04aa6d;
   z-index: 15;
+  border-bottom: 1px solid #09724c;
 }
 
 .sidebar > ul {
