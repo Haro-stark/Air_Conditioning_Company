@@ -23,9 +23,12 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { ProductsComponent } from './products/products.component';
 import { BudgetsComponent } from './budgets/budgets.component';
 import { WorklogComponent } from './worklog/worklog.component';
+import { HttpClientModule } from '@angular/common/http';
+import { UserRoleDirective } from './directives/user-role.directive';
+import { UserDirective } from './directives/user.directive';
 
 @NgModule({
-  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent],
+  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, UserRoleDirective, UserDirective],
   imports: [
     BrowserModule,
     FormsModule,
@@ -33,6 +36,11 @@ import { WorklogComponent } from './worklog/worklog.component';
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
+    HttpClientModule
+  ],
+  exports: [
+    UserDirective,
+    UserRoleDirective
   ],
   providers: [],
   bootstrap: [AppComponent],
