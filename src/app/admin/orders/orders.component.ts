@@ -5,12 +5,12 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { Order } from '../models/Order';
+import { Order } from '../../models/Order';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.css'],
+  styleUrls: ['./orders.component.css', '../../shared/icon.css'],
 })
 export class OrdersComponent implements OnInit {
   editIcon = faEdit;

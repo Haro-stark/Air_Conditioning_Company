@@ -4,12 +4,12 @@ import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { SignupComponent } from './authentication/signup/signup.component';
-import { BudgetsComponent } from './budgets/budgets.component';
-import { EmployeesComponent } from './employees/employees.component';
+import { BudgetsComponent } from './shared/budgets/budgets.component';
+import { EmployeesComponent } from './admin/employees/employees.component';
 import { HomeComponent } from './home/home.component';
-import { OrdersComponent } from './orders/orders.component';
-import { ProductsComponent } from './products/products.component';
-import { SuppliersComponent } from './suppliers/suppliers.component';
+import { OrdersComponent } from './admin/orders/orders.component';
+import { ProductsComponent } from './admin/products/products.component';
+import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },

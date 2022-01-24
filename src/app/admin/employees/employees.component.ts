@@ -5,12 +5,12 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { Employee } from '../models/Employee';
+import { Employee } from '../../models/Employee';
 
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
-  styleUrls: ['./employees.component.css'],
+  styleUrls: ['./employees.component.css','../../shared/icon.css'],
 })
 export class EmployeesComponent implements OnInit {
   editIcon = faEdit;

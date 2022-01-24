@@ -1,20 +1,19 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Budget } from '../models/Budget';
-import { Customer } from '../models/Customer';
-import { Product } from '../models/Product';
+import { Budget } from '../../models/Budget';
+import { Customer } from '../../models/Customer';
+import { Product } from '../../models/Product';
 import {
   faEdit,
   faTrashAlt,
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { Order } from '../models/Order';
-import { ServicesEnum } from '../models/ServicesEnum';
+import { Order } from '../../models/Order';
 
 @Component({
   selector: 'app-budgets',
   templateUrl: './budgets.component.html',
-  styleUrls: ['./budgets.component.css'],
+  styleUrls: ['./budgets.component.css', '../icon.css'],
 })
 export class BudgetsComponent implements OnInit {
   editIcon = faEdit;
@@ -36,7 +35,11 @@ export class BudgetsComponent implements OnInit {
   formSubmitted = false;
   generateOrder = false;
   showProducts = false;
+  showHoursInput = false;
   otherServicesSelected = false;
+
+  officerHours!: number;
+  assistantHours!: number;
   updatedBudget!: Budget;
   newBudget: Budget = {
     budgetId: 0,
@@ -46,7 +49,6 @@ export class BudgetsComponent implements OnInit {
     productList: [],
     customer: { customerId: 0, name: '' },
   };
-
   budgets: Budget[] = [
     {
       budgetId: 1,
@@ -90,7 +92,7 @@ export class BudgetsComponent implements OnInit {
 
   onSubmit() {
     console.log('inside submit', this.newBudget, this.services);
-    console.log(this.newBudget.name,this.newBudget.productList);
+    console.log(this.newBudget.name, this.newBudget.productList);
     if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
@@ -167,7 +169,19 @@ export class BudgetsComponent implements OnInit {
     console.log('Order generated', order);
   }
 
-  toggleShowProducts() {
-    this.showProducts = !this.showProducts;
+ 
+
+  isInstallationSelected(services: string[]|string) {
+    if (services.includes('installation')) {
+      this.showProducts = true;
+    } else {
+      this.showProducts = false;
+    }
+
+    if (services.includes('maintenance') || services.includes('labour')) {
+      this.showHoursInput = true;
+    } else {
+      this.showHoursInput = false;
+    }
   }
 }

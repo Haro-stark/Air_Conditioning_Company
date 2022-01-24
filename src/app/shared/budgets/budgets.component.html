@@ -115,15 +115,13 @@
         id="services"
         [(ngModel)]="services"
         [multiple]="true"
+                  (ngModelChange)="isInstallationSelected(services)"
+
       >
-        <option
-          ngValue="installation"
-          (click)="toggleShowProducts()"
-          [selected]="showProducts"
-        >
+        <option ngValue="installation">
           installation
         </option>
-        <option ngValue="maintenance ">maintenance</option>
+        <option ngValue="maintenance">maintenance</option>
         <option ngValue="labour">labour</option>
       </select>
     </div>
@@ -137,21 +135,48 @@
           [(ngModel)]="newBudget.productList"
           [multiple]="true"
         >
-          <option *ngFor="let product of products" ngValue="{{ product.name }}">
+          <option *ngFor="let product of products" ngValue="{{ product }}">
             {{ product.name }}
           </option>
         </select>
       </div>
     </ng-container>
 
- <div class="form-group">
+<ng-container *ngIf="showHoursInput">
+
+       <div class="form-group">
+      <label for="officerHours" class="form-label">Officer Hours</label>
+      <input
+        required
+        id="officerHours"
+        type="number"
+        name="officerHours"
+        [(ngModel)]="officerHours"
+        class="form-control"
+      />
+    </div>
+
+       <div class="form-group">
+      <label for="assistantHours" class="form-label">Assistant Hours</label>
+      <input
+        required
+        id="assistantHours"
+        type="number"
+        name="assistantHours"
+        [(ngModel)]="assistantHours"
+        class="form-control"
+      />
+    </div>
+</ng-container>
+
+    <div class="form-group">
       <label for="totalPrice" class="form-label">Total Price</label>
       <input
-      disabled
-      readonly
+        disabled
+        readonly
         required
         id="totalPrice"
-        type="text"
+        type="number"
         name="totalPrice"
         [(ngModel)]="newBudget.totalPrice"
         class="form-control"

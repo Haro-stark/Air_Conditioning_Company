@@ -1,8 +1,14 @@
 <div>
   <div class="header">
-    <button class="btn btn-toolbar"(click)="toggleSidebar()"> <i class="fa fa-navicon fa-lg">toggle</i></button>
-         
-<div id="nav-hamburger" [ngClass]="displaySideBar?'open':'close'">
+    <button class="btn btn-default" (click)="toggleSidebar()">
+      <fa-icon
+        [icon]="displaySideBar ? faMinusIcon:faBarsIcon"
+        title="toggle Taskbar"
+        [ngClass]="'icon'"
+      ></fa-icon>
+    </button>
+
+    <div id="nav-hamburger" [ngClass]="displaySideBar ? 'open' : 'close'">
       <span></span>
       <span></span>
       <span></span>
@@ -10,7 +16,10 @@
   </div>
 
   <div class="main">
-    <div class="sidebar"  [ngClass]="displaySideBar? 'showSidebar':'hideSidebar'">
+    <div
+      class="sidebar"
+      [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
+    >
       <ul>
         <li><a [routerLink]="['employees']">Employees </a></li>
         <li><a [routerLink]="['orders']">Orders </a></li>
@@ -21,7 +30,7 @@
     </div>
 
     <div class="body">
-      <h1 style="color:red" class="mb-4">Admin panel</h1>
+      <h1 style="color: red" class="m-5">Admin panel</h1>
       <router-outlet></router-outlet>
     </div>
   </div>

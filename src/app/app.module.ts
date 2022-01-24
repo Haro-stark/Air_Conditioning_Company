@@ -17,11 +17,11 @@ import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { OfficerComponent } from './officer/officer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { EmployeesComponent } from './employees/employees.component';
-import { OrdersComponent } from './orders/orders.component';
-import { SuppliersComponent } from './suppliers/suppliers.component';
-import { ProductsComponent } from './products/products.component';
-import { BudgetsComponent } from './budgets/budgets.component';
+import { EmployeesComponent } from './admin/employees/employees.component';
+import { OrdersComponent } from './admin/orders/orders.component';
+import { SuppliersComponent } from './admin/suppliers/suppliers.component';
+import { ProductsComponent } from './admin/products/products.component';
+import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({

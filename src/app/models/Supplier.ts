@@ -5,5 +5,5 @@ export interface Supplier {
     orderNumber: string;
     basePrice: number;
     tax: number;
-    productSold: Product;
+    productSold?: Product;
 }
