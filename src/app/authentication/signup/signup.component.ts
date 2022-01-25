@@ -10,7 +10,9 @@ import { AuthenticationService } from 'src/app/service/authentication.service';
 export class SignupComponent implements OnInit {
   email = '';
   password = '';
+  username = '';
   errorMessage = '';
+  role = '';
   error: { name: string; message: string } = { name: '', message: '' };
 
   resetPassword = false;
@@ -18,18 +20,18 @@ export class SignupComponent implements OnInit {
   constructor(
     public authService: AuthenticationService,
     private router: Router
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onSignUp(): void {
     this.clearErrorMessage();
 
     if (this.validateForm(this.email, this.password)) {
       this.authService
-        .signUp(this.email, this.password)
+        .signUp(this.email, this.password, this.role, "")
         .then(() => {
-          this.router.navigate(['/user']);
+          this.router.navigate(['/login']);
         })
         .catch((_error: { name: string; message: string }) => {
           this.error = _error;
