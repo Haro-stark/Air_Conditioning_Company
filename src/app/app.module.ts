@@ -23,6 +23,7 @@ import { ProductsComponent } from './products/products.component';
 import { BudgetsComponent } from './budgets/budgets.component';
 import { WorklogComponent } from './worklog/worklog.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, AccessDeniedComponent],
@@ -33,6 +34,7 @@ import { AccessDeniedComponent } from './access-denied/access-denied.component';
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],

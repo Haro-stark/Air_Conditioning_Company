@@ -13,7 +13,7 @@
         <tr>
             <th>Date</th>
             <th>Order Id</th>
-            <th>Order Type</th>
+            <!-- <th>Order Type</th> -->
             <th>Number Of Hours</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -24,11 +24,11 @@
             <tr>
                 <td>{{log.date}}</td>
                 <td>{{log.order.orderId}}</td>
-                <td>{{log.order.type}}</td>
+                <!-- <td>{{log.order.type}}</td> -->
                 <td>{{log.numberOfHours}}</td>
                 <td>
                     <a *ngIf="auth.isAllowedToAdmin(user)" (click)="editLog(log)" style="cursor: pointer;">
-                        <i class="material-icons" title="Ping Server">edit</i>
+                        <i class="material-icons" title="edit">edit</i>
                     </a>
                 </td>
                 <td>
@@ -93,10 +93,10 @@
             </button>
         </div>
         <div class="modal-body">
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label>Date</label>
                 <input type="date" value={{dateControl}} id="date" ngModel class="form-control" required name="date">
-            </div>
+            </div> -->
             <div class="form-group">
                 <label>Number Of Hours</label>
                 <input type="text" ngModel name="numberOfHours" class="form-control" required>

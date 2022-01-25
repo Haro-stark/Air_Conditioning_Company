@@ -4,7 +4,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { User } from '../models/User';
-import { switchMap } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 import { getDatabase, ref, set } from "firebase/database";
 
 @Injectable({
@@ -66,7 +66,6 @@ export class AuthenticationService {
   }
 
   async login(email: string, password: string) {
-
     const user = await this.angularFireAuth.signInWithEmailAndPassword(
       email,
       password
@@ -102,34 +101,11 @@ export class AuthenticationService {
     }
   }
 
-
-
-  ///// Role-based Authorization //////
-
-  canRead(user: User): boolean {
-    const allowed = ['admin', 'officer', 'assistant']
-    return this.checkAuthorization(user, allowed)
-  }
-
-  canEdit(user: User): boolean {
-    const allowed = ['admin', 'officer']
-    return this.checkAuthorization(user, allowed)
-  }
-
-  canDelete(user: User): boolean {
-    const allowed = ['admin']
-    return this.checkAuthorization(user, allowed)
-  }
-
-  canCreateWorkLog(user: User): boolean {
-    const allowed = ['officer', 'assistant']
-    return this.checkAuthorization(user, allowed)
-  }
-
-  canCreateBudgetQuotes(user: User): boolean {
-    const allowed = ['officer', 'assistant']
-    return this.checkAuthorization(user, allowed)
-  }
+  // async isUserLoggedIn(): Promise<unknown> {
+  //   // if (await AngularFireAuth) return true;
+  //   // else return false;
+  //   return this.angularFireAuth.authState.pipe(first()).toPromise();
+  // }
 
   isAllowedToAdminAndOfficer(user: User): boolean {
     const allowed = ['officer', 'admin']

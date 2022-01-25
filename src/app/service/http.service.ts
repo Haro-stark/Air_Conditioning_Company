@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { WorkLog } from '../models/WorkLog';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -6,5 +9,9 @@ import { Injectable } from '@angular/core';
 export class HttpService {
 
   private hostUrl: string = "http://localhost:8080"
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  getWorkLogs(): Observable<WorkLog[]> {
+    return this.http.get<WorkLog[]>(`${this.hostUrl}/WorkLog/list`)
+  }
 }

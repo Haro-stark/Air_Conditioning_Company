@@ -14,14 +14,14 @@ export class HomeComponent implements OnInit {
     private router: Router
   ) {
     console.log(authService.authState);
-    if (this.authService.isUserEmailLoggedIn) {
+    if (true) {
       this.isLoggedIn = true;
     } else {
       console.log('not logged in');
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   signOut(): void {
     try {
