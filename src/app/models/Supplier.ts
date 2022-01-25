@@ -1,9 +1,10 @@
 import { Product } from "./Product";
 
 export interface Supplier {
-    supplierId: number;
-    orderNumber: string;
-    basePrice: number;
-    tax: number;
-    productSold?: Product;
+  supplierId: number;
+  name: string;
+  basePrice: number;
+  tax: number;
+  productSold?: Product[];
+  orderNumber?:string;
 }

@@ -53,7 +53,13 @@ export class ProductsComponent implements OnInit {
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-    } else this.formSubmitted = true;
+    } else {
+      setTimeout(() => {
+        this.showAddProductForm = false;
+        this.formSubmitted = true;
+        this.cd.markForCheck();
+      }, 250);
+    }
     return this.errorMessage;
   }
 

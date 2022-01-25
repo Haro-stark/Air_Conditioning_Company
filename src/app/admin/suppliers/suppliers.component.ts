@@ -17,19 +17,53 @@ export class SuppliersComponent implements OnInit {
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
   closeIcon = faWindowClose;
-  supplier: Supplier = {
+  newSupplier: Supplier = {
     supplierId: 0,
+    name: '',
     orderNumber: '',
     basePrice: 0,
-    tax: 0,
+    tax: 0.2,
   };
 
   suppliers: Supplier[] = [
     {
       supplierId: 0,
-      orderNumber: '132',
-      basePrice: 0,
-      tax: 0,
+      name: 'supply 1',
+      orderNumber: 'dscvf213',
+      basePrice: 100,
+      productSold: [
+        {
+          productId: 0,
+          name: 'prod1',
+          characteristics: 'asdfs',
+          price: 0,
+          quantityInStock: 0,
+        },
+        {
+          productId: 0,
+          name: 'prod2',
+          characteristics: 'xzcv',
+          price: 0,
+          quantityInStock: 0,
+        },
+      ],
+      tax: 0.2,
+    },
+    {
+      supplierId: 1,
+      name: 'supply 2',
+      orderNumber: 'asd123',
+      basePrice: 20,
+      productSold: [
+        {
+          productId: 0,
+          name: 'v,m',
+          characteristics: 'rtyk',
+          price: 0,
+          quantityInStock: 0,
+        },
+      ],
+      tax: 0.9,
     },
   ];
 
@@ -43,15 +77,23 @@ export class SuppliersComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
-    if (
-      !this.supplier.name ||
-      this.supplier.name.trim().length === 0 ||
-      !this.supplier.characteristics ||
-      this.supplier.characteristics.trim().length < 3
-    ) {
+    console.log(
+      this.newSupplier.name,
+      this.newSupplier.basePrice,
+      this.newSupplier.tax,
+      this.newSupplier.productSold?.map((product) => product)
+    );
+
+    if (!this.newSupplier.name || this.newSupplier.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-    } else this.formSubmitted = true;
+    } else {
+      setTimeout(() => {
+        this.showAddSupplierForm = false;
+        this.formSubmitted = true;
+        this.cd.markForCheck();
+      }, 250);
+    }
     return this.errorMessage;
   }
 
@@ -85,13 +127,17 @@ export class SuppliersComponent implements OnInit {
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
     console.log('update', updatedSupplier);
-    console.log('customer is ', updatedSupplier.name);
+    console.log('supplier is ', updatedSupplier.name);
+    console.log(
+      this.updatedSupplier.name,
+      this.updatedSupplier.basePrice,
+      this.updatedSupplier.tax,
+      this.updatedSupplier.productSold?.map((product) => product)
+    );
 
     if (
       !this.updatedSupplier.name ||
-      this.updatedSupplier.name.trim().length === 0 ||
-      !this.updatedSupplier.characteristics ||
-      this.updatedSupplier.characteristics.trim().length < 3
+      this.updatedSupplier.name.trim().length === 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';

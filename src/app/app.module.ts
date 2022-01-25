@@ -23,6 +23,7 @@ import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    HttpClientModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

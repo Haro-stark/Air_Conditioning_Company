@@ -5,7 +5,7 @@ export interface Budget {
   budgetId: number;
   name: string;
   totalPrice: number;
-  status: string;
+  budgetStatus: string;
   productList: Product[];
   customer: Customer;
 }

@@ -1,5 +1,5 @@
-
 .delete-icon {
+    margin-left: 20px;
   color: rgb(245, 0, 0);
 }
 
@@ -7,10 +7,10 @@
   color: rgb(202, 206, 7);
 }
 
-.check-icon{
+.check-icon {
   color: #00df33;
 }
-.close-icon{
+.close-icon {
   color: red;
 }
 
@@ -27,8 +27,10 @@ input[type="checkbox"]:checked + li {
   text-decoration: line-through;
 }
 
-
-
-form{
+form {
   margin-bottom: 25px;
+}
+
+table.table tr {
+  text-align: center !important;
 }

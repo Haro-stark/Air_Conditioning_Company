@@ -10,7 +10,7 @@
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
-<div *ngIf="!showAddEmployeeForm && !showEditEmployeeForm">
+<div *ngIf="!showAddEmployeeForm && !showEditEmployeeForm ">
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="employees && !!employees.length">
@@ -56,6 +56,11 @@
         </tbody>
       </ng-container>
     </table>
+    <ng-container *ngIf="employees && !employees.length">
+      <div class="emptySupplier text-center alert-warning">
+        There are no employees currently available ...
+      </div>
+    </ng-container>
   </div>
 </div>
 <ng-container *ngIf="showAddEmployeeForm && !showEditEmployeeForm">

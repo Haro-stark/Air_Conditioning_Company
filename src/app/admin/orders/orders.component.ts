@@ -18,10 +18,7 @@ export class OrdersComponent implements OnInit {
   checkIcon = faCheck;
   closeIcon = faWindowClose;
 
-  orderNumber!: number;
-  orderName!: string;
-  customerName!: string;
-  orderStatus!: string;
+ 
   orders: Order[] = [
     {
       orderId: 1,
@@ -31,6 +28,13 @@ export class OrdersComponent implements OnInit {
       customer: { customerId: 112, name: 'cus1' },
     },
   ];
+  newOrder: Order = {
+    orderId: 0,
+    name: '',
+    status: '',
+    productList: [],
+    customer: { customerId: 112, name: 'cus1' },
+  };
   showAddOrderForm: Boolean = false;
   errorMessage!: string;
   updatedOrder!: Order;
@@ -47,20 +51,27 @@ export class OrdersComponent implements OnInit {
   onSubmit() {
     console.log(
       'inside submit',
-      this.customerName,
-      this.orderName,
-      this.orderNumber
+      this.newOrder.name,
+      this.newOrder.status,
+      this.newOrder.productList
     );
     if (
-      !this.orderName ||
-      this.orderName.trim().length === 0
+      !this.newOrder.name ||
+      this.newOrder.name.trim().length === 0
       //   ||
       //   !this.customerName ||
       //   this.customerName.trim().length < 2
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-    } else this.formSubmitted = true;
+    } else {
+      setTimeout(() => {
+        this.showAddOrderForm = false;
+        this.formSubmitted = true;
+        this.cd.markForCheck();
+      }, 250);
+      this.orders.push(this.newOrder)
+    }
     return this.errorMessage;
   }
 
@@ -91,6 +102,7 @@ export class OrdersComponent implements OnInit {
 
   onDeleteOrder(id: number, order: Order) {
     console.log('delete', id, order);
+    this.orders = this.orders.filter((o) => o.name != order.name);
   }
 
   onUpdateOrder(updatedOrder: Order) {
@@ -98,7 +110,7 @@ export class OrdersComponent implements OnInit {
     console.log('update', updatedOrder);
     console.log('customer is ', updatedOrder.customer);
 
-    if (!this.orderName || this.orderName.trim().length === 0) {
+    if (!this.updatedOrder.name || this.updatedOrder.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
 

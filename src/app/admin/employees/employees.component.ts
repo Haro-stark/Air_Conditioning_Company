@@ -10,7 +10,7 @@ import { Employee } from '../../models/Employee';
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
-  styleUrls: ['./employees.component.css','../../shared/icon.css'],
+  styleUrls: ['./employees.component.css', '../../shared/icon.css'],
 })
 export class EmployeesComponent implements OnInit {
   editIcon = faEdit;
@@ -74,7 +74,14 @@ export class EmployeesComponent implements OnInit {
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-    } else this.formSubmitted = true;
+    } else {
+     setTimeout(() => {
+       this.showAddEmployeeForm = false;
+       this.formSubmitted = true;
+       this.cd.markForCheck();
+     }, 300);
+      this.employees.push(this.newEmployee);
+    }
     return this.errorMessage;
   }
 
@@ -106,6 +113,9 @@ export class EmployeesComponent implements OnInit {
 
   onDeleteEmployee(id: number, employee: Employee) {
     console.log('delete', id, employee);
+    this.employees = this.employees.filter(
+      (e) => e.userName !== employee.userName
+    );
   }
 
   onUpdateEmployee(updatedEmployee: Employee) {
@@ -125,9 +135,9 @@ export class EmployeesComponent implements OnInit {
 
     setTimeout(() => {
       this.showEditEmployeeForm = false;
+          this.formSubmitted = true;
       this.cd.markForCheck();
     }, 300);
-    this.formSubmitted = true;
     return this.errorMessage;
   }
 }

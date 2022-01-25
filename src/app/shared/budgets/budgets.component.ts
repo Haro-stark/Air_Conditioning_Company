@@ -9,6 +9,8 @@ import {
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 import { Order } from '../../models/Order';
+import { HttpService } from 'src/app/service/http.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-budgets',
@@ -27,11 +29,11 @@ export class BudgetsComponent implements OnInit {
   ];
   customerName!: string;
 
-  showNewCustomerForm: Boolean = false;
-  showAddBudgetForm: Boolean = false;
+  showNewCustomerForm: boolean = false;
+  showAddBudgetForm: boolean = false;
   errorMessage!: string;
   services!: string | string[];
-  showEditBudgetForm: Boolean = false;
+  showEditBudgetForm: boolean = false;
   formSubmitted = false;
   generateOrder = false;
   showProducts = false;
@@ -45,7 +47,7 @@ export class BudgetsComponent implements OnInit {
     budgetId: 0,
     name: '',
     totalPrice: 0,
-    status: '',
+    budgetStatus: '',
     productList: [],
     customer: { customerId: 0, name: '' },
   };
@@ -54,11 +56,14 @@ export class BudgetsComponent implements OnInit {
       budgetId: 1,
       name: 'abc',
       totalPrice: 546,
-      status: 'accepted',
+      budgetStatus: 'accepted',
       productList: [],
       customer: { customerId: 112, name: 'cus1' },
     },
   ];
+
+  filteredBudgets: Budget[] = [];
+
   products: Product[] = [
     {
       productId: 0,
@@ -68,35 +73,57 @@ export class BudgetsComponent implements OnInit {
       quantityInStock: 0,
     },
     {
-      productId: 0,
+      productId: 1,
       name: 'czxfzx',
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
     },
     {
-      productId: 0,
+      productId: 1,
       name: 'wqetrth',
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
     },
   ];
-  constructor(private cd: ChangeDetectorRef) {}
+  private subscriptions = new Subscription();
 
-  ngOnInit(): void {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private budgetService: HttpService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscriptions.add(
+      this.budgetService
+        .getBudget()
+        .subscribe(
+          (data: Budget[]) => ((this.budgets = data), console.log(data))
+        )
+    );
+  }
 
   budgetPdfDownload(id: number, budget: Budget): void {
     console.log('budget to download with id ', id, 'object ', budget);
   }
 
   onSubmit() {
+
+    this.errorMessage = '';
     console.log('inside submit', this.newBudget, this.services);
-    console.log(this.newBudget.name, this.newBudget.productList);
+    console.log(this.newBudget.name, this.newBudget.productList.map(data => console.log(data)));
     if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-    } else this.formSubmitted = true;
+    } else {
+      setTimeout(() => {
+        this.showAddBudgetForm = false;
+        this.formSubmitted = true;
+        this.cd.markForCheck();
+      }, 250);
+      this.budgets.push(this.newBudget);
+    }
     return this.errorMessage;
   }
 
@@ -118,7 +145,7 @@ export class BudgetsComponent implements OnInit {
   }
   onEditBudget(id: number, budget: Budget) {
     this.updatedBudget = budget;
-    if (budget.status.trim().toLowerCase() !== 'accepted') {
+    if (budget.budgetStatus.trim().toLowerCase() !== 'accepted') {
       this.generateOrder = true;
     }
     setTimeout(() => {
@@ -134,7 +161,11 @@ export class BudgetsComponent implements OnInit {
 
   onUpdateBudget(updatedBudget: Budget) {
     this.errorMessage = '';
-    if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
+    console.log('update', updatedBudget);
+    if (
+      !this.updatedBudget.name ||
+      this.updatedBudget.name.trim().length === 0
+    ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
@@ -143,13 +174,13 @@ export class BudgetsComponent implements OnInit {
     console.log('customer is ', updatedBudget.customer);
 
     if (
-      updatedBudget.status.trim().toLowerCase() === 'accepted' &&
+      updatedBudget.budgetStatus.trim().toLowerCase() === 'accepted' &&
       this.generateOrder
     ) {
       let generateOrder: Order = {
         orderId: updatedBudget.budgetId,
         name: updatedBudget.name,
-        status: updatedBudget.status,
+        status: updatedBudget.budgetStatus,
         customer: updatedBudget.customer,
         productList: updatedBudget.productList,
       };
@@ -169,9 +200,10 @@ export class BudgetsComponent implements OnInit {
     console.log('Order generated', order);
   }
 
- 
+  isInstallationSelected(services: any) {
+    
+    console.log('isInstallation', services);
 
-  isInstallationSelected(services: string[]|string) {
     if (services.includes('installation')) {
       this.showProducts = true;
     } else {
