@@ -5,6 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class HttpService {
 
-  private hostUrl: string= "http://localhost"
+  private hostUrl: string = "http://localhost:8080"
   constructor() { }
 }

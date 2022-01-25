@@ -17,8 +17,8 @@ export class WorklogComponent implements OnInit {
   dateControl = new Date();
   orders!: Order[]
   user: any;
-  postRef: any;
-  post$: any;
+  // postRef: any;
+  // post$: any;
 
   public createNewWorkLogModal!: NgbModalRef;
 
@@ -30,8 +30,8 @@ export class WorklogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.postRef = this.afs.doc('posts/myTestPost')
-    this.post$ = this.postRef.valueChanges()
+    // this.postRef = this.afs.doc('posts/myTestPost')
+    // this.post$ = this.postRef.valueChanges()
   }
 
   saveServer(createWorkLog: NgForm): void {
