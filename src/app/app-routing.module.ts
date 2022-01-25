@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { BudgetsComponent } from './budgets/budgets.component';
+import { AdminGuardGuard } from './cores/guards/admin-guard.guard';
+import { AssistantGuardGuard } from './cores/guards/assistant-guard.guard';
+import { OfficerGuardGuard } from './cores/guards/officer-guard.guard';
 import { EmployeesComponent } from './employees/employees.component';
 import { HomeComponent } from './home/home.component';
+import { OfficerComponent } from './officer/officer.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
@@ -16,14 +21,10 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signUp', component: SignupComponent },
-  { path: 'employees', component: AdminComponent },
-  { path: 'budgets', component: AdminComponent },
-  { path: 'officer', component: AdminComponent },
-  { path: 'assitant', component: AssistantComponent },
-
   {
     path: 'admin',
     component: AdminComponent,
+    canActivate: [AdminGuardGuard],
     children: [
       { path: 'employees', component: EmployeesComponent },
       { path: 'orders', component: OrdersComponent },
@@ -33,8 +34,18 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'officer',
+    component: OfficerComponent,
+    canActivate: [OfficerGuardGuard],
+    children: [
+      { path: 'budgets', component: BudgetsComponent },
+      { path: 'workLog', component: WorklogComponent }
+    ],
+  },
+  {
     path: 'assistant',
     component: AssistantComponent,
+    canActivate: [AssistantGuardGuard],
     children: [
       { path: 'workLog', component: WorklogComponent }
     ],
@@ -44,6 +55,10 @@ const routes: Routes = [
     redirectTo: '/home',
     pathMatch: 'full',
   },
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent
+  }
 ];
 
 @NgModule({

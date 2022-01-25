@@ -121,6 +121,39 @@ export class AuthenticationService {
     return this.checkAuthorization(user, allowed)
   }
 
+  canCreateWorkLog(user: User): boolean {
+    const allowed = ['officer', 'assistant']
+    return this.checkAuthorization(user, allowed)
+  }
+
+  canCreateBudgetQuotes(user: User): boolean {
+    const allowed = ['officer', 'assistant']
+    return this.checkAuthorization(user, allowed)
+  }
+
+  isAllowedToAdminAndOfficer(user: User): boolean {
+    const allowed = ['officer', 'admin']
+    return this.checkAuthorization(user, allowed)
+  }
+  isAllowedToAssistantAndOfficer(user: User): boolean {
+    const allowed = ['officer', 'assistant']
+    return this.checkAuthorization(user, allowed)
+  }
+  isAllowedToAssistant(user: User): boolean {
+    const allowed = ['assistant']
+    return this.checkAuthorization(user, allowed)
+  }
+  isAllowedToOfficer(user: User): boolean {
+    const allowed = ['officer']
+    return this.checkAuthorization(user, allowed)
+  }
+
+  isAllowedToAdmin(user: User): boolean {
+    const allowed = ['admin']
+    return this.checkAuthorization(user, allowed)
+  }
+
+
 
 
   // determines if user has matching role

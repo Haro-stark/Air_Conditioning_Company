@@ -27,12 +27,12 @@
                 <td>{{log.order.type}}</td>
                 <td>{{log.numberOfHours}}</td>
                 <td>
-                    <a *ngIf="auth.canEdit(user)" (click)="editLog(log)" style="cursor: pointer;">
+                    <a *ngIf="auth.isAllowedToAdmin(user)" (click)="editLog(log)" style="cursor: pointer;">
                         <i class="material-icons" title="Ping Server">edit</i>
                     </a>
                 </td>
                 <td>
-                    <a *ngIf="auth.canDelete(user)" (click)="deleteLog(log)" class="delete" data-toggle="modal"
+                    <a *ngIf="auth.isAllowedToAdmin(user)" (click)="deleteLog(log)" class="delete" data-toggle="modal"
                         style="cursor: pointer;">
                         <i class="material-icons" data-toggle="modal" title="Delete">&#xE872;</i>
                     </a>
@@ -116,7 +116,7 @@
 
 <div>
     <a class="btn btn-success" data-toggle="modal">
-        <button *ngIf="auth.canEdit(user)" class="btn btn-lg btn-outline-dark"
+        <button *ngIf="auth.isAllowedToAssistantAndOfficer(user)" class="btn btn-lg btn-outline-dark"
             (click)="openCreateWorkLogModal(content)">
             Create New Work Log
         </button>
