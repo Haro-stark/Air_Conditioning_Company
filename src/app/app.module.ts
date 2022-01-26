@@ -19,22 +19,17 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 
 import { WorklogComponent } from './worklog/worklog.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
 import { EmployeesComponent } from './admin/employees/employees.component';
 import { OrdersComponent } from './admin/orders/orders.component';
 import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-@NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, AccessDeniedComponent],
-
-
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthenticationComponent,
     LoginComponent,
     SignupComponent,
     HomeComponent,
@@ -47,6 +42,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SuppliersComponent,
     ProductsComponent,
     BudgetsComponent,
+    WorklogComponent,
+    AccessDeniedComponent,
   ],
   imports: [
     BrowserModule,

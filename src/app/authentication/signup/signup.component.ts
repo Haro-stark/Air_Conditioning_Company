@@ -31,11 +31,11 @@ export class SignupComponent implements OnInit {
       this.authService
         .signUp(this.email, this.password, this.role, "")
         .then(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/home']);
         })
         .catch((_error: { name: string; message: string }) => {
           this.error = _error;
-          this.router.navigate(['/']);
+          this.router.navigate(['/signUp']);
         });
     }
   }

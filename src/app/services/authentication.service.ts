@@ -46,10 +46,12 @@ export class AuthenticationService {
             console.log("user after signup : ", user);
             this.updateUserData(user)
           }
+
         );
 
       // if (singupStatus.user) console.log("auth service signup: singupStatus = ", singupStatus.credential);
     } catch (err: any) {
+      
       window.alert(err.message);
     }
   }

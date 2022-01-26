@@ -26,23 +26,20 @@ export class HttpService {
   private supplierApiUrl = 'http://localhost:8080/Supplier';
   private workLogApiUrl = 'http://localhost:8080/WorkLog';
 
-  private requestParams = new HttpParams();
-
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
     return this.http.get<Budget[]>(`${this.budgetApiUrl}/list`);
   }
   getBudgetById(id: number): Observable<Budget> {
-    this.requestParams.append('Id', id);
     return this.http.get<Budget>(`${this.budgetApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addBudget(Budget: Budget): Observable<Budget> {
     return this.http.post<Budget>(`${this.budgetApiUrl}/add`, Budget);
   }
-  editBudget(Budget: Budget): Observable<Budget> {
+  updateBudget(Budget: Budget): Observable<Budget> {
     return this.http.put<any>(
       `${this.budgetApiUrl}/update`,
       Budget,
@@ -50,28 +47,28 @@ export class HttpService {
     );
   }
   deleteBudget(id: number): Observable<Budget> {
-    this.requestParams.append('Id', id);
     return this.http.delete<Budget>(`${this.budgetApiUrl}/delete`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   getBudgetPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.budgetApiUrl}/exportToPDF`);
+    return this.http.get<any>(`${this.budgetApiUrl}/exportToPDF`, {
+      params: { Id: id },
+    });
   }
 
   getCustomer(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.customerApiUrl}/list`);
   }
   getCustomerById(id: number): Observable<Customer> {
-    this.requestParams.append('Id', id);
     return this.http.get<Customer>(`${this.customerApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addCustomer(Customer: Customer): Observable<Customer> {
     return this.http.post<Customer>(`${this.customerApiUrl}/add`, Customer);
   }
-  editCustomer(Customer: Customer): Observable<Customer> {
+  updateCustomer(Customer: Customer): Observable<Customer> {
     return this.http.put<any>(
       `${this.customerApiUrl}/update`,
       Customer,
@@ -79,9 +76,8 @@ export class HttpService {
     );
   }
   deleteCustomer(id: number): Observable<Customer> {
-    this.requestParams.append('Id', id);
     return this.http.delete<Customer>(`${this.customerApiUrl}/delete`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   getCustomerPdf(id: number): Observable<any> {
@@ -92,21 +88,19 @@ export class HttpService {
     return this.http.get<Order[]>(`${this.orderApiUrl}/list`);
   }
   getOrderById(id: number): Observable<Order> {
-    this.requestParams.append('Id', id);
     return this.http.get<Order>(`${this.orderApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addOrder(Order: Order): Observable<Order> {
     return this.http.post<Order>(`${this.orderApiUrl}/add`, Order);
   }
-  editOrder(Order: Order): Observable<Order> {
+  updateOrder(Order: Order): Observable<Order> {
     return this.http.put<any>(`${this.orderApiUrl}/update`, Order, httpOptions);
   }
   deleteOrder(id: number): Observable<Order> {
-    this.requestParams.append('Id', id);
     return this.http.delete<Order>(`${this.orderApiUrl}/delete`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   getOrderPdf(id: number): Observable<any> {
@@ -117,26 +111,26 @@ export class HttpService {
     return this.http.get<Employee[]>(`${this.employeeApiUrl}/list`);
   }
   getEmployeeById(id: number): Observable<Employee> {
-    this.requestParams.append('Id', id);
     return this.http.get<Employee>(`${this.employeeApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addEmployee(Employee: Employee): Observable<Employee> {
     return this.http.post<Employee>(`${this.employeeApiUrl}/add`, Employee);
   }
-  editEmployee(Employee: Employee): Observable<Employee> {
+  updateEmployee(Employee: Employee): Observable<Employee> {
     return this.http.put<any>(
       `${this.employeeApiUrl}/update`,
       Employee,
       httpOptions
     );
   }
-  deleteEmployee(id: number): Observable<Employee> {
-    this.requestParams.append('Id', id);
-    return this.http.delete<Employee>(`${this.employeeApiUrl}/delete`, {
-      params: this.requestParams,
-    });
+  deleteEmployee(id: number): Observable<any> {
+    const httpOptions: Object = {
+      responseType: 'text' as 'text',
+      params: { Id: id },
+    };
+    return this.http.delete<any>(`${this.employeeApiUrl}/delete`, httpOptions);
   }
   getEmployeePdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.employeeApiUrl}/exportToPDF`);
@@ -146,15 +140,14 @@ export class HttpService {
     return this.http.get<Product[]>(`${this.productApiUrl}/list`);
   }
   getProductById(id: number): Observable<Product> {
-    this.requestParams.append('Id', id);
     return this.http.get<Product>(`${this.productApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addProduct(Product: Product): Observable<Product> {
     return this.http.post<Product>(`${this.productApiUrl}/add`, Product);
   }
-  editProduct(Product: Product): Observable<Product> {
+  updateProduct(Product: Product): Observable<Product> {
     return this.http.put<any>(
       `${this.productApiUrl}/update`,
       Product,
@@ -162,10 +155,11 @@ export class HttpService {
     );
   }
   deleteProduct(id: number): Observable<Product> {
-    this.requestParams.append('Id', id);
-    return this.http.delete<Product>(`${this.productApiUrl}/delete`, {
-      params: this.requestParams,
-    });
+    const httpOptions: Object = {
+      responseType: 'text' as 'text',
+      params: { Id: id },
+    };
+    return this.http.delete<Product>(`${this.productApiUrl}/delete`, httpOptions);
   }
   getProductPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);
@@ -175,15 +169,14 @@ export class HttpService {
     return this.http.get<Supplier[]>(`${this.supplierApiUrl}/list`);
   }
   getSupplierById(id: number): Observable<Supplier> {
-    this.requestParams.append('Id', id);
     return this.http.get<Supplier>(`${this.supplierApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addSupplier(Supplier: Supplier): Observable<Supplier> {
     return this.http.post<Supplier>(`${this.supplierApiUrl}/add`, Supplier);
   }
-  editSupplier(Supplier: Supplier): Observable<Supplier> {
+  updateSupplier(Supplier: Supplier): Observable<Supplier> {
     return this.http.put<any>(
       `${this.supplierApiUrl}/update`,
       Supplier,
@@ -191,28 +184,30 @@ export class HttpService {
     );
   }
   deleteSupplier(id: number): Observable<Supplier> {
-    this.requestParams.append('Id', id);
-    return this.http.delete<Supplier>(`${this.supplierApiUrl}/delete`, {
-      params: this.requestParams,
-    });
+    const httpOptions: Object = {
+      responseType: 'text' as 'text',
+      params: { Id: id },
+    };
+    return this.http.delete<Supplier>(`${this.supplierApiUrl}/delete`,httpOptions);
   }
   getSupplierPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`);
+    return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
+      params: { Id: id },
+    });
   }
 
-  getWorkLog(): Observable<WorkLog[]> {
-    return this.http.get<WorkLog[]>(`${this.workLogApiUrl}/list`);
+  getWorkLog(email: string): Observable<WorkLog[]> {
+    return this.http.get<WorkLog[]>(`${this.employeeApiUrl}/emailWorkLog`);
   }
   getWorkLogById(id: number): Observable<WorkLog> {
-    this.requestParams.append('Id', id);
     return this.http.get<WorkLog>(`${this.workLogApiUrl}`, {
-      params: this.requestParams,
+      params: { Id: id },
     });
   }
   addWorkLog(WorkLog: WorkLog): Observable<WorkLog> {
     return this.http.post<WorkLog>(`${this.workLogApiUrl}/add`, WorkLog);
   }
-  editWorkLog(WorkLog: WorkLog): Observable<WorkLog> {
+  updateWorkLog(WorkLog: WorkLog): Observable<WorkLog> {
     return this.http.put<any>(
       `${this.workLogApiUrl}/update`,
       WorkLog,
@@ -220,12 +215,15 @@ export class HttpService {
     );
   }
   deleteWorkLog(id: number): Observable<WorkLog> {
-    this.requestParams.append('Id', id);
-    return this.http.delete<WorkLog>(`${this.workLogApiUrl}/delete`, {
-      params: this.requestParams,
-    });
+    const httpOptions: Object = {
+      responseType: 'text' as 'text',
+      params: { Id: id },
+    };
+    return this.http.delete<WorkLog>(`${this.workLogApiUrl}/delete`, httpOptions);
   }
   getWorkLogPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.workLogApiUrl}/exportToPDF`);
+    return this.http.get<any>(`${this.workLogApiUrl}/exportToPDF`, {
+      params: { Id: id },
+    });
   }
 }

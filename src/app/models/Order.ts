@@ -7,6 +7,6 @@ export interface Order {
   name: string;
   status: string;
   type?: string[];
-  productList: Product[];
+  productList?: Product[];
   customer: Customer;
 }

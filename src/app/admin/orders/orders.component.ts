@@ -74,21 +74,22 @@ export class OrdersComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
+      this.errorMessage = '';
       setTimeout(() => {
-        this.showAddOrderForm = false;
-        this.formSubmitted = true;
-        this.cd.markForCheck();
-      }, 250);
-      this.orders.push(this.newOrder);
+        this.httpOrderService.addOrder(this.newOrder).subscribe(() => {
+          setTimeout(() => {
+            this.orders.push(this.newOrder);
+            this.showAddOrderForm = false;
+            this.formSubmitted = true;
+            this.cd.markForCheck();
+          }, 900);
+        });
+      });
     }
     return this.errorMessage;
   }
 
-  addOrder(newOrder: Order) {
-    this.httpOrderService
-      .addOrder(newOrder)
-      .subscribe(() => this.orders.push(newOrder));
-  }
+  addOrder(newOrder: Order) {}
 
   onClickToggleAddOrderForm() {
     setTimeout(() => {

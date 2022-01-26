@@ -1,6 +1,9 @@
 <div class="d-flex justify-content-center form-container-div">
   <div class="form">
-    <p class="text-center">your logo/heading here</p>
+   <p class="text-center">Sign Up</p>
+    <p *ngIf="error.message.length > 0" class="text-danger">
+      {{ error.message }}
+    </p>
 
     <form (ngSubmit)="onSignUp()">
       <div class="form-group">
