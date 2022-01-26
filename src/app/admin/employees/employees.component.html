@@ -1,0 +1,215 @@
+<div
+  class="text-center m-3"
+  *ngIf="!showAddEmployeeForm && !showEditEmployeeForm"
+>
+  <button class="btn badge-success" (click)="onClickToggleAddEmployeeForm()">
+    Create New Employee
+  </button>
+</div>
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+<div *ngIf="!showAddEmployeeForm && !showEditEmployeeForm ">
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container *ngIf="employees && !!employees.length">
+        <thead>
+          <tr>
+            <th scope="col">employeeId</th>
+            <th scope="col">type</th>
+            <th scope="col">username</th>
+            <th scope="col">password</th>
+            <th scope="col">priceTime</th>
+            <th scope="col">workLogList</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let employee of employees">
+          <tr>
+            <td>{{ employee.employeeId }}</td>
+            <td>{{ employee.type }}</td>
+
+            <td>{{ employee.userName }}</td>
+
+            <td>{{ employee.password }}</td>
+
+            <td>{{ employee.priceTime }}</td>
+
+            <td><a [routerLink]="['/logs', employee.employeeId]"> list</a></td>
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="onEditEmployee(employee.employeeId, employee)"
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteEmployee(employee.employeeId, employee)"
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="employees && !employees.length">
+      <div class="emptySupplier text-center alert-warning">
+        There are no employees currently available ...
+      </div>
+    </ng-container>
+  </div>
+</div>
+<ng-container *ngIf="showAddEmployeeForm && !showEditEmployeeForm">
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new employee</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="employeeForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Employee Name</label>
+      <input
+        required
+        id="employeeName"
+        type="text"
+        name="employeeName"
+        placeholder="enter employee name"
+        [(ngModel)]="newEmployee.userName"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="text" class="form-label">Password</label>
+      <input
+        required
+        id="password"
+        type="password"
+        name="password"
+        placeholder="enter password"
+        [(ngModel)]="newEmployee.password"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="employeeType">Type</label>
+      <select
+        class="form-select form-control"
+        name="employeeType"
+        id="employeeType"
+        [(ngModel)]="newEmployee.type"
+      >
+        <option ngValue="assistant">Assistant</option>
+        <option ngValue="official">Official</option>
+        <option ngValue="admin">Admin</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="text" class="form-label">Price Time / work hours</label>
+      <input
+        required
+        id="priceTime"
+        type="text"
+        name="priceTime"
+        placeholder="enter employee price"
+        [(ngModel)]="newEmployee.priceTime"
+        class="form-control"
+      />
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleAddEmployeeForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<ng-container *ngIf="showEditEmployeeForm && !showAddEmployeeForm">
+  <h1 style="color: greenyellow" class="mb-3">Editing a employee</h1>
+
+  <hr />
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onUpdateEmployee(updatedEmployee)"
+    class="form"
+    name="employeeForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Employee Name</label>
+      <input
+        required
+        id="employeeName"
+        type="text"
+        name="employeeName"
+        placeholder="enter employee name"
+        [(ngModel)]="updatedEmployee.userName"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="employeeType">Employee Type</label>
+      <select
+        class="form-select form-control"
+        name="employeeType"
+        id="employeeType"
+        [(ngModel)]="updatedEmployee.type"
+      >
+        <option ngValue="assistant">Assistant</option>
+        <option ngValue="official">Official</option>
+        <option ngValue="admin">Admin</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="text" class="form-label">Password</label>
+      <input
+        required
+        id="password"
+        type="password"
+        name="password"
+        placeholder="enter password"
+        [(ngModel)]="updatedEmployee.password"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="text" class="form-label">Price Time / work hours</label>
+      <input
+        required
+        id="priceTime"
+        type="text"
+        name="priceTime"
+        placeholder="enter employee price"
+        [(ngModel)]="updatedEmployee.priceTime"
+        class="form-control"
+      />
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleEditEmployeeForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+
+<router-outlet></router-outlet>

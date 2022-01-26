@@ -1,0 +1,188 @@
+<div
+  class="text-center m-3"
+  *ngIf="!showAddSupplierForm && !showEditSupplierForm"
+>
+  <button class="btn badge-success" (click)="onClickToggleAddSupplierForm()">
+    Create New Supplier
+  </button>
+</div>
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<div *ngIf="!showAddSupplierForm && !showEditSupplierForm">
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container *ngIf="suppliers && suppliers.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">SupplierID</th>
+            <th scope="col">SupplierName</th>
+            <th scope="col">BasePrice</th>
+            <th scope="col">Tax</th>
+            <th scope="col">Products sold</th>
+            <th scope="col">Buy</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let supplier of suppliers">
+          <tr>
+            <td>{{ supplier.supplierId }}</td>
+            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.basePrice }}</td>
+            <td>{{ supplier.tax }}</td>
+            <td>
+              <ng-container *ngFor="let product of supplier.productSold">
+                {{ product.name }} {{ product.price }}
+                <br />
+              </ng-container>
+            </td>
+            <td>Buy</td>
+
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="onEditSupplier(supplier.supplierId, supplier)"
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteSupplier(supplier.supplierId, supplier)"
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="!suppliers || !suppliers.length">
+      <div class="emptySupplier text-center alert-warning">
+        There are no suppliers currently available ...
+      </div>
+    </ng-container>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="showAddSupplierForm && !showEditSupplierForm">
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new supplier</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="supplierForm"
+  >
+    <div class="form-group">
+      <label for="supplierName" class="form-label">Supplier Name</label>
+      <input
+        required
+        id="supplierName"
+        type="text"
+        name="supplierName"
+        placeholder="enter supplier name"
+        [(ngModel)]="newSupplier.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="basePrice" class="form-label">Base Price </label>
+      <input
+        required
+        id="basePrice"
+        type="text"
+        name="basePrice"
+        placeholder="enter base price"
+        [(ngModel)]="newSupplier.basePrice"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tax" class="form-label">Tax </label>
+      <input
+        required
+        id="tax"
+        type="text"
+        name="tax"
+        placeholder="enter tax"
+        [(ngModel)]="newSupplier.tax"
+        class="form-control"
+      />
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleAddSupplierForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<ng-container *ngIf="showEditSupplierForm && !showAddSupplierForm">
+  <h1 style="color: greenyellow" class="mb-3">Editing a supplier</h1>
+
+  <hr />
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onUpdateSupplier(updatedSupplier)"
+    class="form"
+    name="supplierForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Supplier Name</label>
+      <input
+        required
+        id="supplierName"
+        type="text"
+        name="supplierName"
+        placeholder="enter supplier name"
+        [(ngModel)]="updatedSupplier.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="basePrice" class="form-label">Base Price </label>
+      <input
+        required
+        id="basePrice"
+        type="text"
+        name="basePrice"
+        placeholder="enter base price"
+        [(ngModel)]="updatedSupplier.basePrice"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tax" class="form-label">Tax </label>
+      <input
+        required
+        id="tax"
+        type="text"
+        name="tax"
+        placeholder="enter tax"
+        [(ngModel)]="updatedSupplier.tax"
+        class="form-control"
+      />
+    </div>
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleEditSupplierForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>

@@ -5,7 +5,6 @@ import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { SignupComponent } from './authentication/signup/signup.component';
-import { BudgetsComponent } from './budgets/budgets.component';
 import { AdminGuardGuard } from './cores/guards/admin-guard.guard';
 import { AssistantGuardGuard } from './cores/guards/assistant-guard.guard';
 import { OfficerGuardGuard } from './cores/guards/officer-guard.guard';
@@ -17,6 +16,8 @@ import { ProductsComponent } from './products/products.component';
 import { AuthenticationService } from './service/authentication.service';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { WorklogComponent } from './worklog/worklog.component';
+import { BudgetsComponent } from './shared/budgets/budgets.component';
+
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },

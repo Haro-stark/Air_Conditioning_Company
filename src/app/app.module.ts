@@ -16,18 +16,38 @@ import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { OfficerComponent } from './officer/officer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { EmployeesComponent } from './employees/employees.component';
-import { OrdersComponent } from './orders/orders.component';
-import { SuppliersComponent } from './suppliers/suppliers.component';
-import { ProductsComponent } from './products/products.component';
-import { BudgetsComponent } from './budgets/budgets.component';
+
 import { WorklogComponent } from './worklog/worklog.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { HttpClientModule } from '@angular/common/http'
-
+import { EmployeesComponent } from './admin/employees/employees.component';
+import { OrdersComponent } from './admin/orders/orders.component';
+import { SuppliersComponent } from './admin/suppliers/suppliers.component';
+import { ProductsComponent } from './admin/products/products.component';
+import { BudgetsComponent } from './shared/budgets/budgets.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @NgModule({
   declarations: [AppComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, AccessDeniedComponent],
 
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    AuthenticationComponent,
+    LoginComponent,
+    SignupComponent,
+    HomeComponent,
+    AdminComponent,
+    AssistantComponent,
+    OfficerComponent,
+    SidebarComponent,
+    EmployeesComponent,
+    OrdersComponent,
+    SuppliersComponent,
+    ProductsComponent,
+    BudgetsComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -35,9 +55,11 @@ import { HttpClientModule } from '@angular/common/http'
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
-    HttpClientModule
+    FontAwesomeModule,
+    HttpClientModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

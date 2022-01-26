@@ -1,12 +1,12 @@
 .sidebar {
   margin: 0;
   padding: 0;
- width: 250px;
+  width: 200px;
   background-color: #f1f1f1;
-    height: 100vh;
+  height: 100vh;
   overflow: auto;
   z-index: 10;
-  border-right:1px solid #555;
+  border-right: 1px solid #555;
 }
 
 .sidebar a {
@@ -17,7 +17,7 @@
 }
 
 .sidebar a:hover:not(.active) {
-  background-color: rgb(27, 25, 25);
+  background-color: rgb(61, 61, 61);
   color: white;
   transition: all 0.6s;
 }
@@ -31,10 +31,9 @@ div.content {
 @media screen and (max-width: 700px) {
   .sidebar {
     height: 100vh;
-     width: 200px;
-
+    width: 180px;
   }
- 
+
   div.content {
     margin-left: 0;
   }
@@ -43,8 +42,7 @@ div.content {
 @media screen and (max-width: 400px) {
   .sidebar {
     height: auto;
-     width: 150px;
-
+    width: 130px;
   }
   .sidebar a {
     text-align: center;
@@ -56,6 +54,7 @@ div.content {
   height: 60px;
   background-color: #04aa6d;
   z-index: 15;
+  border-bottom: 1px solid #09724c;
 }
 
 .sidebar > ul {
@@ -81,8 +80,6 @@ div.content {
 }
 
 div.main {
-  display: flex;
-  flex-direction: row;
   height: 100vh;
   width: 100%;
 }
@@ -97,15 +94,27 @@ div.body {
   flex-direction: column;
 }
 
-.hideSidebar{
+.hideSidebar {
   transform: translateX(-250px);
-  transition : all 0.7s;
-position: absolute;
-    height: inherit;
+  transition: all 0.7s;
+  position: absolute;
+  height: inherit;
 }
-.showSidebar{
+.showSidebar {
   transform: translateX(0);
-  transition : all 0.7s;
-position: absolute;
-    height: inherit;
+  transition: all 0.7s;
+  position: absolute;
+  height: inherit;
 }
+
+.icon {
+  color: white;
+  font-size: 30px;
+}
+
+.icon:active ,.icon:focus-visible,.icon:focus-within{
+  outline: none;
+  border: none;
+}
+
+

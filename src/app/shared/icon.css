@@ -1,0 +1,36 @@
+.delete-icon {
+    margin-left: 20px;
+  color: rgb(245, 0, 0);
+}
+
+.edit-icon {
+  color: rgb(202, 206, 7);
+}
+
+.check-icon {
+  color: #00df33;
+}
+.close-icon {
+  color: red;
+}
+
+.icon-button-properties {
+  cursor: pointer;
+}
+
+.icon-button-properties:focus,
+.icon-button-properties:active {
+  font-size: 90%;
+}
+
+input[type="checkbox"]:checked + li {
+  text-decoration: line-through;
+}
+
+form {
+  margin-bottom: 25px;
+}
+
+table.table tr {
+  text-align: center !important;
+}

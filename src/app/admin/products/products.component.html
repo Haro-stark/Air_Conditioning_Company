@@ -1,0 +1,161 @@
+<div
+  class="text-center m-3"
+  *ngIf="!showAddProductForm && !showEditProductForm"
+>
+  <button class="btn badge-success" (click)="onClickToggleAddProductForm()">
+    Create New Product
+  </button>
+</div>
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<div *ngIf="!showAddProductForm && !showEditProductForm">
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container *ngIf="products && products.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">ProductID</th>
+            <th scope="col">ProductName</th>
+            <th scope="col">Characteristic</th>
+            <th scope="col">Price</th>
+            <th scope="col">Stock Quantity</th>
+            <th scope="col">Buy</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let product of products">
+          <tr>
+            <td>{{ product.productId }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.characteristics }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.quantityInStock }}</td>
+                        <td>Buy</td>
+
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="onEditProduct(product.productId, product)"
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteProduct(product.productId, product)"
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="!products || !products.length">
+      <div class="emptyProduct text-center alert-warning">
+        There are no products currently available ...
+      </div>
+    </ng-container>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="showAddProductForm && !showEditProductForm">
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new product</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="productForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="product.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="characteristics">Characteristics</label>
+      <input
+        required
+        id="characteristics"
+        type="text"
+        name="characteristics"
+        placeholder="enter product characteristics"
+        [(ngModel)]="product.characteristics"
+        class="form-control"
+      />
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleAddProductForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<ng-container *ngIf="showEditProductForm && !showAddProductForm">
+  <h1 style="color: greenyellow" class="mb-3">Editing a product</h1>
+
+  <hr />
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onUpdateProduct(updatedProduct)"
+    class="form"
+    name="productForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="updatedProduct.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="characteristics">characteristics</label>
+      <select
+        class="form-select form-control"
+        name="characteristics"
+        id="characteristics"
+        [(ngModel)]="updatedProduct.characteristics"
+      >
+        <option ngValue="finished">finished</option>
+        <option ngValue="inProgress ">inProgress</option>
+        <option ngValue="canceled">canceled</option>
+      </select>
+    </div>
+
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleEditProductForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>

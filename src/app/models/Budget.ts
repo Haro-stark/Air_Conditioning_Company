@@ -3,9 +3,9 @@ import { Product } from './Product';
 
 export interface Budget {
   budgetId: number;
-  budgetName: String;
+  name: string;
   totalPrice: number;
-  budgetStatus: String;
+  budgetStatus: string;
   productList: Product[];
   customer: Customer;
 }
