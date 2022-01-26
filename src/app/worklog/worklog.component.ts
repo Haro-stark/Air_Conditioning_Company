@@ -67,7 +67,6 @@ export class WorklogComponent implements OnInit {
   public createNewWorkLogModal!: NgbModalRef;
 
   constructor(config: NgbModalConfig, private modalService: NgbModal, public auth: AuthenticationService, private afs: AngularFirestore, private httpService: HttpService) {
->>>>>>> 6f961c7353b6f05ddb6096ba65a314ab6a7e6929
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
