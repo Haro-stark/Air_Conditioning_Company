@@ -121,12 +121,14 @@ export class BudgetsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      setTimeout(() => {
-        this.showAddBudgetForm = false;
-        this.formSubmitted = true;
-        this.cd.markForCheck();
-      }, 250);
-      this.budgets.push(this.newBudget);
+      this.budgetService.addBudget(this.newBudget).subscribe((response) => {
+        setTimeout(() => {
+          this.showAddBudgetForm = false;
+          this.formSubmitted = true;
+          this.cd.markForCheck();
+        }, 250);
+        this.budgets.push(this.newBudget);
+      });
     }
     return this.errorMessage;
   }
@@ -160,7 +162,9 @@ export class BudgetsComponent implements OnInit {
   }
 
   onDeleteBudget(id: number, budget: Budget) {
-    console.log('delete', id, budget);
+    this.budgetService.deleteBudget(id).subscribe((response) => {
+      console.log(response);
+    });
   }
 
   onUpdateBudget(updatedBudget: Budget) {
@@ -191,13 +195,15 @@ export class BudgetsComponent implements OnInit {
 
       this.createOrder(generateOrder);
     }
-
-    setTimeout(() => {
-      this.showEditBudgetForm = false;
-      this.cd.markForCheck();
-    }, 300);
-
-    return this.errorMessage;
+    else {
+      this.budgetService.updateBudget(updatedBudget).subscribe((response) => {
+      console.log(response);
+        setTimeout(() => {
+          this.showEditBudgetForm = false;
+          this.cd.markForCheck();
+        }, 300);
+      });
+    }   return this.errorMessage;
   }
 
   createOrder(order: Order) {

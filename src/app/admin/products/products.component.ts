@@ -1,3 +1,4 @@
+import { HttpResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   faEdit,
@@ -5,6 +6,7 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { HttpService } from 'src/app/services/http.service';
 import { Product } from '../../models/Product';
 
 @Component({
@@ -40,9 +42,16 @@ export class ProductsComponent implements OnInit {
   errorMessage!: string;
   showEditProductForm: Boolean = false;
   formSubmitted = false;
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private HttpProductService: HttpService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.HttpProductService.getProduct().subscribe((product: Product[]) => {
+      this.products = product;
+    });
+  }
 
   onSubmit() {
     if (
@@ -54,12 +63,15 @@ export class ProductsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      setTimeout(() => {
-        this.showAddProductForm = false;
-        this.formSubmitted = true;
-        this.cd.markForCheck();
-      }, 250);
-      this.products.push(this.product)
+      this.HttpProductService.addProduct(this.product).subscribe((response) => {
+        console.log(response);
+        setTimeout(() => {
+          this.showAddProductForm = false;
+          this.formSubmitted = true;
+          this.cd.markForCheck();
+        }, 250);
+        this.products.push(this.product);
+      })
     }
     return this.errorMessage;
   }
@@ -88,6 +100,7 @@ export class ProductsComponent implements OnInit {
   }
 
   onDeleteProduct(id: number, product: Product) {
+    this.HttpProductService.deleteBudget(id).subscribe((response) => {console.log(response);})
     console.log('delete', id, product);
   }
 
@@ -105,14 +118,20 @@ export class ProductsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
-    } else this.formSubmitted = true;
+    } else {
+      this.HttpProductService.updateProduct(updatedProduct).subscribe(
+        (response) => {
+          console.log(response);
+          this.formSubmitted = true;
+          setTimeout(() => {
+            this.showEditProductForm = false;
+            this.cd.markForCheck();
+          }, 250);
 
-    setTimeout(() => {
-      this.showEditProductForm = false;
-      this.cd.markForCheck();
-    }, 250);
-
-    this.formSubmitted = true;
+          this.formSubmitted = true;
+        }
+      );
+    }
     return this.errorMessage;
   }
 }

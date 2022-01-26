@@ -48,6 +48,9 @@ export class OrdersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.httpOrderService.getOrder().subscribe((order: Order[]) => {
+      this.orders = order;
+    });
     this.shareOrderDataService
       .onGenerateOrder()
       .subscribe((value: Order) => this.pushOrder(value));
@@ -76,7 +79,8 @@ export class OrdersComponent implements OnInit {
     } else {
       this.errorMessage = '';
       setTimeout(() => {
-        this.httpOrderService.addOrder(this.newOrder).subscribe(() => {
+        this.httpOrderService.addOrder(this.newOrder).subscribe((response) => {
+          console.log(response);
           setTimeout(() => {
             this.orders.push(this.newOrder);
             this.showAddOrderForm = false;
@@ -88,8 +92,6 @@ export class OrdersComponent implements OnInit {
     }
     return this.errorMessage;
   }
-
-  addOrder(newOrder: Order) {}
 
   onClickToggleAddOrderForm() {
     setTimeout(() => {
@@ -113,12 +115,12 @@ export class OrdersComponent implements OnInit {
       this.showEditOrderForm = true;
       this.cd.markForCheck();
     }, 250);
-    console.log('edit', id, order);
   }
-
   onDeleteOrder(id: number, order: Order) {
     console.log('delete', id, order);
-    this.orders = this.orders.filter((o) => o.name != order.name);
+    this.httpOrderService.deleteOrder(id).subscribe(() => {
+      this.orders = this.orders.filter((o) => o.name != order.name);
+    });
   }
 
   onUpdateOrder(updatedOrder: Order) {
@@ -131,14 +133,15 @@ export class OrdersComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
 
       return this.errorMessage;
+    } else {
+      this.httpOrderService.updateOrder(this.updatedOrder).subscribe(() => {
+        setTimeout(() => {
+          this.showEditOrderForm = false;
+          this.cd.markForCheck();
+        }, 250);
+      });
+      return this.errorMessage;
     }
-
-    setTimeout(() => {
-      this.showEditOrderForm = false;
-      this.cd.markForCheck();
-    }, 250);
-
-    return this.errorMessage;
   }
 
   pushOrder(order: Order) {
