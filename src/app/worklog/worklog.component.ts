@@ -33,6 +33,7 @@ export class WorklogComponent implements OnInit {
 
   worklogs: WorkLog[] = [
     {
+      workLogId: 1,
       date: new Date(),
       numberOfHours: 5,
       order: {
@@ -41,6 +42,7 @@ export class WorklogComponent implements OnInit {
       }
     },
     {
+      workLogId: 2,
       date: new Date(),
       numberOfHours: 3,
       order: {
@@ -49,14 +51,15 @@ export class WorklogComponent implements OnInit {
       }
     },
     {
+      workLogId: 3,
       date: new Date(),
-      numberOfHours: 3,
+      numberOfHours: 4,
       order: {
         orderId: 1,
         type: "abc"
       }
     }]
-
+  logIdCount = 3;
   user: any;
   // postRef: any;
   // post$: any;
@@ -88,6 +91,7 @@ export class WorklogComponent implements OnInit {
   saveServer(createWorkLog: NgForm): void {
     let log: WorkLog =
     {
+      workLogId: this.logIdCount++,
       date: new Date(),
       numberOfHours: createWorkLog.value.numberOfHours,
       order: {
@@ -110,8 +114,20 @@ export class WorklogComponent implements OnInit {
     this.createNewWorkLogModal = this.modalService.open(content);
   }
 
-  deleteLog(log: any) {
+  deleteLog(log: WorkLog) {
+    // let data = this.worklogs.filter(
+    //   (worklog) => {
+    //     worklog.workLogId === log.workLogId;
+    //   }
+    // )
+    for (var i = 0; i < this.worklogs.length; i++) {
 
+      if (this.worklogs[i].workLogId === log.workLogId) {
+        this.worklogs.splice(i, 1);
+        i--;
+      }
+    }
+    this.workLogs$ = of(this.worklogs);
   }
   editLog(log: any) {
 
