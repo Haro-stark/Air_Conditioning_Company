@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { OfficerComponent } from './officer/officer.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
+import { AuthenticationService } from './service/authentication.service';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { WorklogComponent } from './worklog/worklog.component';
 
@@ -65,5 +66,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [
+    AuthenticationService
+  ]
 })
 export class AppRoutingModule { }
