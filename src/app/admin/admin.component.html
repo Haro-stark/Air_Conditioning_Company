@@ -1,16 +1,17 @@
 <div>
   <div class="header">
-    <button class="btn btn-toolbar"(click)="toggleSidebar()">toggle</button>
+    <button class="btn btn-toolbar" (click)="toggleSidebar()">toggle</button>
   </div>
 
   <div class="main">
-    <div class="sidebar"  [ngClass]="displaySideBar? 'showSidebar':'hideSidebar'">
+    <div class="sidebar" [ngClass]="displaySideBar? 'showSidebar':'hideSidebar'">
       <ul>
         <li><a [routerLink]="['employees']">Employees </a></li>
         <li><a [routerLink]="['orders']">Orders </a></li>
         <li><a [routerLink]="['products']">Products </a></li>
         <li><a [routerLink]="['suppliers']">Suppliers </a></li>
         <li><a [routerLink]="['budgets']">Budgets </a></li>
+        <li><a [routerLink]="['workLog']">WorkLogs </a></li>
       </ul>
     </div>
 

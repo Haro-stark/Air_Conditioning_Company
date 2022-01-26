@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AuthenticationComponent } from './authentication/authentication.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { HomeComponent } from './home/home.component';
@@ -23,12 +22,12 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { ProductsComponent } from './products/products.component';
 import { BudgetsComponent } from './budgets/budgets.component';
 import { WorklogComponent } from './worklog/worklog.component';
-import { HttpClientModule } from '@angular/common/http';
-import { UserRoleDirective } from './directives/user-role.directive';
-import { UserDirective } from './directives/user.directive';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
-  declarations: [AppComponent, AuthenticationComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, UserRoleDirective, UserDirective],
+  declarations: [AppComponent, LoginComponent, SignupComponent, HomeComponent, AdminComponent, AssistantComponent, OfficerComponent, SidebarComponent, EmployeesComponent, OrdersComponent, SuppliersComponent, ProductsComponent, BudgetsComponent, WorklogComponent, AccessDeniedComponent],
+
   imports: [
     BrowserModule,
     FormsModule,
@@ -37,10 +36,6 @@ import { UserDirective } from './directives/user.directive';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     NgbModule,
     HttpClientModule
-  ],
-  exports: [
-    UserDirective,
-    UserRoleDirective
   ],
   providers: [],
   bootstrap: [AppComponent],

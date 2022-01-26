@@ -1,27 +1,24 @@
 import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore'
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { User } from '../models/User';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { Roles } from '../models/Roles';
-
+import { first, switchMap } from 'rxjs/operators';
+import { getDatabase, ref, set } from "firebase/database";
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
   user$: Observable<User | undefined | null>
   authState!: Observable<any> | any;
-  private user: User | null | undefined;
 
   constructor(
     private angularFireAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private router: Router,
-    private zone: NgZone
+    private router: Router
   ) {
+    console.log("calling service constructor:-------- ")
     this.user$ = this.angularFireAuth.authState.pipe(
       switchMap(user => {
         if (user) {
@@ -29,17 +26,29 @@ export class AuthenticationService {
         } else {
           return of(null)
         }
-      }))
+      }));
   }
 
-  async signUp(email: string, password: string) {
+  async signUp(email: string, password: string, role: string, username: string) {
     try {
       const singupStatus =
         await this.angularFireAuth.createUserWithEmailAndPassword(
           email,
           password
+        ).then(
+          (credential) => {
+            let user: User = {
+              uid: credential.user?.uid,
+              role: role,
+              username: username,
+              email: credential.user?.email
+            }
+            console.log("user after signup : ", user);
+            this.updateUserData(user)
+          }
         );
-      if (singupStatus.user) console.log(singupStatus.credential);
+
+      // if (singupStatus.user) console.log("auth service signup: singupStatus = ", singupStatus.credential);
     } catch (err: any) {
       window.alert(err.message);
     }
@@ -56,30 +65,30 @@ export class AuthenticationService {
   }
 
   async login(email: string, password: string) {
-
     const user = await this.angularFireAuth.signInWithEmailAndPassword(
       email,
       password
-    ).then((credential) => {
-      this.user$.subscribe(userData => this.user = userData)
-      this.updateUserData(credential.user)
-    });
+    ).then(
+      (credential) => {
+        // this.updateUserData(credential.user);
+      }
+    );
     this.authState = user;
     return this.authState;
   }
 
 
-  updateUserData(user: any) {
+  private updateUserData(user: any) {
+    // Sets user data to firestore on login
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     const data: User = {
       uid: user.uid,
       email: user.email,
-      roles: {
-        admin: true
-      },
+      role: user.role
     }
     return userRef.set(data, { merge: true })
   }
+
 
   async signOut() {
     try {
@@ -91,43 +100,45 @@ export class AuthenticationService {
     }
   }
 
+  // async isUserLoggedIn(): Promise<unknown> {
+  //   // if (await AngularFireAuth) return true;
+  //   // else return false;
+  //   return this.angularFireAuth.authState.pipe(first()).toPromise();
+  // }
 
-  isAuthorized() {
-    return !!this.user;
+  isAllowedToAdminAndOfficer(user: User): boolean {
+    const allowed = ['officer', 'admin']
+    return this.checkAuthorization(user, allowed)
   }
-
-  hasRole(role: Roles) {
-    return this.isAuthorized() && this.user?.role === role;
+  isAllowedToAssistantAndOfficer(user: User): boolean {
+    const allowed = ['officer', 'assistant']
+    return this.checkAuthorization(user, allowed)
   }
-
-
-
-  ///// Role-based Authorization //////
-
-  canRead(user: User): boolean {
-    const allowed = ['admin', 'editor', 'subscriber']
+  isAllowedToAssistant(user: User): boolean {
+    const allowed = ['assistant']
+    return this.checkAuthorization(user, allowed)
+  }
+  isAllowedToOfficer(user: User): boolean {
+    const allowed = ['officer']
     return this.checkAuthorization(user, allowed)
   }
 
-  canEdit(user: User): boolean {
-    const allowed = ['admin', 'editor']
-    return this.checkAuthorization(user, allowed)
-  }
-
-  canDelete(user: User): boolean {
+  isAllowedToAdmin(user: User): boolean {
     const allowed = ['admin']
     return this.checkAuthorization(user, allowed)
   }
-
 
 
   // determines if user has matching role
   private checkAuthorization(user: User, allowedRoles: string[]): boolean {
     if (!user) return false
     for (const role of allowedRoles) {
-      if (user.roles.admin) {
+      if (user.role == role) {
         return true
       }
+      // if (role === "admin" && user.role.admin) { return true }
+      // else if (role === "editor" && user.roles.editor) { return true }
+      // else if (role === "subscriber" && user.roles.editor) { return true; }
     }
     return false
   }

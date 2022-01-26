@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { NgForm } from '@angular/forms';
 import { NgbModal, NgbModalConfig, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Order } from '../models/Order';
 import { WorkLog } from '../models/WorkLog';
+import { AuthenticationService } from '../service/authentication.service';
 import { HttpService } from '../service/http.service';
 
 @Component({
@@ -12,73 +14,128 @@ import { HttpService } from '../service/http.service';
   styleUrls: ['./worklog.component.css']
 })
 export class WorklogComponent implements OnInit {
-  workLogs$!: Observable<WorkLog[]>;
+  workLogs$!: Observable<WorkLog[] | null | undefined>;
   dateControl = new Date();
-  orders!: Order[]
-  logs!: WorkLog[]
+  orders: Order[] = [
+    {
+      orderId: 1,
+      type: "abc"
+    },
+    {
+      orderId: 2,
+      type: "efg"
+    },
+    {
+      orderId: 3,
+      type: "hij"
+    }
+  ]
+
+  worklogs: WorkLog[] = [
+    {
+      workLogId: 1,
+      date: new Date(),
+      numberOfHours: 5,
+      order: {
+        orderId: 1,
+        type: "abc"
+      }
+    },
+    {
+      workLogId: 2,
+      date: new Date(),
+      numberOfHours: 3,
+      order: {
+        orderId: 3,
+        type: "abc"
+      }
+    },
+    {
+      workLogId: 3,
+      date: new Date(),
+      numberOfHours: 4,
+      order: {
+        orderId: 1,
+        type: "abc"
+      }
+    }]
+  logIdCount = 3;
+  user: any;
+  // postRef: any;
+  // post$: any;
+
   public createNewWorkLogModal!: NgbModalRef;
 
-  constructor(config: NgbModalConfig, private modalService: NgbModal, private httpService: HttpService) {
+  constructor(config: NgbModalConfig, private modalService: NgbModal, public auth: AuthenticationService, private afs: AngularFirestore, private httpService: HttpService) {
+>>>>>>> 6f961c7353b6f05ddb6096ba65a314ab6a7e6929
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
+    this.auth.user$.subscribe(user => this.user = user)
   }
 
   ngOnInit(): void {
     // this.workLogs$ = this.httpService.getWorkLogs().pipe(
-    //   map(
-    //     response => {
-    //       // this.logs.push(response);
-    //       return { ...response }
-    //     }
-    //   ),
+    //   map(data => {
+    //     console.log(data)
+    //     return data;
+    //   }),
     //   catchError((error: string) => {
     //     alert("Error retrieving data. : " + error);
-    //     return of(this.logs);
+    //     return of(null);
     //   }
     //   )
     // )
-    // this.workLogs$ = this.httpService.getWorkLogs().subscribe();
+    this.workLogs$ = of(this.worklogs);
   }
 
-  saveWorklog(createWorkLog: NgForm): void {
-
-    console.log(createWorkLog.value.date);
-    if (!createWorkLog.value.date || !createWorkLog.value.order || !createWorkLog.value.numberOfHours)
-      alert("Please provide all the fields")
-    else {
-      this.createNewWorkLogModal.close();
-      // this.httpService.addWorkLogs(createWorkLog.value as WorkLog).subscribe(
-      //   response => this.logs.push(response)
-      // );
-
-      this.workLogs$ = this.httpService.addWorkLogs(createWorkLog.value as WorkLog).pipe(
-        map(response => {
-          this.logs.push(response)
-          this.orders.push(response.order)
-          // this.logs.forEach(val => this.orders.push(val.order))
-          return { ...this.logs }
-        })
-      )
+  saveServer(createWorkLog: NgForm): void {
+    let log: WorkLog =
+    {
+      workLogId: this.logIdCount++,
+      date: new Date(),
+      numberOfHours: createWorkLog.value.numberOfHours,
+      order: {
+        orderId: createWorkLog.value.order.orderId,
+        type: "abc"
+      }
     }
+    this.worklogs.push(log);
+    this.workLogs$ = of(this.worklogs);
+    this.createNewWorkLogModal.close();
 
+    //   console.log(createWorkLog.value.date);
+    //   if (createWorkLog.value.date && createWorkLog.value.order && createWorkLog.value.numberOfHours)
+    //     this.createNewWorkLogModal.close();
+    //   else
+    //     alert("Please provide all the fields")
   }
 
   openCreateWorkLogModal(content: any) {
     this.createNewWorkLogModal = this.modalService.open(content);
   }
 
-  deleteWorklog(workLog: WorkLog) {
-    this.httpService.deleteWorkLogs(workLog);
-    this.workLogs$ = this.httpService.deleteWorkLogs(workLog).pipe(
-      map(response => {
-        this.logs.push(response)
-        this.orders.push(response.order)
-        // this.logs.forEach(val => this.orders.push(val.order))
-        return { ...this.logs }
-      })
-    )
+  deleteLog(log: WorkLog) {
+    // let data = this.worklogs.filter(
+    //   (worklog) => {
+    //     worklog.workLogId === log.workLogId;
+    //   }
+    // )
+    for (var i = 0; i < this.worklogs.length; i++) {
+
+      if (this.worklogs[i].workLogId === log.workLogId) {
+        this.worklogs.splice(i, 1);
+        i--;
+      }
+    }
+    this.workLogs$ = of(this.worklogs);
+  }
+  editLog(log: any) {
+
   }
 
-
+  // getDate(): Date {
+  //   let date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+  //   return new Date(date);
+  // }
 }
