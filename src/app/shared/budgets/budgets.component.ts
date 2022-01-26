@@ -9,8 +9,9 @@ import {
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 import { Order } from '../../models/Order';
-import { HttpService } from 'src/app/service/http.service';
+import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
 
 @Component({
   selector: 'app-budgets',
@@ -91,7 +92,8 @@ export class BudgetsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private budgetService: HttpService
+    private budgetService: HttpService,
+    private generateOrderService: ShareDatabetweenComponentsService
   ) {}
 
   ngOnInit(): void {
@@ -109,10 +111,12 @@ export class BudgetsComponent implements OnInit {
   }
 
   onSubmit() {
-
     this.errorMessage = '';
     console.log('inside submit', this.newBudget, this.services);
-    console.log(this.newBudget.name, this.newBudget.productList.map(data => console.log(data)));
+    console.log(
+      this.newBudget.name,
+      this.newBudget.productList.map((data) => console.log(data))
+    );
     if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
@@ -197,11 +201,10 @@ export class BudgetsComponent implements OnInit {
   }
 
   createOrder(order: Order) {
-    console.log('Order generated', order);
+    this.generateOrderService.generateNewOrder(order);
   }
 
   isInstallationSelected(services: any) {
-    
     console.log('isInstallation', services);
 
     if (services.includes('installation')) {

@@ -93,6 +93,7 @@ export class SuppliersComponent implements OnInit {
         this.formSubmitted = true;
         this.cd.markForCheck();
       }, 250);
+      this.suppliers.push(this.newSupplier);
     }
     return this.errorMessage;
   }
@@ -123,7 +124,6 @@ export class SuppliersComponent implements OnInit {
   onDeleteSupplier(id: number, supplier: Supplier) {
     console.log('delete', id, supplier);
   }
-
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
     console.log('update', updatedSupplier);

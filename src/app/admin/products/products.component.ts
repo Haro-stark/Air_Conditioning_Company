@@ -59,6 +59,7 @@ export class ProductsComponent implements OnInit {
         this.formSubmitted = true;
         this.cd.markForCheck();
       }, 250);
+      this.products.push(this.product)
     }
     return this.errorMessage;
   }

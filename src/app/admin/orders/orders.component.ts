@@ -5,6 +5,8 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { HttpService } from 'src/app/services/http.service';
+import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
 import { Order } from '../../models/Order';
 
 @Component({
@@ -18,7 +20,6 @@ export class OrdersComponent implements OnInit {
   checkIcon = faCheck;
   closeIcon = faWindowClose;
 
- 
   orders: Order[] = [
     {
       orderId: 1,
@@ -40,9 +41,17 @@ export class OrdersComponent implements OnInit {
   updatedOrder!: Order;
   showEditOrderForm: Boolean = false;
   formSubmitted = false;
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private shareOrderDataService: ShareDatabetweenComponentsService,
+    private httpOrderService: HttpService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.shareOrderDataService
+      .onGenerateOrder()
+      .subscribe((value: Order) => this.pushOrder(value));
+  }
 
   orderPdfDownload(id: number, order: Order): void {
     console.log('order to download with id ', id, 'object ', order);
@@ -70,9 +79,15 @@ export class OrdersComponent implements OnInit {
         this.formSubmitted = true;
         this.cd.markForCheck();
       }, 250);
-      this.orders.push(this.newOrder)
+      this.orders.push(this.newOrder);
     }
     return this.errorMessage;
+  }
+
+  addOrder(newOrder: Order) {
+    this.httpOrderService
+      .addOrder(newOrder)
+      .subscribe(() => this.orders.push(newOrder));
   }
 
   onClickToggleAddOrderForm() {
@@ -123,5 +138,12 @@ export class OrdersComponent implements OnInit {
     }, 250);
 
     return this.errorMessage;
+  }
+
+  pushOrder(order: Order) {
+    this.orders = [...this.orders, order];
+    console.log('orderes ', this.orders);
+    this.cd.markForCheck();
+    this.cd.detectChanges();
   }
 }
