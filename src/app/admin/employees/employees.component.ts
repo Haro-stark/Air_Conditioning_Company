@@ -153,8 +153,9 @@ export class EmployeesComponent implements OnInit {
 
   onDeleteEmployee(id: any, employee: Employee) {
     console.log('delete', id, employee);
-    this.httpEmployeeService.deleteEmployee(id).subscribe((response: Response) => {
-      console.log('response',Response)
+    this.httpEmployeeService.deleteEmployee(id).subscribe((response) => {
+      
+      console.log('response',response)
       this.employees = this.employees.filter(
         (e) => e.username !== employee.username
       );
