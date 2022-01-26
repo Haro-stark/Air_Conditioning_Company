@@ -19,7 +19,8 @@ export class EmployeesComponent implements OnInit {
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
   closeIcon = faWindowClose;
-
+showApiResponse: boolean = false;
+  response = '';
   newEmployee: Employee = {
     username: '',
     email: '',
@@ -100,22 +101,22 @@ export class EmployeesComponent implements OnInit {
       this.authService
         .signUp(email, password, type, username)
         .then(() => {
-           setTimeout(() => {
-             this.httpEmployeeService
-               .addEmployee(this.newEmployee)
-               .subscribe(() => {
-                 setTimeout(() => {
-                   this.showAddEmployeeForm = false;
-                   this.formSubmitted = true;
-                   this.errorMessage = '';
-                   this.cd.markForCheck();
-                 }, 300);
-               });
-             this.employees.push(this.newEmployee);
+          setTimeout(() => {
+            this.httpEmployeeService
+              .addEmployee(this.newEmployee)
+              .subscribe(() => {
+                setTimeout(() => {
+                  this.showAddEmployeeForm = false;
+                  this.formSubmitted = true;
+                  this.errorMessage = '';
+                  this.cd.markForCheck();
+                }, 300);
+              });
+            this.employees.push(this.newEmployee);
 
-             this.processingNetworkRequest = false;
-             this.cd.markForCheck();
-           }, 900);
+            this.processingNetworkRequest = false;
+            this.cd.markForCheck();
+          }, 900);
         })
         .catch((_error: string) => {
           this.errorMessage = _error;
@@ -154,8 +155,7 @@ export class EmployeesComponent implements OnInit {
   onDeleteEmployee(id: any, employee: Employee) {
     console.log('delete', id, employee);
     this.httpEmployeeService.deleteEmployee(id).subscribe((response) => {
-      
-      console.log('response',response)
+      console.log('response', response);
       this.employees = this.employees.filter(
         (e) => e.username !== employee.username
       );
@@ -170,24 +170,25 @@ export class EmployeesComponent implements OnInit {
     if (
       !this.updatedEmployee.username ||
       this.updatedEmployee.username.trim().length === 0 ||
-      !this.newEmployee.email ||
-      this.newEmployee.email.trim().length === 0 ||
+      !this.updatedEmployee.email ||
+      this.updatedEmployee.email.trim().length === 0 ||
       !this.updatedEmployee.password ||
       this.updatedEmployee.password.trim().length < 6
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
+      this.processingNetworkRequest=false;
       return this.errorMessage;
     } else {
       setTimeout(() => {
         this.httpEmployeeService
           .updateEmployee(updatedEmployee)
-          .subscribe(() => {
+          .subscribe((response:any) => {
+            console.log('response', response);
             setTimeout(() => {
               console.log('update', updatedEmployee);
               console.log('customer is ', updatedEmployee.username);
               this.showEditEmployeeForm = false;
-              this.errorMessage = '';
               this.processingNetworkRequest = true;
               this.formSubmitted = true;
               this.cd.markForCheck();
@@ -197,5 +198,17 @@ export class EmployeesComponent implements OnInit {
     }
 
     return this.errorMessage;
+  }
+
+  getEmployeeById(id: any) {
+    this.httpEmployeeService.getEmployeeById(20).subscribe((response:any) => {
+      this.response = response;
+      this.showApiResponse = true;
+      console.log('getEmployeeById', response);
+    })
+
+    setTimeout(() => {
+      this.showApiResponse=false;
+    },2000)
   }
 }

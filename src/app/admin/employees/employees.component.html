@@ -271,4 +271,7 @@
   </form>
 </ng-container>
 
+<div class="alert-warning alert apiResponse" *ngIf="showApiResponse">
+  {{response}}
+</div>
 <router-outlet></router-outlet>

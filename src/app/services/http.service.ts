@@ -62,6 +62,7 @@ export class HttpService {
   }
   getCustomerById(id: number): Observable<Customer> {
     return this.http.get<Customer>(`${this.customerApiUrl}`, {
+      responseType: 'text' as 'json',
       params: { Id: id },
     });
   }
@@ -77,6 +78,7 @@ export class HttpService {
   }
   deleteCustomer(id: number): Observable<Customer> {
     return this.http.delete<Customer>(`${this.customerApiUrl}/delete`, {
+      responseType: 'text' as 'json',
       params: { Id: id },
     });
   }
@@ -111,8 +113,9 @@ export class HttpService {
     return this.http.get<Employee[]>(`${this.employeeApiUrl}/list`);
   }
   getEmployeeById(id: number): Observable<Employee> {
-    return this.http.get<Employee>(`${this.employeeApiUrl}`, {
+    return this.http.get<Employee>(`${this.employeeApiUrl}/getByID`, {
       params: { Id: id },
+      responseType: 'text' as 'json',
     });
   }
   addEmployee(Employee: Employee): Observable<Employee> {
@@ -159,7 +162,10 @@ export class HttpService {
       responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<Product>(`${this.productApiUrl}/delete`, httpOptions);
+    return this.http.delete<Product>(
+      `${this.productApiUrl}/delete`,
+      httpOptions
+    );
   }
   getProductPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);
@@ -188,7 +194,10 @@ export class HttpService {
       responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<Supplier>(`${this.supplierApiUrl}/delete`,httpOptions);
+    return this.http.delete<Supplier>(
+      `${this.supplierApiUrl}/delete`,
+      httpOptions
+    );
   }
   getSupplierPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
@@ -219,7 +228,10 @@ export class HttpService {
       responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<WorkLog>(`${this.workLogApiUrl}/delete`, httpOptions);
+    return this.http.delete<WorkLog>(
+      `${this.workLogApiUrl}/delete`,
+      httpOptions
+    );
   }
   getWorkLogPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.workLogApiUrl}/exportToPDF`, {
