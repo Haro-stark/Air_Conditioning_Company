@@ -41,6 +41,17 @@ export class OrdersComponent implements OnInit {
   updatedOrder!: Order;
   showEditOrderForm: Boolean = false;
   formSubmitted = false;
+  showErrorAlert = false;
+  showSuccessAlert = false;
+  apiRequestError!: {
+    error: { text: string };
+    name: string;
+    message: string;
+    status: 0;
+    url: string;
+  };
+  apiSuccessResponse = '';
+  processingNetworkRequest = false;
   constructor(
     private cd: ChangeDetectorRef,
     private shareOrderDataService: ShareDatabetweenComponentsService,
@@ -48,8 +59,17 @@ export class OrdersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.httpOrderService.getOrder().subscribe((order: Order[]) => {
-      this.orders = order;
+    this.httpOrderService.getOrder().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          this.orders = response.data;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
     this.shareOrderDataService
       .onGenerateOrder()
@@ -79,14 +99,18 @@ export class OrdersComponent implements OnInit {
     } else {
       this.errorMessage = '';
       setTimeout(() => {
-        this.httpOrderService.addOrder(this.newOrder).subscribe((response) => {
-          console.log(response);
-          setTimeout(() => {
-            this.orders.push(this.newOrder);
+        this.httpOrderService.addOrder(this.newOrder).subscribe({
+          next: (response: any) => {
+            this.showApiSuccessResponse(response.message);
+          },
+          error: () => {
+            this.showApiErrorResponse();
+          },
+          complete: () => {
             this.showAddOrderForm = false;
             this.formSubmitted = true;
-            this.cd.markForCheck();
-          }, 900);
+            this.processingNetworkRequest = false;
+          },
         });
       });
     }
@@ -118,9 +142,18 @@ export class OrdersComponent implements OnInit {
   }
   onDeleteOrder(id: number, order: Order) {
     console.log('delete', id, order);
-    this.httpOrderService.deleteOrder(id).subscribe(() => {
-      this.orders = this.orders.filter((o) => o.name != order.name);
-    });
+    this.httpOrderService.deleteOrder(id).subscribe(
+      (response: any) => {
+        if (response.status === 200) {
+          this.orders = this.orders.filter((o) => o.name != order.name);
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      (error: any) => {
+        this.showApiErrorResponse();
+      }
+    );
   }
 
   onUpdateOrder(updatedOrder: Order) {
@@ -134,11 +167,22 @@ export class OrdersComponent implements OnInit {
 
       return this.errorMessage;
     } else {
-      this.httpOrderService.updateOrder(this.updatedOrder).subscribe(() => {
-        setTimeout(() => {
+      this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
           this.showEditOrderForm = false;
-          this.cd.markForCheck();
-        }, 250);
+          this.formSubmitted = true;
+          this.processingNetworkRequest = false;
+        },
       });
       return this.errorMessage;
     }
@@ -149,5 +193,26 @@ export class OrdersComponent implements OnInit {
     console.log('orderes ', this.orders);
     this.cd.markForCheck();
     this.cd.detectChanges();
+  }
+
+  showApiErrorResponse(message?: any) {
+    if (message) {
+      this.apiRequestError.message = message;
+    } else {
+      this.apiRequestError.message =
+        'Error! please check your internet connection and try again';
+    }
+    this.showErrorAlert = true;
+    setTimeout(() => {
+      this.showErrorAlert = false;
+    }, 3500);
+  }
+
+  showApiSuccessResponse(message: string) {
+    this.apiSuccessResponse = message;
+    this.showSuccessAlert = true;
+    setTimeout(() => {
+      this.showSuccessAlert = false;
+    }, 3500);
   }
 }

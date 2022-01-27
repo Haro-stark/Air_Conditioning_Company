@@ -28,7 +28,7 @@
         </thead>
         <tbody *ngFor="let employee of employees; let i = index">
           <tr>
-            <td>{{ i+1 }}</td>
+            <td>{{ i + 1 }}</td>
             <td>{{ employee.type }}</td>
             <td>{{ employee.username }}</td>
             <td>{{ employee.email }}</td>
@@ -121,7 +121,7 @@
     </div>
 
     <div class="form-group">
-      <label for="text" class="form-label">Price Time / work hours</label>
+      <label for="text" class="form-label">Hourly Wage</label>
       <input
         required
         id="priceTime"
@@ -208,7 +208,7 @@
         [(ngModel)]="updatedEmployee.type"
       >
         <option ngValue="assistant">Assistant</option>
-        <option ngValue="official">Official</option>
+        <option ngValue="officer">Official</option>
         <option ngValue="admin">Admin</option>
       </select>
     </div>
@@ -271,7 +271,17 @@
   </form>
 </ng-container>
 
-<div class="alert-warning alert apiResponse" *ngIf="showApiResponse">
-  {{response}}
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiRequestError.message }}
+</div>
+
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
 </div>
 <router-outlet></router-outlet>

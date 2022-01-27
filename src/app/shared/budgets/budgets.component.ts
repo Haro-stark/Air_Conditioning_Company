@@ -62,9 +62,17 @@ export class BudgetsComponent implements OnInit {
       customer: { customerId: 112, name: 'cus1' },
     },
   ];
-
-  filteredBudgets: Budget[] = [];
-
+  showErrorAlert = false;
+  showSuccessAlert = false;
+  apiRequestError!: {
+    error: { text: string };
+    name: string;
+    message: string;
+    status: 0;
+    url: string;
+  };
+  apiSuccessResponse = '';
+  processingNetworkRequest = false;
   products: Product[] = [
     {
       productId: 0,
@@ -72,6 +80,7 @@ export class BudgetsComponent implements OnInit {
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
+      tax: 0,
     },
     {
       productId: 1,
@@ -79,6 +88,7 @@ export class BudgetsComponent implements OnInit {
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
+      tax: 0,
     },
     {
       productId: 1,
@@ -86,6 +96,7 @@ export class BudgetsComponent implements OnInit {
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
+      tax: 0,
     },
   ];
   private subscriptions = new Subscription();
@@ -194,16 +205,16 @@ export class BudgetsComponent implements OnInit {
       };
 
       this.createOrder(generateOrder);
-    }
-    else {
+    } else {
       this.budgetService.updateBudget(updatedBudget).subscribe((response) => {
-      console.log(response);
+        console.log(response);
         setTimeout(() => {
           this.showEditBudgetForm = false;
           this.cd.markForCheck();
         }, 300);
       });
-    }   return this.errorMessage;
+    }
+    return this.errorMessage;
   }
 
   createOrder(order: Order) {
@@ -224,5 +235,13 @@ export class BudgetsComponent implements OnInit {
     } else {
       this.showHoursInput = false;
     }
+  }
+
+  showApiError(message: string) {
+    this.apiRequestError.message = message;
+    this.showErrorAlert = true;
+    setTimeout(() => {
+      this.showErrorAlert = false;
+    }, 3000);
   }
 }

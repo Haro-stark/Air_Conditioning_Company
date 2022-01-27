@@ -26,6 +26,7 @@ import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     BudgetsComponent,
     WorklogComponent,
     AccessDeniedComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,

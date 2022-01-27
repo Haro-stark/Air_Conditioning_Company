@@ -100,8 +100,26 @@
     </div>
 
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
@@ -149,8 +167,26 @@
     </div>
 
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
@@ -161,3 +197,11 @@
     </span>
   </form>
 </ng-container>
+
+<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
+  {{
+    apiRequestError.error.text
+      ? apiRequestError.error.text
+      : apiRequestError.message
+  }}
+</div>

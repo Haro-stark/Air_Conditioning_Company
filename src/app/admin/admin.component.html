@@ -29,10 +29,15 @@
         <li><a [routerLink]="['workLog']">WorkLogs </a></li>
       </ul>
     </div>
-
+<ng-container *ngIf="loading">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+<div *ngIf="!loading">
+ 
     <div class="body">
       <h1 style="color: red" class="m-5">Admin panel</h1>
       <router-outlet></router-outlet>
     </div>
+  </div>
   </div>
 </div>

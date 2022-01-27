@@ -19,26 +19,28 @@
           <tr>
             <th scope="col">SupplierID</th>
             <th scope="col">SupplierName</th>
+            <th scope="col">Product name</th>
             <th scope="col">BasePrice</th>
             <th scope="col">Tax</th>
-            <th scope="col">Products sold</th>
+            <th scope="col">characteristics</th>
             <th scope="col">Buy</th>
             <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
         <tbody *ngFor="let supplier of suppliers">
-          <tr>
+          <tr *ngFor="let product of supplier.supplierProducts">
             <td>{{ supplier.supplierId }}</td>
             <td>{{ supplier.name }}</td>
-            <td>{{ supplier.basePrice }}</td>
-            <td>{{ supplier.tax }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.basePrice }}</td>
+            <td>{{ product.tax }}</td>
+            <td>{{ product.characteristics }}</td>
+
             <td>
-              <ng-container *ngFor="let product of supplier.productSold">
-                {{ product.name }} {{ product.price }}
-                <br />
-              </ng-container>
+              <a class="btn btn-primary btn-sm" (click)="buyProduct(supplier)">
+                Buy</a
+              >
             </td>
-            <td>Buy</td>
 
             <td>
               <fa-icon
@@ -89,7 +91,7 @@
         class="form-control"
       />
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="basePrice" class="form-label">Base Price </label>
       <input
         required
@@ -112,7 +114,7 @@
         [(ngModel)]="newSupplier.tax"
         class="form-control"
       />
-    </div>
+    </div> -->
 
     <span class="d-flex">
       <button class="btn btn-outline-success" type="submit">Save</button>
@@ -149,7 +151,7 @@
         class="form-control"
       />
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="basePrice" class="form-label">Base Price </label>
       <input
         required
@@ -172,7 +174,7 @@
         [(ngModel)]="updatedSupplier.tax"
         class="form-control"
       />
-    </div>
+    </div> -->
     <span class="d-flex">
       <button class="btn btn-outline-success" type="submit">Save</button>
 
@@ -186,3 +188,18 @@
     </span>
   </form>
 </ng-container>
+
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showSuccessAlert && !showErrorAlert"
+>
+  successFully done
+</div>
+
+<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
+  {{
+    apiRequestError.error.text
+      ? apiRequestError.error.text
+      : apiRequestError.message
+  }}
+</div>

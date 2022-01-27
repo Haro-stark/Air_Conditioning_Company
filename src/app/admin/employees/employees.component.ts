@@ -19,8 +19,17 @@ export class EmployeesComponent implements OnInit {
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
   closeIcon = faWindowClose;
-showApiResponse: boolean = false;
-  response = '';
+  showErrorAlert = false;
+  showSuccessAlert = false;
+  apiRequestError!: {
+    error: { text: string };
+    name: string;
+    message: string;
+    status: 0;
+    url: string;
+  };
+  apiSuccessResponse = '';
+  
   newEmployee: Employee = {
     username: '',
     email: '',
@@ -35,37 +44,74 @@ showApiResponse: boolean = false;
   updatedEmployee!: Employee;
   services!: string | string[];
   showEditEmployeeForm: Boolean = false;
-
   processingNetworkRequest: Boolean = false;
-
   employees: Employee[] = [
-    {
-      employeeId: 1,
-      type: 'emp',
-      username: 'fawad',
-      email: '',
-      password: '12312',
-      priceTime: 69,
-      workLogList: [],
-    },
-    {
-      employeeId: 1,
-      type: 'asd',
-      username: 'zxc',
-      email: '',
-      password: '2q',
-      priceTime: 69,
-      workLogList: [],
-    },
-    {
-      employeeId: 1,
-      type: 'asd',
-      username: '2wre',
-      email: '',
-      password: 'gbf',
-      priceTime: 69,
-      workLogList: [],
-    },
+    // {
+    //   employeeId: 1,
+    //   type: 'emp',
+    //   username: 'fawad',
+    //   email: '',
+    //   password: '12312',
+    //   priceTime: 69,
+    //   workLogList: [
+    //     {
+    //       workLogId: 1,
+    //       date: new Date(),
+    //       numberOfHours: 5,
+    //       order: {
+    //         orderId: 1,
+    //         type: ['abc'],
+    //         name: 'abc',
+    //         status: 'accepted',
+    //         productList: [],
+    //         customer: { customerId: 112, name: 'cus1' },
+    //       },
+    //     },
+    //     {
+    //       workLogId: 2,
+    //       date: new Date(),
+    //       numberOfHours: 3,
+    //       order: {
+    //         orderId: 3,
+    //         type: ['abc'],
+    //         name: 'abc',
+    //         status: 'accepted',
+    //         productList: [],
+    //         customer: { customerId: 112, name: 'cus1' },
+    //       },
+    //     },
+    //     {
+    //       workLogId: 3,
+    //       date: new Date(),
+    //       numberOfHours: 4,
+    //       order: {
+    //         orderId: 1,
+    //         type: ['abc'],
+    //         name: 'abc',
+    //         status: 'accepted',
+    //         customer: { customerId: 112, name: 'cus1' },
+    //       },
+    //     },
+    //   ],
+    // },
+    // {
+    //   employeeId: 1,
+    //   type: 'asd',
+    //   username: 'zxc',
+    //   email: '',
+    //   password: '2q',
+    //   priceTime: 69,
+    //   workLogList: [],
+    // },
+    // {
+    //   employeeId: 1,
+    //   type: 'asd',
+    //   username: '2wre',
+    //   email: '',
+    //   password: 'gbf',
+    //   priceTime: 69,
+    //   workLogList: [],
+    // },
   ];
 
   constructor(
@@ -75,11 +121,19 @@ showApiResponse: boolean = false;
   ) {}
 
   ngOnInit(): void {
-    this.httpEmployeeService
-      .getEmployee()
-      .subscribe((employeesList: Employee[]) => {
-        this.employees = employeesList;
-      });
+    this.httpEmployeeService.getEmployee().subscribe({
+      next: (response: any) => {
+        console.log(response);
+        if (response.data && response.status === 200) {
+          this.employees = response.data;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
+    });
   }
 
   onSubmit() {
@@ -101,22 +155,25 @@ showApiResponse: boolean = false;
       this.authService
         .signUp(email, password, type, username)
         .then(() => {
-          setTimeout(() => {
-            this.httpEmployeeService
-              .addEmployee(this.newEmployee)
-              .subscribe(() => {
-                setTimeout(() => {
-                  this.showAddEmployeeForm = false;
-                  this.formSubmitted = true;
-                  this.errorMessage = '';
-                  this.cd.markForCheck();
-                }, 300);
-              });
-            this.employees.push(this.newEmployee);
-
-            this.processingNetworkRequest = false;
-            this.cd.markForCheck();
-          }, 900);
+          this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
+            next: (response: any) => {
+              if (response.status === 200) {
+                this.showApiSuccessResponse(response.message);
+              } else {
+                this.showApiErrorResponse(response.message);
+              }
+            },
+            error: (error: any) => {
+              this.showApiErrorResponse();
+            },
+            complete: () => {
+              this.errorMessage = '';
+              this.employees.push(this.newEmployee);
+              this.showAddEmployeeForm = false;
+              this.formSubmitted = true;
+              this.processingNetworkRequest = false;
+            },
+          });
         })
         .catch((_error: string) => {
           this.errorMessage = _error;
@@ -154,11 +211,21 @@ showApiResponse: boolean = false;
 
   onDeleteEmployee(id: any, employee: Employee) {
     console.log('delete', id, employee);
-    this.httpEmployeeService.deleteEmployee(id).subscribe((response) => {
-      console.log('response', response);
-      this.employees = this.employees.filter(
-        (e) => e.username !== employee.username
-      );
+    this.httpEmployeeService.deleteEmployee(id).subscribe({
+      next: (response) => {
+        console.log('response', response);
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.employees = this.employees.filter(
+            (e) => e.username !== employee.username
+          );
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
   }
 
@@ -177,23 +244,25 @@ showApiResponse: boolean = false;
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
-      this.processingNetworkRequest=false;
+      this.processingNetworkRequest = false;
       return this.errorMessage;
     } else {
-      setTimeout(() => {
-        this.httpEmployeeService
-          .updateEmployee(updatedEmployee)
-          .subscribe((response:any) => {
-            console.log('response', response);
-            setTimeout(() => {
-              console.log('update', updatedEmployee);
-              console.log('customer is ', updatedEmployee.username);
-              this.showEditEmployeeForm = false;
-              this.processingNetworkRequest = true;
-              this.formSubmitted = true;
-              this.cd.markForCheck();
-            }, 300);
-          });
+      this.httpEmployeeService.updateEmployee(updatedEmployee).subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.showEditEmployeeForm = false;
+          this.formSubmitted = true;
+          this.processingNetworkRequest = false;
+        },
       });
     }
 
@@ -201,14 +270,39 @@ showApiResponse: boolean = false;
   }
 
   getEmployeeById(id: any) {
-    this.httpEmployeeService.getEmployeeById(20).subscribe((response:any) => {
-      this.response = response;
-      this.showApiResponse = true;
-      console.log('getEmployeeById', response);
-    })
+    this.httpEmployeeService.getEmployeeById(20).subscribe((response: any) => {
+      if (response.data && response.status === 200) {
+        this.showApiSuccessResponse(response.message);
+        console.log('getEmployeeById', response);
+      } else {
+        this.showApiErrorResponse(response.message);
+      }
+      (error: any) => {
+        this.showApiErrorResponse();
+      };
+    });
+  }
+
+  showApiErrorResponse(message?: any) {
+    if (message) {
+      this.apiRequestError.message = message;
+    } else {
+      this.apiRequestError.message =
+        'Error! please check your internet connection and try again';
+    }
+    this.showErrorAlert = true;
+      this.processingNetworkRequest = false;
 
     setTimeout(() => {
-      this.showApiResponse=false;
-    },2000)
+      this.showErrorAlert = false;
+    }, 3500);
+  }
+
+  showApiSuccessResponse(message: string) {
+    this.apiSuccessResponse = message;
+    this.showSuccessAlert = true;
+    setTimeout(() => {
+      this.showSuccessAlert = false;
+    }, 3500);
   }
 }

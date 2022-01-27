@@ -2,7 +2,7 @@
   class="text-center m-3"
   *ngIf="!showAddProductForm && !showEditProductForm"
 >
-  <button class="btn badge-success" (click)="onClickToggleAddProductForm()">
+  <button class="btn badge-success hideFromView" (click)="onClickToggleAddProductForm()">
     Create New Product
   </button>
 </div>
@@ -22,7 +22,7 @@
             <th scope="col">Characteristic</th>
             <th scope="col">Price</th>
             <th scope="col">Stock Quantity</th>
-            <th scope="col">Buy</th>
+            <th scope="col">Tax</th>
             <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
@@ -33,7 +33,7 @@
             <td>{{ product.characteristics }}</td>
             <td>{{ product.price }}</td>
             <td>{{ product.quantityInStock }}</td>
-                        <td>Buy</td>
+            <td>{{ product.tax }}</td>
 
             <td>
               <fa-icon
@@ -98,8 +98,26 @@
     </div>
 
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
@@ -147,8 +165,27 @@
     </div>
 
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
 
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
@@ -159,3 +196,10 @@
     </span>
   </form>
 </ng-container>
+<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
+  {{
+    apiRequestError.error.text
+      ? apiRequestError.error.text
+      : apiRequestError.message
+  }}
+</div>

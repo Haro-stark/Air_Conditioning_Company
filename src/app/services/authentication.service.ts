@@ -19,6 +19,7 @@ export class AuthenticationService {
     private router: Router
   ) {
     console.log("calling service constructor:-------- ")
+
     this.user$ = this.angularFireAuth.authState.pipe(
       switchMap(user => {
         if (user) {

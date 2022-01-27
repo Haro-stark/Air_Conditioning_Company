@@ -1,10 +1,8 @@
-import { Product } from "./Product";
+import { SupplierProducts } from "./SupplierProducts";
 
 export interface Supplier {
   supplierId: number;
   name: string;
-  basePrice: number;
-  tax: number;
-  productSold?: Product[];
-  orderNumber?:string;
+  supplierProducts?: SupplierProducts[];
+  orderNumber?: string;
 }

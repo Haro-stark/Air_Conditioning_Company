@@ -92,6 +92,7 @@ export class HttpService {
   getOrderById(id: number): Observable<Order> {
     return this.http.get<Order>(`${this.orderApiUrl}`, {
       params: { Id: id },
+      responseType: 'text' as 'json',
     });
   }
   addOrder(Order: Order): Observable<Order> {
@@ -103,14 +104,15 @@ export class HttpService {
   deleteOrder(id: number): Observable<Order> {
     return this.http.delete<Order>(`${this.orderApiUrl}/delete`, {
       params: { Id: id },
+      responseType: 'text' as 'json',
     });
   }
   getOrderPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.orderApiUrl}/exportToPDF`);
   }
 
-  getEmployee(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(`${this.employeeApiUrl}/list`);
+  getEmployee(): Observable<any> {
+    return this.http.get<any>(`${this.employeeApiUrl}/list`);
   }
   getEmployeeById(id: number): Observable<Employee> {
     return this.http.get<Employee>(`${this.employeeApiUrl}/getByID`, {
@@ -130,17 +132,16 @@ export class HttpService {
   }
   deleteEmployee(id: number): Observable<any> {
     const httpOptions: Object = {
-      responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<any>(`${this.employeeApiUrl}/delete`, httpOptions);
+    return this.http.delete<any>(`${this.employeeApiUrl}/delet`, httpOptions);
   }
   getEmployeePdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.employeeApiUrl}/exportToPDF`);
   }
 
-  getProduct(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.productApiUrl}/list`);
+  getProduct(): Observable<any> {
+    return this.http.get<any>(`${this.productApiUrl}/list`);
   }
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.productApiUrl}`, {
@@ -171,8 +172,8 @@ export class HttpService {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);
   }
 
-  getSupplier(): Observable<Supplier[]> {
-    return this.http.get<Supplier[]>(`${this.supplierApiUrl}/list`);
+  getSupplier(): Observable<any> {
+    return this.http.get<any>(`${this.supplierApiUrl}/list`);
   }
   getSupplierById(id: number): Observable<Supplier> {
     return this.http.get<Supplier>(`${this.supplierApiUrl}`, {
@@ -203,6 +204,17 @@ export class HttpService {
     return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
       params: { Id: id },
     });
+  }
+
+  buySupplierProducts(
+    Supplier: Supplier,
+    quantity: number
+  ): Observable<Supplier> {
+    return this.http.post<Supplier>(
+      `${this.supplierApiUrl}/buyProductFromSupplier`,
+      Supplier,
+      { params: { quantity: quantity } }
+    );
   }
 
   getWorkLog(email: string): Observable<WorkLog[]> {

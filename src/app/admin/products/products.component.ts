@@ -25,6 +25,7 @@ export class ProductsComponent implements OnInit {
     characteristics: '',
     price: 0,
     quantityInStock: 0,
+    tax: 0,
   };
 
   products: Product[] = [
@@ -34,6 +35,7 @@ export class ProductsComponent implements OnInit {
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
+      tax: 0,
     },
   ];
 
@@ -42,17 +44,41 @@ export class ProductsComponent implements OnInit {
   errorMessage!: string;
   showEditProductForm: Boolean = false;
   formSubmitted = false;
+  showErrorAlert = false;
+  showSuccessAlert = false;
+  apiRequestError!: {
+    error: { text: string };
+    name: string;
+    message: string;
+    status: 0;
+    url: string;
+  };
+  apiSuccessResponse = '';
+  processingNetworkRequest = false;
   constructor(
     private cd: ChangeDetectorRef,
     private HttpProductService: HttpService
   ) {}
 
   ngOnInit(): void {
-    this.HttpProductService.getProduct().subscribe((product: Product[]) => {
-      this.products = product;
+    this.HttpProductService.getProduct().subscribe((response: any) => {
+      if (response.data && response.status === 200) {
+        this.products = response.data;
+      } else {
+        this.showApiError(response.message);
+      }
+      (error: any) => {
+        console.log(error), (this.apiRequestError = error);
+
+        console.log(this.apiRequestError);
+        this.showErrorAlert = true;
+
+        setTimeout(() => {
+          this.showErrorAlert = false;
+        }, 3000);
+      };
     });
   }
-
   onSubmit() {
     if (
       !this.product.name ||
@@ -71,7 +97,7 @@ export class ProductsComponent implements OnInit {
           this.cd.markForCheck();
         }, 250);
         this.products.push(this.product);
-      })
+      });
     }
     return this.errorMessage;
   }
@@ -100,8 +126,14 @@ export class ProductsComponent implements OnInit {
   }
 
   onDeleteProduct(id: number, product: Product) {
-    this.HttpProductService.deleteBudget(id).subscribe((response) => {console.log(response);})
-    console.log('delete', id, product);
+    this.HttpProductService.deleteBudget(id).subscribe((response: any) => {
+      if (response.status === 200) {
+        this.products = this.products.filter((o) => o.name != product.name);
+      } else {
+        this.showApiError(response.message);
+      }
+      console.log(response);
+    });
   }
 
   onUpdateProduct(updatedProduct: Product) {
@@ -120,18 +152,38 @@ export class ProductsComponent implements OnInit {
       return this.errorMessage;
     } else {
       this.HttpProductService.updateProduct(updatedProduct).subscribe(
-        (response) => {
-          console.log(response);
-          this.formSubmitted = true;
-          setTimeout(() => {
-            this.showEditProductForm = false;
-            this.cd.markForCheck();
-          }, 250);
+        (response: any) => {
+          if (response.status === 200) {
+            console.log(response);
+            setTimeout(() => {
+              this.showEditProductForm = false;
+              this.cd.markForCheck();
+            }, 250);
 
-          this.formSubmitted = true;
+            this.formSubmitted = true;
+          } else {
+            this.showApiError(response.message);
+          }
+          (error: any) => {
+            console.log(error), (this.apiRequestError = error);
+
+            console.log(this.apiRequestError);
+            this.showErrorAlert = true;
+
+            setTimeout(() => {
+              this.showErrorAlert = false;
+            }, 3000);
+          };
         }
       );
     }
     return this.errorMessage;
+  }
+  showApiError(message: string) {
+    this.apiRequestError.message = message;
+    this.showErrorAlert = true;
+    setTimeout(() => {
+      this.showErrorAlert = false;
+    }, 3000);
   }
 }
