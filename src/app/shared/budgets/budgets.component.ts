@@ -226,28 +226,15 @@ export class BudgetsComponent implements OnInit {
       updatedBudget.budgetStatus.trim().toLowerCase() === 'accepted' &&
       this.generateOrder
     ) {
+      console.log('generating order');
       this.budgetService.budgetToOrder(updatedBudget.budgetId).subscribe({
+        next: (response: any) => {
+          if (response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+          } else this.showApiErrorResponse(response.message);
+        },
         error: (error: any) => {
           this.showApiErrorResponse();
-        },
-        complete: () => {
-          this.budgetService.updateBudget(updatedBudget).subscribe({
-            next: (response: any) => {
-              if (response.data && response.status === 200) {
-                this.showApiSuccessResponse(response.message);
-              } else {
-                this.showApiErrorResponse(response.message);
-              }
-            },
-            error: (error: any) => {
-              this.showApiErrorResponse();
-            },
-            complete: () => {
-              this.showEditBudgetForm = false;
-              this.formSubmitted = true;
-              this.processingNetworkRequest = false;
-            },
-          });
         },
       });
     } else {

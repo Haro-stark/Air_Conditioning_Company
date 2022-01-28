@@ -162,6 +162,7 @@ export class EmployeesComponent implements OnInit {
           this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
             next: (response: any) => {
               if (response.status === 200) {
+                this.employees.push(this.newEmployee);
                 this.showApiSuccessResponse(response.message);
               } else {
                 this.showApiErrorResponse(response.message);
@@ -172,7 +173,6 @@ export class EmployeesComponent implements OnInit {
             },
             complete: () => {
               this.errorMessage = '';
-              this.employees.push(this.newEmployee);
               this.showAddEmployeeForm = false;
               this.formSubmitted = true;
               this.processingNetworkRequest = false;
@@ -288,12 +288,12 @@ export class EmployeesComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: any) {
-     if (message) {
-       this.apiErrorResponse = message;
-     } else {
-       this.apiErrorResponse =
-         'Error! please check your internet connection and try again';
-     }
+    if (message) {
+      this.apiErrorResponse = message;
+    } else {
+      this.apiErrorResponse =
+        'Error! please check your internet connection and try again';
+    }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;
 

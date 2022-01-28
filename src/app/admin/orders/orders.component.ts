@@ -102,7 +102,10 @@ export class OrdersComponent implements OnInit {
       setTimeout(() => {
         this.httpOrderService.addOrder(this.newOrder).subscribe({
           next: (response: any) => {
-            this.showApiSuccessResponse(response.message);
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+              this.orders.push(this.newOrder);
+            } else this.showApiErrorResponse(response.message);
           },
           error: () => {
             this.showApiErrorResponse();
@@ -202,12 +205,12 @@ export class OrdersComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: string) {
-      if (message) {
-        this.apiErrorResponse = message;
-      } else {
-        this.apiErrorResponse =
-          'Error! please check your internet connection and try again';
-      }
+    if (message) {
+      this.apiErrorResponse = message;
+    } else {
+      this.apiErrorResponse =
+        'Error! please check your internet connection and try again';
+    }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;

@@ -110,13 +110,15 @@ export class SuppliersComponent implements OnInit {
     } else {
       this.httpSupplierService.addSupplier(this.newSupplier).subscribe({
         next: (response: any) => {
-          this.showApiSuccessResponse(response.message);
+          if (response === 200) {
+            this.showApiSuccessResponse(response.message);
+            this.suppliers.push(this.newSupplier);
+          } else this.showApiErrorResponse(response.message);
         },
         error: () => {
           this.showApiErrorResponse();
         },
         complete: () => {
-          this.suppliers.push(this.newSupplier);
           this.showAddSupplierForm = false;
           this.showAddSupplierForm = false;
           this.formSubmitted = true;
@@ -230,12 +232,12 @@ export class SuppliersComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: any) {
-     if (message) {
-       this.apiErrorResponse = message;
-     } else {
-       this.apiErrorResponse =
-         'Error! please check your internet connection and try again';
-     }
+    if (message) {
+      this.apiErrorResponse = message;
+    } else {
+      this.apiErrorResponse =
+        'Error! please check your internet connection and try again';
+    }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;

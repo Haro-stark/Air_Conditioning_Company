@@ -19,7 +19,7 @@ export class ProductsComponent implements OnInit {
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
   closeIcon = faWindowClose;
-  product: Product = {
+  newProduct: Product = {
     productId: 0,
     name: '',
     characteristics: '',
@@ -78,23 +78,27 @@ export class ProductsComponent implements OnInit {
   }
   onSubmit() {
     if (
-      !this.product.name ||
-      this.product.name.trim().length === 0 ||
-      !this.product.characteristics ||
-      this.product.characteristics.trim().length < 3
+      !this.newProduct.name ||
+      this.newProduct.name.trim().length === 0 ||
+      !this.newProduct.characteristics ||
+      this.newProduct.characteristics.trim().length < 3
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      this.HttpProductService.addProduct(this.product).subscribe({
+      this.HttpProductService.addProduct(this.newProduct).subscribe({
         next: (response: any) => {
-          this.showApiSuccessResponse(response.message);
+          if (response.status === 200) {
+            this.products.push(this.newProduct);
+            this.showApiSuccessResponse(response.message);
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
         },
         error: () => {
           this.showApiErrorResponse();
         },
         complete: () => {
-          this.products.push(this.product);
           this.showAddProductForm = false;
           this.formSubmitted = true;
           this.processingNetworkRequest = false;
@@ -181,12 +185,12 @@ export class ProductsComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: any) {
-     if (message) {
-       this.apiErrorResponse = message;
-     } else {
-       this.apiErrorResponse =
-         'Error! please check your internet connection and try again';
-     }
+    if (message) {
+      this.apiErrorResponse = message;
+    } else {
+      this.apiErrorResponse =
+        'Error! please check your internet connection and try again';
+    }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
