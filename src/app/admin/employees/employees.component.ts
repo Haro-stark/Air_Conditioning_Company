@@ -5,6 +5,7 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { apiRequestError } from 'src/app/models/apiRequestError';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Employee } from '../../models/Employee';
@@ -21,15 +22,18 @@ export class EmployeesComponent implements OnInit {
   closeIcon = faWindowClose;
   showErrorAlert = false;
   showSuccessAlert = false;
-  apiRequestError!: {
-    error: { text: string };
-    name: string;
-    message: string;
-    status: 0;
-    url: string;
+  apiRequestError: apiRequestError = {
+    error: {
+      text: '',
+    },
+    name: '',
+    message: '',
+    status: 0,
+    url: '',
   };
   apiSuccessResponse = '';
-  
+  apiErrorResponse: string = '';
+
   newEmployee: Employee = {
     username: '',
     email: '',
@@ -284,14 +288,14 @@ export class EmployeesComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: any) {
-    if (message) {
-      this.apiRequestError.message = message;
-    } else {
-      this.apiRequestError.message =
-        'Error! please check your internet connection and try again';
-    }
+     if (message) {
+       this.apiErrorResponse = message;
+     } else {
+       this.apiErrorResponse =
+         'Error! please check your internet connection and try again';
+     }
     this.showErrorAlert = true;
-      this.processingNetworkRequest = false;
+    this.processingNetworkRequest = false;
 
     setTimeout(() => {
       this.showErrorAlert = false;

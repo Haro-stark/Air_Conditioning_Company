@@ -20,15 +20,13 @@ export class SuppliersComponent implements OnInit {
   closeIcon = faWindowClose;
   newSupplier: Supplier = {
     supplierId: 0,
-    name: '',
-    orderNumber: '',
+    supplierName: '',
   };
 
   suppliers: Supplier[] = [
     {
       supplierId: 0,
-      name: 'supply 1',
-      orderNumber: 'dscvf213',
+      supplierName: 'supply 1',
       supplierProducts: [
         {
           productId: 0,
@@ -48,8 +46,7 @@ export class SuppliersComponent implements OnInit {
     },
     {
       supplierId: 1,
-      name: 'supply 2',
-      orderNumber: 'asd123',
+      supplierName: 'supply 2',
       supplierProducts: [
         {
           productId: 0,
@@ -77,6 +74,8 @@ export class SuppliersComponent implements OnInit {
     url: string;
   };
   apiSuccessResponse = '';
+  apiErrorResponse: string = '';
+
   processingNetworkRequest = false;
   constructor(
     private cd: ChangeDetectorRef,
@@ -88,55 +87,41 @@ export class SuppliersComponent implements OnInit {
       if (response.data && response.status === 200) {
         this.suppliers = response.data;
       } else {
-        this.showApiError(response.message);
+        this.showApiErrorResponse(response.message);
       }
       (error: any) => {
-        console.log(error), (this.apiRequestError = error);
-
-        console.log(this.apiRequestError);
-        this.showErrorAlert = true;
-
-        setTimeout(() => {
-          this.showErrorAlert = false;
-        }, 3000);
+        this.showApiErrorResponse();
       };
     });
   }
 
   onSubmit() {
     console.log(
-      this.newSupplier.name,
+      this.newSupplier.supplierName,
       this.newSupplier.supplierProducts?.map((product) => product)
     );
 
-    if (!this.newSupplier.name || this.newSupplier.name.trim().length === 0) {
+    if (
+      !this.newSupplier.supplierName ||
+      this.newSupplier.supplierName.trim().length === 0
+    ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      this.httpSupplierService
-        .addSupplier(this.newSupplier)
-        .subscribe((response: any) => {
-          if (response.data && response.status === 200) {
-            setTimeout(() => {
-              this.showAddSupplierForm = false;
-              this.formSubmitted = true;
-              this.cd.markForCheck();
-            }, 250);
-            this.suppliers.push(this.newSupplier);
-          } else {
-            this.showApiError(response.message);
-          }
-          (error: any) => {
-            console.log(error), (this.apiRequestError = error);
-
-            console.log(this.apiRequestError);
-            this.showErrorAlert = true;
-
-            setTimeout(() => {
-              this.showErrorAlert = false;
-            }, 3000);
-          };
-        });
+      this.httpSupplierService.addSupplier(this.newSupplier).subscribe({
+        next: (response: any) => {
+          this.showApiSuccessResponse(response.message);
+        },
+        error: () => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.suppliers.push(this.newSupplier);
+          this.showAddSupplierForm = false;
+          this.showAddSupplierForm = false;
+          this.formSubmitted = true;
+        },
+      });
     }
     return this.errorMessage;
   }
@@ -165,57 +150,57 @@ export class SuppliersComponent implements OnInit {
   }
 
   onDeleteSupplier(id: number, supplier: Supplier) {
-    this.httpSupplierService.deleteSupplier(id).subscribe((response: any) => {
-      if (response.status === 200) {
-        this.suppliers = this.suppliers.filter((o) => o.name != supplier.name);
-      } else {
-        this.showApiError(response.message);
-      }
-      console.log('delete', id, supplier);
+    this.httpSupplierService.deleteSupplier(id).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.suppliers = this.suppliers.filter(
+            (o) => o.supplierId != supplier.supplierId
+          );
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
   }
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
     console.log('update', updatedSupplier);
-    console.log('supplier is ', updatedSupplier.name);
+    console.log('supplier is ', updatedSupplier.supplierId);
     console.log(
-      this.updatedSupplier.name,
+      this.updatedSupplier.supplierId,
       this.updatedSupplier.supplierProducts?.map((product) => product)
     );
 
     if (
-      !this.updatedSupplier.name ||
-      this.updatedSupplier.name.trim().length === 0 ||
+      !this.updatedSupplier.supplierName ||
+      this.updatedSupplier.supplierName.trim().length === 0 ||
       !this.updatedSupplier.supplierProducts
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
-      this.httpSupplierService
-        .updateSupplier(updatedSupplier)
-        .subscribe((response: any) => {
-          if (response.status === 200) {
-            console.log(response);
-            setTimeout(() => {
-              this.showEditSupplierForm = false;
-              this.cd.markForCheck();
-            }, 250);
-            this.formSubmitted = true;
+      this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.showApiSuccessResponse(response.message);
           } else {
-            this.showApiError(response.message);
+            this.showApiErrorResponse(response.message);
           }
-          (error: any) => {
-            console.log(error), (this.apiRequestError = error);
-
-            console.log(this.apiRequestError);
-            this.showErrorAlert = true;
-
-            setTimeout(() => {
-              this.showErrorAlert = false;
-            }, 3000);
-          };
-        });
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.showEditSupplierForm = false;
+          this.formSubmitted = true;
+          this.processingNetworkRequest = false;
+        },
+      });
     }
     return this.errorMessage;
   }
@@ -244,11 +229,24 @@ export class SuppliersComponent implements OnInit {
     }
   }
 
-  showApiError(message: string) {
-    this.apiRequestError.message = message;
+  showApiErrorResponse(message?: any) {
+     if (message) {
+       this.apiErrorResponse = message;
+     } else {
+       this.apiErrorResponse =
+         'Error! please check your internet connection and try again';
+     }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
-    }, 3000);
+    }, 3500);
+  }
+
+  showApiSuccessResponse(message: string) {
+    this.apiSuccessResponse = message;
+    this.showSuccessAlert = true;
+    setTimeout(() => {
+      this.showSuccessAlert = false;
+    }, 3500);
   }
 }

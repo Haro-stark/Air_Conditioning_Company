@@ -54,6 +54,8 @@ export class ProductsComponent implements OnInit {
     url: string;
   };
   apiSuccessResponse = '';
+  apiErrorResponse: string = '';
+
   processingNetworkRequest = false;
   constructor(
     private cd: ChangeDetectorRef,
@@ -61,22 +63,17 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.HttpProductService.getProduct().subscribe((response: any) => {
-      if (response.data && response.status === 200) {
-        this.products = response.data;
-      } else {
-        this.showApiError(response.message);
-      }
-      (error: any) => {
-        console.log(error), (this.apiRequestError = error);
-
-        console.log(this.apiRequestError);
-        this.showErrorAlert = true;
-
-        setTimeout(() => {
-          this.showErrorAlert = false;
-        }, 3000);
-      };
+    this.HttpProductService.getProduct().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          this.products = response.data;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
   }
   onSubmit() {
@@ -89,16 +86,22 @@ export class ProductsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      this.HttpProductService.addProduct(this.product).subscribe((response) => {
-        console.log(response);
-        setTimeout(() => {
+      this.HttpProductService.addProduct(this.product).subscribe({
+        next: (response: any) => {
+          this.showApiSuccessResponse(response.message);
+        },
+        error: () => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.products.push(this.product);
           this.showAddProductForm = false;
           this.formSubmitted = true;
-          this.cd.markForCheck();
-        }, 250);
-        this.products.push(this.product);
+          this.processingNetworkRequest = false;
+        },
       });
     }
+
     return this.errorMessage;
   }
 
@@ -126,13 +129,18 @@ export class ProductsComponent implements OnInit {
   }
 
   onDeleteProduct(id: number, product: Product) {
-    this.HttpProductService.deleteBudget(id).subscribe((response: any) => {
-      if (response.status === 200) {
-        this.products = this.products.filter((o) => o.name != product.name);
-      } else {
-        this.showApiError(response.message);
-      }
-      console.log(response);
+    this.HttpProductService.deleteProduct(id).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.products = this.products.filter((o) => o.name != product.name);
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
   }
 
@@ -151,39 +159,45 @@ export class ProductsComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
-      this.HttpProductService.updateProduct(updatedProduct).subscribe(
-        (response: any) => {
-          if (response.status === 200) {
-            console.log(response);
-            setTimeout(() => {
-              this.showEditProductForm = false;
-              this.cd.markForCheck();
-            }, 250);
-
-            this.formSubmitted = true;
+      this.HttpProductService.updateProduct(updatedProduct).subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.showApiSuccessResponse(response.message);
           } else {
-            this.showApiError(response.message);
+            this.showApiErrorResponse(response.message);
           }
-          (error: any) => {
-            console.log(error), (this.apiRequestError = error);
-
-            console.log(this.apiRequestError);
-            this.showErrorAlert = true;
-
-            setTimeout(() => {
-              this.showErrorAlert = false;
-            }, 3000);
-          };
-        }
-      );
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.showEditProductForm = false;
+          this.formSubmitted = true;
+          this.processingNetworkRequest = false;
+        },
+      });
     }
     return this.errorMessage;
   }
-  showApiError(message: string) {
-    this.apiRequestError.message = message;
+
+  showApiErrorResponse(message?: any) {
+     if (message) {
+       this.apiErrorResponse = message;
+     } else {
+       this.apiErrorResponse =
+         'Error! please check your internet connection and try again';
+     }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
-    }, 3000);
+    }, 3500);
+  }
+
+  showApiSuccessResponse(message: string) {
+    this.apiSuccessResponse = message;
+    this.showSuccessAlert = true;
+    setTimeout(() => {
+      this.showSuccessAlert = false;
+    }, 3500);
   }
 }

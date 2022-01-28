@@ -86,8 +86,8 @@ export class HttpService {
     return this.http.get<any>(`${this.customerApiUrl}/exportToPDF`);
   }
 
-  getOrder(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.orderApiUrl}/list`);
+  getOrder(): Observable<any> {
+    return this.http.get<any>(`${this.orderApiUrl}/list`);
   }
   getOrderById(id: number): Observable<Order> {
     return this.http.get<Order>(`${this.orderApiUrl}`, {
@@ -101,14 +101,18 @@ export class HttpService {
   updateOrder(Order: Order): Observable<Order> {
     return this.http.put<any>(`${this.orderApiUrl}/update`, Order, httpOptions);
   }
-  deleteOrder(id: number): Observable<Order> {
-    return this.http.delete<Order>(`${this.orderApiUrl}/delete`, {
+  deleteOrder(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.orderApiUrl}/delete`, {
       params: { Id: id },
-      responseType: 'text' as 'json',
     });
   }
   getOrderPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.orderApiUrl}/exportToPDF`);
+  }
+  budgetToOrder(id: number) {
+    return this.http.get<any>(`${this.orderApiUrl}/budgetToOrder`, {
+      params: { Id: id },
+    });
   }
 
   getEmployee(): Observable<any> {
@@ -134,7 +138,7 @@ export class HttpService {
     const httpOptions: Object = {
       params: { Id: id },
     };
-    return this.http.delete<any>(`${this.employeeApiUrl}/delet`, httpOptions);
+    return this.http.delete<any>(`${this.employeeApiUrl}/delete`, httpOptions);
   }
   getEmployeePdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.employeeApiUrl}/exportToPDF`);

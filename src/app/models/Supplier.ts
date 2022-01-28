@@ -2,7 +2,6 @@ import { SupplierProducts } from "./SupplierProducts";
 
 export interface Supplier {
   supplierId: number;
-  name: string;
+  supplierName: string;
   supplierProducts?: SupplierProducts[];
-  orderNumber?: string;
 }

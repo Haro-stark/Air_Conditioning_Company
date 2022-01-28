@@ -8,6 +8,19 @@
   {{ errorMessage }}
 </p>
 
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
+
 <div *ngIf="!showAddBudgetForm && !showEditBudgetForm">
   <div class="table-responsive">
     <table class="table">
@@ -26,7 +39,7 @@
         <tbody *ngFor="let budget of budgets">
           <tr>
             <td>{{ budget.budgetId }}</td>
-            <td>{{ budget.name }}</td>
+            <td>{{ budget.budgetName }}</td>
             <td>{{ budget.totalPrice }}</td>
             <td>{{ budget.budgetStatus }}</td>
             <td>
@@ -67,7 +80,6 @@
   </div>
   <router-outlet></router-outlet>
 </div>
-
 <ng-container *ngIf="showAddBudgetForm && !showEditBudgetForm">
   <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new budget</h1>
 
@@ -85,7 +97,7 @@
         type="text"
         name="budgetName"
         placeholder="enter budget name"
-        [(ngModel)]="newBudget.name"
+        [(ngModel)]="newBudget.budgetName"
         class="form-control"
       />
     </div>
@@ -210,7 +222,7 @@
         type="text"
         name="budgetName"
         placeholder="enter budget name"
-        [(ngModel)]="updatedBudget.name"
+        [(ngModel)]="updatedBudget.budgetName"
         class="form-control"
       />
     </div>
@@ -241,9 +253,9 @@
         id="budgetStatus"
         [(ngModel)]="updatedBudget.budgetStatus"
       >
-        <option ngValue="Accepted ">Accepted</option>
-        <option ngValue="pendingAcceptance ">PendingAcceptance</option>
-        <option ngValue="Canceled ">Canceled</option>
+        <option ngValue="Accepted">Accepted</option>
+        <option ngValue="pendingAcceptance">PendingAcceptance</option>
+        <option ngValue="Canceled">Canceled</option>
       </select>
     </div>
 

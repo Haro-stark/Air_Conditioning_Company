@@ -8,7 +8,6 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { Order } from '../../models/Order';
 import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
@@ -46,20 +45,22 @@ export class BudgetsComponent implements OnInit {
   updatedBudget!: Budget;
   newBudget: Budget = {
     budgetId: 0,
-    name: '',
+    budgetName: '',
     totalPrice: 0,
     budgetStatus: '',
     productList: [],
     customer: { customerId: 0, name: '' },
+    service: [],
   };
   budgets: Budget[] = [
     {
       budgetId: 1,
-      name: 'abc',
+      budgetName: 'abc',
       totalPrice: 546,
       budgetStatus: 'accepted',
       productList: [],
       customer: { customerId: 112, name: 'cus1' },
+      service: [],
     },
   ];
   showErrorAlert = false;
@@ -72,6 +73,8 @@ export class BudgetsComponent implements OnInit {
     url: string;
   };
   apiSuccessResponse = '';
+  apiErrorResponse: string = '';
+
   processingNetworkRequest = false;
   products: Product[] = [
     {
@@ -109,11 +112,18 @@ export class BudgetsComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscriptions.add(
-      this.budgetService
-        .getBudget()
-        .subscribe(
-          (data: Budget[]) => ((this.budgets = data), console.log(data))
-        )
+      this.budgetService.getBudget().subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.budgets = response.data;
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+      })
     );
   }
 
@@ -125,23 +135,31 @@ export class BudgetsComponent implements OnInit {
     this.errorMessage = '';
     console.log('inside submit', this.newBudget, this.services);
     console.log(
-      this.newBudget.name,
+      this.newBudget.budgetName,
       this.newBudget.productList.map((data) => console.log(data))
     );
-    if (!this.newBudget.name || this.newBudget.name.trim().length === 0) {
+    if (
+      !this.newBudget.budgetName ||
+      this.newBudget.budgetName.trim().length === 0
+    ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      this.budgetService.addBudget(this.newBudget).subscribe((response) => {
-        setTimeout(() => {
+      this.budgetService.addBudget(this.newBudget).subscribe({
+        next: (response: any) => {
+          this.showApiSuccessResponse(response.message);
+        },
+        error: () => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.budgets.push(this.newBudget);
           this.showAddBudgetForm = false;
           this.formSubmitted = true;
-          this.cd.markForCheck();
-        }, 250);
-        this.budgets.push(this.newBudget);
+          this.processingNetworkRequest = false;
+        },
       });
     }
-    return this.errorMessage;
   }
 
   onClickToggleAddBudgetForm() {
@@ -173,8 +191,20 @@ export class BudgetsComponent implements OnInit {
   }
 
   onDeleteBudget(id: number, budget: Budget) {
-    this.budgetService.deleteBudget(id).subscribe((response) => {
-      console.log(response);
+    this.budgetService.deleteBudget(id).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.budgets = this.budgets.filter(
+            (o) => o.budgetId != budget.budgetId
+          );
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
     });
   }
 
@@ -182,8 +212,8 @@ export class BudgetsComponent implements OnInit {
     this.errorMessage = '';
     console.log('update', updatedBudget);
     if (
-      !this.updatedBudget.name ||
-      this.updatedBudget.name.trim().length === 0
+      !this.updatedBudget.budgetName ||
+      this.updatedBudget.budgetName.trim().length === 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
@@ -196,31 +226,52 @@ export class BudgetsComponent implements OnInit {
       updatedBudget.budgetStatus.trim().toLowerCase() === 'accepted' &&
       this.generateOrder
     ) {
-      let generateOrder: Order = {
-        orderId: updatedBudget.budgetId,
-        name: updatedBudget.name,
-        status: updatedBudget.budgetStatus,
-        customer: updatedBudget.customer,
-        productList: updatedBudget.productList,
-      };
-
-      this.createOrder(generateOrder);
+      this.budgetService.budgetToOrder(updatedBudget.budgetId).subscribe({
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
+          this.budgetService.updateBudget(updatedBudget).subscribe({
+            next: (response: any) => {
+              if (response.data && response.status === 200) {
+                this.showApiSuccessResponse(response.message);
+              } else {
+                this.showApiErrorResponse(response.message);
+              }
+            },
+            error: (error: any) => {
+              this.showApiErrorResponse();
+            },
+            complete: () => {
+              this.showEditBudgetForm = false;
+              this.formSubmitted = true;
+              this.processingNetworkRequest = false;
+            },
+          });
+        },
+      });
     } else {
-      this.budgetService.updateBudget(updatedBudget).subscribe((response) => {
-        console.log(response);
-        setTimeout(() => {
+      this.budgetService.updateBudget(updatedBudget).subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+        complete: () => {
           this.showEditBudgetForm = false;
-          this.cd.markForCheck();
-        }, 300);
+          this.formSubmitted = true;
+          this.processingNetworkRequest = false;
+        },
       });
     }
+
     return this.errorMessage;
   }
-
-  createOrder(order: Order) {
-    this.generateOrderService.generateNewOrder(order);
-  }
-
   isInstallationSelected(services: any) {
     console.log('isInstallation', services);
 
@@ -237,11 +288,25 @@ export class BudgetsComponent implements OnInit {
     }
   }
 
-  showApiError(message: string) {
-    this.apiRequestError.message = message;
+  showApiErrorResponse(message?: any) {
+    if (message) {
+      this.apiErrorResponse = message;
+    } else {
+      this.apiErrorResponse =
+        'Error! please check your internet connection and try again';
+    }
     this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showErrorAlert = false;
-    }, 3000);
+    }, 3500);
+  }
+
+  showApiSuccessResponse(message: string) {
+    this.apiSuccessResponse = message;
+    this.showSuccessAlert = true;
+    setTimeout(() => {
+      this.showSuccessAlert = false;
+    }, 3500);
   }
 }

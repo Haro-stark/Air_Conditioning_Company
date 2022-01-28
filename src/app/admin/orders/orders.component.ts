@@ -23,18 +23,22 @@ export class OrdersComponent implements OnInit {
   orders: Order[] = [
     {
       orderId: 1,
-      name: 'abc',
-      status: 'accepted',
+      orderName: 'orderPdfDownload',
       productList: [],
       customer: { customerId: 112, name: 'cus1' },
+      empPrice: 0,
+      totalPrice: 0,
+      service: [],
     },
   ];
   newOrder: Order = {
     orderId: 0,
-    name: '',
-    status: '',
+    orderName: '',
     productList: [],
     customer: { customerId: 112, name: 'cus1' },
+    empPrice: 0,
+    totalPrice: 0,
+    service: [],
   };
   showAddOrderForm: Boolean = false;
   errorMessage!: string;
@@ -43,13 +47,7 @@ export class OrdersComponent implements OnInit {
   formSubmitted = false;
   showErrorAlert = false;
   showSuccessAlert = false;
-  apiRequestError!: {
-    error: { text: string };
-    name: string;
-    message: string;
-    status: 0;
-    url: string;
-  };
+  apiErrorResponse: string = '';
   apiSuccessResponse = '';
   processingNetworkRequest = false;
   constructor(
@@ -61,7 +59,8 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.httpOrderService.getOrder().subscribe({
       next: (response: any) => {
-        if (response.data && response.status === 200) {
+        console.log(response.message);
+        if (response.status === 200 && response.data) {
           this.orders = response.data;
         } else {
           this.showApiErrorResponse(response.message);
@@ -71,9 +70,12 @@ export class OrdersComponent implements OnInit {
         this.showApiErrorResponse();
       },
     });
-    this.shareOrderDataService
-      .onGenerateOrder()
-      .subscribe((value: Order) => this.pushOrder(value));
+    this.shareOrderDataService.onGenerateOrder().subscribe((value: Order) => {
+      if (value) {
+        this.newOrder = value;
+        this.onSubmit();
+      } else console.log(value, 'no value');
+    });
   }
 
   orderPdfDownload(id: number, order: Order): void {
@@ -83,13 +85,12 @@ export class OrdersComponent implements OnInit {
   onSubmit() {
     console.log(
       'inside submit',
-      this.newOrder.name,
-      this.newOrder.status,
+      this.newOrder.orderName,
       this.newOrder.productList
     );
     if (
-      !this.newOrder.name ||
-      this.newOrder.name.trim().length === 0
+      !this.newOrder.orderName ||
+      this.newOrder.orderName.trim().length === 0
       //   ||
       //   !this.customerName ||
       //   this.customerName.trim().length < 2
@@ -142,18 +143,19 @@ export class OrdersComponent implements OnInit {
   }
   onDeleteOrder(id: number, order: Order) {
     console.log('delete', id, order);
-    this.httpOrderService.deleteOrder(id).subscribe(
-      (response: any) => {
+    this.httpOrderService.deleteOrder(id).subscribe({
+      next: (response: any) => {
         if (response.status === 200) {
-          this.orders = this.orders.filter((o) => o.name != order.name);
+          this.showApiSuccessResponse(response.message);
+          this.orders = this.orders.filter((o) => o.orderId != order.orderId);
         } else {
           this.showApiErrorResponse(response.message);
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         this.showApiErrorResponse();
-      }
-    );
+      },
+    });
   }
 
   onUpdateOrder(updatedOrder: Order) {
@@ -161,7 +163,10 @@ export class OrdersComponent implements OnInit {
     console.log('update', updatedOrder);
     console.log('customer is ', updatedOrder.customer);
 
-    if (!this.updatedOrder.name || this.updatedOrder.name.trim().length === 0) {
+    if (
+      !this.updatedOrder.orderName ||
+      this.updatedOrder.orderName.trim().length === 0
+    ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
 
@@ -176,6 +181,7 @@ export class OrdersComponent implements OnInit {
           }
         },
         error: (error: any) => {
+          console.log(error);
           this.showApiErrorResponse();
         },
         complete: () => {
@@ -195,13 +201,13 @@ export class OrdersComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  showApiErrorResponse(message?: any) {
-    if (message) {
-      this.apiRequestError.message = message;
-    } else {
-      this.apiRequestError.message =
-        'Error! please check your internet connection and try again';
-    }
+  showApiErrorResponse(message?: string) {
+      if (message) {
+        this.apiErrorResponse = message;
+      } else {
+        this.apiErrorResponse =
+          'Error! please check your internet connection and try again';
+      }
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;

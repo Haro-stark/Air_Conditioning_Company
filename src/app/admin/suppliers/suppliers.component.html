@@ -10,7 +10,18 @@
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
-
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
 <div *ngIf="!showAddSupplierForm && !showEditSupplierForm">
   <div class="table-responsive">
     <table class="table">
@@ -30,7 +41,7 @@
         <tbody *ngFor="let supplier of suppliers">
           <tr *ngFor="let product of supplier.supplierProducts">
             <td>{{ supplier.supplierId }}</td>
-            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.supplierName }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.basePrice }}</td>
             <td>{{ product.tax }}</td>
@@ -87,7 +98,7 @@
         type="text"
         name="supplierName"
         placeholder="enter supplier name"
-        [(ngModel)]="newSupplier.name"
+        [(ngModel)]="newSupplier.supplierName"
         class="form-control"
       />
     </div>
@@ -147,7 +158,7 @@
         type="text"
         name="supplierName"
         placeholder="enter supplier name"
-        [(ngModel)]="updatedSupplier.name"
+        [(ngModel)]="updatedSupplier.supplierName"
         class="form-control"
       />
     </div>
@@ -189,17 +200,6 @@
   </form>
 </ng-container>
 
-<div
-  class="alert-warning alert apiResponse"
-  *ngIf="showSuccessAlert && !showErrorAlert"
->
-  successFully done
-</div>
 
-<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
-  {{
-    apiRequestError.error.text
-      ? apiRequestError.error.text
-      : apiRequestError.message
-  }}
-</div>
+
+

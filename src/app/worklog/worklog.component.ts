@@ -16,7 +16,7 @@ import { HttpService } from '../services/http.service';
 @Component({
   selector: 'app-worklog',
   templateUrl: './worklog.component.html',
-  styleUrls: ['./worklog.component.css','../shared/icon.css'],
+  styleUrls: ['./worklog.component.css', '../shared/icon.css'],
 })
 export class WorklogComponent implements OnInit {
   editIcon = faEdit;
@@ -25,15 +25,7 @@ export class WorklogComponent implements OnInit {
   closeIcon = faWindowClose;
   workLogs$!: Observable<WorkLog[] | null | undefined>;
   dateControl = new Date();
-  orders: Order[] = [
-    {
-      orderId: 1,
-      name: 'abc',
-      status: 'accepted',
-      productList: [],
-      customer: { customerId: 112, name: 'cus1' },
-    },
-  ];
+  orders: Order[] = [];
 
   worklogs: WorkLog[] = [
     {
@@ -42,11 +34,12 @@ export class WorklogComponent implements OnInit {
       numberOfHours: 5,
       order: {
         orderId: 1,
-        type: ['abc'],
-        name: 'abc',
-        status: 'accepted',
         productList: [],
         customer: { customerId: 112, name: 'cus1' },
+        orderName: '',
+        empPrice: 0,
+        totalPrice: 0,
+        service: [],
       },
     },
     {
@@ -55,9 +48,10 @@ export class WorklogComponent implements OnInit {
       numberOfHours: 3,
       order: {
         orderId: 3,
-        type: ['abc'],
-        name: 'abc',
-        status: 'accepted',
+        orderName: '',
+        empPrice: 0,
+        totalPrice: 0,
+        service: [],
         productList: [],
         customer: { customerId: 112, name: 'cus1' },
       },
@@ -68,9 +62,10 @@ export class WorklogComponent implements OnInit {
       numberOfHours: 4,
       order: {
         orderId: 1,
-        type: ['abc'],
-        name: 'abc',
-        status: 'accepted',
+        orderName: '',
+        empPrice: 0,
+        totalPrice: 0,
+        service: [],
         customer: { customerId: 112, name: 'cus1' },
       },
     },
@@ -117,9 +112,10 @@ export class WorklogComponent implements OnInit {
       numberOfHours: createWorkLog.value.numberOfHours,
       order: {
         orderId: 1,
-        type: ['abc'],
-        name: 'abc',
-        status: 'accepted',
+        orderName: '',
+        empPrice: 0,
+        totalPrice: 0,
+        service: [],
         customer: { customerId: 112, name: 'cus1' },
       },
     };

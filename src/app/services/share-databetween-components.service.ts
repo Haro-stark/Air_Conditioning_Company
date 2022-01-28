@@ -14,12 +14,10 @@ export class ShareDatabetweenComponentsService {
 
   generateNewOrder(order: Order) {
     this.generatedOrder = order;
-    console.log("generated order",this.generatedOrder , "param ", order);
      this.subject.next(this.generatedOrder);
   }
 
   onGenerateOrder(): Observable<any>{
-    console.log(this.generatedOrder);
     return this.subject.asObservable();
   }
 

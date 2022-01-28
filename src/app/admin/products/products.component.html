@@ -10,7 +10,18 @@
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
-
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
 <div *ngIf="!showAddProductForm && !showEditProductForm">
   <div class="table-responsive">
     <table class="table">
@@ -196,10 +207,4 @@
     </span>
   </form>
 </ng-container>
-<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
-  {{
-    apiRequestError.error.text
-      ? apiRequestError.error.text
-      : apiRequestError.message
-  }}
-</div>
+

@@ -1,11 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 .apiResponse {
-  position: absolute;
-  top: 180px;
-  left: 200px;
+margin-top: 200px;
   width: max-content;
+  min-width: 400px;
   padding: 0 10px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .hideFromView {

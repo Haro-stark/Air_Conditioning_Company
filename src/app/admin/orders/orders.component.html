@@ -1,13 +1,25 @@
-<div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
+<!-- <div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
   <button class="btn badge-success" (click)="onClickToggleAddOrderForm()">
     Create New Order
   </button>
-</div>
+</div> -->
 
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
 
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
 <div *ngIf="!showAddOrderForm && !showEditOrderForm">
   <div class="table-responsive">
     <table class="table">
@@ -25,8 +37,9 @@
         <tbody *ngFor="let order of orders">
           <tr>
             <td>{{ order.orderId }}</td>
-            <td>{{ order.name }}</td>
-            <td>{{ order.status }}</td>
+            <td>{{ order.orderName }}</td>
+            <td>{{ order.empPrice}}</td>
+            <td>{{ order.totalPrice}}</td>
             <td>{{ order.customer.name }}</td>
             <td>
               <button
@@ -81,17 +94,17 @@
         type="text"
         name="orderName"
         placeholder="enter order name"
-        [(ngModel)]="newOrder.name"
+        [(ngModel)]="newOrder.orderName"
         class="form-control"
       />
     </div>
     <div class="form-group">
-      <label for="orderStatus">orderStatus</label>
+      <label for="empPrice">empPrice</label>
       <select
         class="form-select form-control"
-        name="orderStatus"
-        id="orderStatus"
-        [(ngModel)]="newOrder.status"
+        name="empPrice"
+        id="empPrice"
+        [(ngModel)]="newOrder.empPrice"
       >
         <option ngValue="finished">finished</option>
         <option ngValue="inProgress ">inProgress</option>
@@ -148,17 +161,17 @@
         type="text"
         name="orderName"
         placeholder="enter order name"
-        [(ngModel)]="updatedOrder.name"
+        [(ngModel)]="updatedOrder.orderName"
         class="form-control"
       />
     </div>
     <div class="form-group">
-      <label for="orderStatus">orderStatus</label>
+      <label for="empPrice">empPrice</label>
       <select
         class="form-select form-control"
-        name="orderStatus"
-        id="orderStatus"
-        [(ngModel)]="updatedOrder.status"
+        name="empPrice"
+        id="empPrice"
+        [(ngModel)]="updatedOrder.empPrice"
       >
         <option ngValue="finished">finished</option>
         <option ngValue="inProgress ">inProgress</option>
@@ -197,11 +210,3 @@
     </span>
   </form>
 </ng-container>
-
-<div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
-  {{
-    apiRequestError.error.text
-      ? apiRequestError.error.text
-      : apiRequestError.message
-  }}
-</div>
