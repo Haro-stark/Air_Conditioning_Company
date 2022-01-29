@@ -11,18 +11,36 @@
   display: none;
 }
 
-.spinner-border{
-    margin-right: 15px;
+.spinner-border {
+  margin-right: 15px;
 }
 
-.relativePosition{
+.relativePosition {
   position: relative;
 }
 
-
-p.alert-danger{
+p.alert-danger {
   text-align: center;
   width: max-content;
-    min-width: 400px;
-margin: 0 auto;
+  min-width: 400px;
+  margin: 0 auto;
+}
+
+.signoutbtn {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.hideSidebar {
+  transform: translateX(-250px);
+  transition: all 0.7s;
+  position: absolute;
+  height: 100vh;
+}
+.showSidebar {
+  transform: translateX(0);
+  transition: all 0.7s;
+  position: absolute;
+  height: 100vh;
 }

@@ -10,9 +10,7 @@
 
     <button class="btn btn-danger signoutbtn"(click)="signout()"> Sign out</button>
   </div>
-
-  <div class="main">
-    <div
+ <div
       class="sidebar"
       [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
     >
@@ -25,6 +23,8 @@
         <li><a [routerLink]="['workLog']">WorkLogs </a></li>
       </ul>
     </div>
+  <div class="main">
+   
 <ng-container *ngIf="loading">
   <app-loading-spinner></app-loading-spinner>
 </ng-container>

@@ -4,8 +4,9 @@
       <h3>you are logged in</h3>
       <p>please wait while we redirect you......</p>
     </ng-container>
-    <ng-container *ngIf="!isUserEmailLoggedIn ">
-      <p class="text-center">your logo/heading here</p>
+    <ng-container *ngIf="isUserEmailLoggedIn==false">
+      <div>
+      <h3 class="text-center text-info font-weight-bold">Log in</h3>
       <p *ngIf="error.message.length > 0" class="text-danger">
         {{ error.message }}
       </p>
@@ -56,8 +57,18 @@
           <span class="visually-hidden">Logging in...</span>
         </button>
       </form>
+      </div>
     </ng-container>
 
- 
+     <ng-container *ngIf="!isUserEmailLoggedIn && isUserEmailLoggedIn!=false" style="display: flex;
+     flex-direction: column; text-align: center">
+     <div>
+       <hr class="line-secondary">
+       <p class="text-center">Oops invalid url...</p>
+       <br>
+      <p>please wait while we redirect to your screen......</p>
+      <hr>
+      </div>
+    </ng-container>
   </div>
 </div>

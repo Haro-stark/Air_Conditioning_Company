@@ -54,12 +54,14 @@ const routes: Routes = [
     canActivate: [AssistantGuardGuard],
     children: [{ path: 'workLog', component: WorklogComponent }],
   },
- 
+
   {
     path: 'access-denied',
     component: LoginComponent,
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '404', component: LoginComponent },
+  { path: '**', redirectTo: '/404' },
 ];
 
 @NgModule({

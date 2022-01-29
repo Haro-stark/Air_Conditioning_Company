@@ -6,4 +6,5 @@ export interface User {
     uid: any;
     email: any;
     role: string;
+    password?: string;
 }

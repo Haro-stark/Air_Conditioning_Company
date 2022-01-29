@@ -101,9 +101,21 @@
         [(ngModel)]="newSupplier.supplierName"
         class="form-control"
       />
+    </div>
+    <p class="text-center m-3">supplierProducts</p>
+    <hr />
 
-      <p class="text-center m-3">supplierProducts</p>
-      <hr />
+    <div class="form-group">
+      <label for="productName" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="newSupplier.supplierProducts[0].name"
+        class="form-control"
+      />
     </div>
     <div class="form-group">
       <label for="basePrice" class="form-label">Base Price </label>
@@ -112,7 +124,7 @@
         id="basePrice"
         type="text"
         name="basePrice"
-        placeholder="enter base price"
+        placeholder="enter product base price"
         [(ngModel)]="newSupplier.supplierProducts[0].basePrice"
         class="form-control"
       />
@@ -124,7 +136,7 @@
         id="tax"
         type="text"
         name="tax"
-        placeholder="enter tax"
+        placeholder="enter product tax"
         [(ngModel)]="newSupplier.supplierProducts[0].tax"
         class="form-control"
       />
@@ -136,7 +148,7 @@
         id="characteristics"
         type="text"
         name="characteristics"
-        placeholder="enter characteristics"
+        placeholder="enter product characteristics"
         [(ngModel)]="newSupplier.supplierProducts[0].characteristics"
         class="form-control"
       />
@@ -176,7 +188,23 @@
         class="form-control"
       />
     </div>
-    <!-- <div class="form-group">
+
+    <p class="text-center m-3">supplierProducts</p>
+    <hr />
+
+     <div class="form-group">
+      <label for="productName" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="updatedSupplier.supplierProducts[0].name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
       <label for="basePrice" class="form-label">Base Price </label>
       <input
         required
@@ -184,7 +212,7 @@
         type="text"
         name="basePrice"
         placeholder="enter base price"
-        [(ngModel)]="updatedSupplier.basePrice"
+        [(ngModel)]="updatedSupplier.supplierProducts[0].basePrice"
         class="form-control"
       />
     </div>
@@ -196,10 +224,22 @@
         type="text"
         name="tax"
         placeholder="enter tax"
-        [(ngModel)]="updatedSupplier.tax"
+        [(ngModel)]="updatedSupplier.supplierProducts[0].tax"
         class="form-control"
       />
-    </div> -->
+    </div>
+    <div class="form-group">
+      <label for="characteristics" class="form-label">characteristics</label>
+      <input
+        required
+        id="characteristics"
+        type="text"
+        name="characteristics"
+        placeholder="enter characteristics"
+        [(ngModel)]="updatedSupplier.supplierProducts[0].characteristics"
+        class="form-control"
+      />
+    </div>
     <span class="d-flex">
       <button class="btn btn-outline-success" type="submit">Save</button>
 

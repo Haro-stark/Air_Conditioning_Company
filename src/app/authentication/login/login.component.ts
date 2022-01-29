@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
           console.log('user data = ', userData);
         }
       }
+      else this.isUserEmailLoggedIn=false; 
     });
   }
 

@@ -243,7 +243,7 @@ export class SuppliersComponent implements OnInit {
       this.errorMessage = 'please enter a correct quantity value';
       setTimeout(() => {
         this.errorMessage = '';
-      }, 2500);
+      }, 3500);
     }
   }
 

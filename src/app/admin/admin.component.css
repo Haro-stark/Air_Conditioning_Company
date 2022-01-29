@@ -94,18 +94,7 @@ div.body {
   flex-direction: column;
 }
 
-.hideSidebar {
-  transform: translateX(-250px);
-  transition: all 0.7s;
-  position: absolute;
-  height: inherit;
-}
-.showSidebar {
-  transform: translateX(0);
-  transition: all 0.7s;
-  position: absolute;
-  height: 100vh;
-}
+
 
 .icon {
   color: white;
@@ -117,10 +106,4 @@ div.body {
 .icon:focus-within {
   outline: none;
   border: none;
-}
-
-.signoutbtn {
-  float: right;
-  margin-top: 10px;
-  margin-right: 10px;
 }

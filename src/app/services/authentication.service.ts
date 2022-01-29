@@ -53,17 +53,16 @@ export class AuthenticationService implements OnInit {
             role: role,
             username: username,
             email: credential.user?.email,
+            password: password,
           };
           console.log('user after signup : ', user);
           this.updateUserData(user);
         });
-
       // if (singupStatus.user) console.log("auth service signup: singupStatus = ", singupStatus.credential);
     } catch (err: any) {
       window.alert(err.message);
     }
   }
-
   get isUserEmailLoggedIn(): boolean {
     console.log('is logged in', this.authState);
     if (this.authState !== null && this.authState) {
@@ -94,8 +93,9 @@ export class AuthenticationService implements OnInit {
       uid: user.uid,
       email: user.email,
       role: user.role,
+      password: user.password,
     };
-    return userRef.set(data, { merge: true });
+    userRef.set(data, { merge: true });
   }
 
   async signOut() {
