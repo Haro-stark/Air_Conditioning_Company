@@ -29,14 +29,14 @@ export class ProductsComponent implements OnInit {
   };
 
   products: Product[] = [
-    {
+ /*    {
       productId: 0,
       name: 'f',
       characteristics: 'gh',
       price: 0,
       quantityInStock: 0,
       tax: 0,
-    },
+    }, */
   ];
 
   updatedProduct!: Product;

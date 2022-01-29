@@ -21,7 +21,7 @@ export class OrdersComponent implements OnInit {
   closeIcon = faWindowClose;
 
   orders: Order[] = [
-    {
+   /*  {
       orderId: 1,
       orderName: 'orderPdfDownload',
       productList: [],
@@ -29,7 +29,7 @@ export class OrdersComponent implements OnInit {
       empPrice: 0,
       totalPrice: 0,
       service: [],
-    },
+    }, */
   ];
   newOrder: Order = {
     orderId: 0,
@@ -79,6 +79,15 @@ export class OrdersComponent implements OnInit {
   }
 
   orderPdfDownload(id: number, order: Order): void {
+    this.httpOrderService.getOrderPdf(id).subscribe({
+      next: (response: any) => {
+        if (response.status === 500)
+          this.showApiErrorResponse('opps somer server error');
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse(error.message);
+      },
+    });
     console.log('order to download with id ', id, 'object ', order);
   }
 

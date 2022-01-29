@@ -128,6 +128,9 @@ export class BudgetsComponent implements OnInit {
   }
 
   budgetPdfDownload(id: number, budget: Budget): void {
+    this.budgetService.getBudgetPdf(id).subscribe({
+      error: (error) => this.showApiErrorResponse(error.message),
+    });
     console.log('budget to download with id ', id, 'object ', budget);
   }
 

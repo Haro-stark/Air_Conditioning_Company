@@ -5,6 +5,7 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { Product } from 'src/app/models/Product';
 import { Supplier } from 'src/app/models/Supplier';
 import { HttpService } from 'src/app/services/http.service';
 
@@ -32,7 +33,7 @@ export class SuppliersComponent implements OnInit {
     ],
   };
   suppliers: Supplier[] = [
-    {
+    /*    {
       supplierId: 0,
       supplierName: 'supply 1',
       supplierProducts: [
@@ -67,7 +68,7 @@ export class SuppliersComponent implements OnInit {
           productCount: 10,
         },
       ],
-    },
+    }, */
   ];
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
@@ -86,7 +87,7 @@ export class SuppliersComponent implements OnInit {
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
   numberOfProducts!: number;
-
+  productArray: Product[] = new Array<Product>();
   processingNetworkRequest = false;
   constructor(
     private cd: ChangeDetectorRef,
