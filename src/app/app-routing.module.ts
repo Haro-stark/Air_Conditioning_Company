@@ -19,9 +19,12 @@ import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { AuthenticationService } from './services/authentication.service';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signUp', component: SignupComponent },
+  {
+    path: 'admin',
+    redirectTo: 'admin/employees',
+  },
   {
     path: 'admin',
     component: AdminComponent,
@@ -33,6 +36,7 @@ const routes: Routes = [
       { path: 'suppliers', component: SuppliersComponent },
       { path: 'budgets', component: BudgetsComponent },
       { path: 'workLog', component: WorklogComponent },
+      { path: '', redirectTo: 'employees', pathMatch: 'full' },
     ],
   },
   {
@@ -50,15 +54,12 @@ const routes: Routes = [
     canActivate: [AssistantGuardGuard],
     children: [{ path: 'workLog', component: WorklogComponent }],
   },
-  {
-    path: '',
-    redirectTo: '/home',
-    pathMatch: 'full',
-  },
+ 
   {
     path: 'access-denied',
-    component: AccessDeniedComponent,
+    component: LoginComponent,
   },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({

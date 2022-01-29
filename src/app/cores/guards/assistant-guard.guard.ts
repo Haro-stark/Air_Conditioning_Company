@@ -18,7 +18,7 @@ export class AssistantGuardGuard implements CanActivate {
       map(user => user && user.role === "assistant" ? true : false),
       tap(isAssistant => {
         if (!isAssistant) {
-          console.error('Access denied - Assistants only')
+         alert('Access denied - Assistants only')
           this.router.navigate(['/access-denied']);
         }
       })

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent } from '@angular/router';
 import { faBars, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { AuthenticationService } from '../services/authentication.service';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -11,7 +12,7 @@ export class AdminComponent implements OnInit {
   faMinusIcon = faMinus;
   displaySideBar: boolean = false;
   loading = false;
-  constructor(private router: Router) {
+  constructor(private router: Router,private authService: AuthenticationService) {
     this.router.events.subscribe((event: any) => {
       switch (true) {
         case event instanceof NavigationStart: {
@@ -30,9 +31,8 @@ export class AdminComponent implements OnInit {
         }
       }
     });
-  
-    this.loading = true;
 
+    this.loading = true;
   }
 
   ngOnInit(): void {
@@ -69,5 +69,9 @@ export class AdminComponent implements OnInit {
         this.loading = false;
       }, 2000);
     }
+  }
+
+  signout(): void {
+    this.authService.signOut();
   }
 }

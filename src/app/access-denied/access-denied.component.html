@@ -1,6 +1,15 @@
 <br>
 <br>
-<h1>
-    Access Denied
-</h1>
+<p>Please select desire operation</p>
+
+
+
+  <a routerLink="/login"><button class="btn btn-success pull-right">login</button></a>
+
+  <button class="btn btn-primary" (click)="signOut()">signout employee</button>
+
+
+<a routerLink="/admin"><button class="btn btn-primary">Admin</button></a>
+<a routerLink="/assistant"><button class="btn btn-primary">Assistant</button></a>
+<a routerLink="/officer"><button class="btn btn-primary">Officer</button></a>
 <router-outlet></router-outlet>

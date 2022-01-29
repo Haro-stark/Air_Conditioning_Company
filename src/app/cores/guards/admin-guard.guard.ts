@@ -18,7 +18,7 @@ export class AdminGuardGuard implements CanActivate {
       map(user => user && user.role === "admin" ? true : false),
       tap(isAdmin => {
         if (!isAdmin) {
-          console.error('Access denied - Admins only')
+         alert('Access denied - Admins only')
           this.router.navigate(['/access-denied']);
         }
       })

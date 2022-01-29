@@ -13,19 +13,34 @@ export class LoginComponent implements OnInit {
   password = '';
   errorMessage = '';
   SigningIn: Boolean = false;
+  isUserEmailLoggedIn!:Boolean;
   error: { name: string; message: string } = { name: '', message: '' };
   constructor(
     public authService: AuthenticationService,
     private router: Router,
     private injector: Injector
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.authService.user$.subscribe((userData) => {
+      if (userData) {
+        this.SigningIn = false;
+        this.isUserEmailLoggedIn=true;
+        if ((userData.role = 'admin')) {
+          this.router.navigate([`/admin/employees`]);
+        } else {
+          this.router.navigate([`/${userData.role}`]);
+          console.log('user data = ', userData);
+        }
+      }
+    });
+  }
 
   checkUserInfo() {
     if (this.authService.isUserEmailLoggedIn) {
       console.log('login already');
-      this.router.navigate(['/home']);
+      this.isUserEmailLoggedIn=true;
+      this.router.navigate(['/login']);
     } else {
       console.log('not logged in');
     }
@@ -47,22 +62,29 @@ export class LoginComponent implements OnInit {
           this.authService.user$.subscribe((userData) => {
             if (userData) {
               this.SigningIn = false;
-              this.router.navigate([`/${userData.role}`]);
-              console.log("user data = ", userData)
+              this.isUserEmailLoggedIn= true;
+              if ((userData.role = 'admin')) {
+                this.router.navigate([`/admin/employees`]);
+              } else {
+                this.router.navigate([`/${userData.role}`]);
+                console.log('user data = ', userData);
+              }
             }
-          })
-
+          });
         })
         .catch((_error) => {
-          console.log("error while logging in: ", _error);
+          console.log('error while logging in: ', _error);
           this.error = _error;
           this.SigningIn = false;
           this.router.navigate(['/login']);
         });
-
     } else {
       this.SigningIn = false;
     }
+  }
+
+  signOut() {
+    this.isUserEmailLoggedIn = false;
   }
 
   validateForm(email: string, password: string): boolean {

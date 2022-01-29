@@ -18,7 +18,7 @@ export class OfficerGuardGuard implements CanActivate {
       map(user => user && user.role === "officer" ? true : false),
       tap(isOfficer => {
         if (!isOfficer) {
-          console.error('Access denied - Officers Only')
+         alert('Access denied - Officers Only')
           this.router.navigate(['/access-denied']);
         }
       })

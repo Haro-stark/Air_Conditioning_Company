@@ -104,7 +104,7 @@ div.body {
   transform: translateX(0);
   transition: all 0.7s;
   position: absolute;
-  height: inherit;
+  height: 100vh;
 }
 
 .icon {
@@ -112,9 +112,15 @@ div.body {
   font-size: 30px;
 }
 
-.icon:active ,.icon:focus-visible,.icon:focus-within{
+.icon:active,
+.icon:focus-visible,
+.icon:focus-within {
   outline: none;
   border: none;
 }
 
-
+.signoutbtn {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+}
