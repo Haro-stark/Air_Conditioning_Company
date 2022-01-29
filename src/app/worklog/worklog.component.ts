@@ -152,11 +152,11 @@ export class WorklogComponent implements OnInit {
     //   },
     // });
     this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
-      map((response: Response) => {
+      map((response: any) => {
 
         console.log("resoinse status : ", response.status, "type = ", typeof response);
         if (response.status == 200) {
-          this.worklogs = this.worklogs.filter((response) => response.workLogId != log.workLogId);
+          this.worklogs = this.worklogs.filter((data) => data.workLogId != log.workLogId);
         } else {
           this.showApiErrorResponse
             (response.message);

@@ -227,36 +227,41 @@ export class HttpService {
       }
     );
   }
-
   getWorkLog(email: string): Observable<WorkLog[]> {
-    return this.http.get<WorkLog[]>(`${this.employeeApiUrl}/emailWorkLog`);
+    return this.http.get<WorkLog[]>(
+      `${this.employeeApiUrl}/GetWorkLogByEmail`,
+      { params: { email: email } }
+    );
   }
   getWorkLogById(id: number): Observable<WorkLog> {
     return this.http.get<WorkLog>(`${this.workLogApiUrl}`, {
       params: { Id: id },
     });
   }
-  addWorkLog(WorkLog: WorkLog): Observable<WorkLog> {
-    return this.http.post<WorkLog>(`${this.workLogApiUrl}/add`, WorkLog);
+  addWorkLog(WorkLog: WorkLog, email: string): Observable<Response> {
+    return this.http.post<Response>(
+      `${this.employeeApiUrl}/addWorkLog`,
+      WorkLog,
+      { params: { email: email } }
+    );
   }
-  updateWorkLog(WorkLog: WorkLog): Observable<WorkLog> {
-    return this.http.put<any>(
+  updateWorkLog(WorkLog: WorkLog): Observable<Response> {
+    return this.http.put<Response>(
       `${this.workLogApiUrl}/update`,
       WorkLog,
       httpOptions
     );
   }
-  deleteWorkLog(id: number): Observable<WorkLog> {
+  deleteWorkLog(id: any): Observable<Response> {
     const httpOptions: Object = {
-      responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<WorkLog>(
+    return this.http.delete<Response>(
       `${this.workLogApiUrl}/delete`,
       httpOptions
     );
   }
-  getWorkLogPdf(id: number): Observable<any> {
+  getWorkLogPdf(id: number): Observable<Response> {
     return this.http.get<any>(`${this.workLogApiUrl}/exportToPDF`, {
       params: { Id: id },
     });
