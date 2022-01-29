@@ -8,6 +8,7 @@ import { Product } from '../models/Product';
 import { Supplier } from '../models/Supplier';
 import { WorkLog } from '../models/WorkLog';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { SupplierPurchasedHistory } from '../models/SupplierPurchasedHistory';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-type': 'application/json',
@@ -25,7 +26,8 @@ export class HttpService {
   private productApiUrl = 'http://localhost:8080/Product';
   private supplierApiUrl = 'http://localhost:8080/Supplier';
   private workLogApiUrl = 'http://localhost:8080/WorkLog';
-
+  private supplierPurchasedHistoryApiUrl =
+    'http://localhost:8080/supplierPurchasedHistory';
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -176,48 +178,53 @@ export class HttpService {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);
   }
 
-  getSupplier(): Observable<any> {
-    return this.http.get<any>(`${this.supplierApiUrl}/list`);
+  getsupplierPurchasedHistory(): Observable<any> {
+    return this.http.get<any>(`${this.supplierPurchasedHistoryApiUrl}/list`);
   }
-  getSupplierById(id: number): Observable<Supplier> {
-    return this.http.get<Supplier>(`${this.supplierApiUrl}`, {
-      params: { Id: id },
-    });
+  getsupplierPurchasedHistoryById(
+    id: number
+  ): Observable<SupplierPurchasedHistory> {
+    return this.http.get<SupplierPurchasedHistory>(
+      `${this.supplierPurchasedHistoryApiUrl}`,
+      {
+        params: { Id: id },
+      }
+    );
   }
-  addSupplier(Supplier: Supplier): Observable<Supplier> {
-    return this.http.post<Supplier>(`${this.supplierApiUrl}/add`, Supplier);
+  addsupplierPurchasedHistory(
+    supplierPurchasedHistory: SupplierPurchasedHistory
+  ): Observable<SupplierPurchasedHistory> {
+    return this.http.post<SupplierPurchasedHistory>(
+      `${this.supplierPurchasedHistoryApiUrl}/add`,
+      supplierPurchasedHistory
+    );
   }
-  updateSupplier(Supplier: Supplier): Observable<Supplier> {
+  updatesupplierPurchasedHistory(
+    supplierPurchasedHistory: SupplierPurchasedHistory
+  ): Observable<SupplierPurchasedHistory> {
     return this.http.put<any>(
-      `${this.supplierApiUrl}/update`,
-      Supplier,
+      `${this.supplierPurchasedHistoryApiUrl}/update`,
+      supplierPurchasedHistory,
       httpOptions
     );
   }
-  deleteSupplier(id: number): Observable<Supplier> {
+  deletesupplierPurchasedHistory(
+    id: number
+  ): Observable<SupplierPurchasedHistory> {
     const httpOptions: Object = {
-      responseType: 'text' as 'text',
       params: { Id: id },
     };
-    return this.http.delete<Supplier>(
-      `${this.supplierApiUrl}/delete`,
+    return this.http.delete<SupplierPurchasedHistory>(
+      `${this.supplierPurchasedHistoryApiUrl}/delete`,
       httpOptions
     );
   }
-  getSupplierPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
-      params: { Id: id },
-    });
-  }
-
-  buySupplierProducts(
-    Supplier: Supplier,
-    quantity: number
-  ): Observable<Supplier> {
-    return this.http.post<Supplier>(
-      `${this.supplierApiUrl}/buyProductFromSupplier`,
-      Supplier,
-      { params: { quantity: quantity } }
+  getsupplierPurchasedHistoryPdf(id: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.supplierPurchasedHistoryApiUrl}/exportToPDF`,
+      {
+        params: { Id: id },
+      }
     );
   }
 
@@ -253,5 +260,48 @@ export class HttpService {
     return this.http.get<any>(`${this.workLogApiUrl}/exportToPDF`, {
       params: { Id: id },
     });
+  }
+
+  getSupplier(): Observable<any> {
+    return this.http.get<any>(`${this.supplierApiUrl}/list`);
+  }
+  getSupplierById(id: number): Observable<Supplier> {
+    return this.http.get<Supplier>(`${this.supplierApiUrl}`, {
+      params: { Id: id },
+    });
+  }
+  addSupplier(Supplier: Supplier): Observable<Supplier> {
+    return this.http.post<Supplier>(`${this.supplierApiUrl}/add`, Supplier);
+  }
+  updateSupplier(Supplier: Supplier): Observable<Supplier> {
+    return this.http.put<any>(
+      `${this.supplierApiUrl}/update`,
+      Supplier,
+      httpOptions
+    );
+  }
+  deleteSupplier(id: number): Observable<Supplier> {
+    const httpOptions: Object = {
+      params: { Id: id },
+    };
+    return this.http.delete<Supplier>(
+      `${this.supplierApiUrl}/delete`,
+      httpOptions
+    );
+  }
+  getSupplierPdf(id: number): Observable<any> {
+    return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
+      params: { Id: id },
+    });
+  }
+  buySupplierProducts(
+    Supplier: Supplier,
+    quantity: number
+  ): Observable<Supplier> {
+    return this.http.post<Supplier>(
+      `${this.supplierApiUrl}/buyProductFromSupplier`,
+      Supplier,
+      { params: { quantity: quantity } }
+    );
   }
 }

@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 .apiResponse {
-margin-top: 200px;
   width: max-content;
   min-width: 400px;
   padding: 0 10px;
@@ -14,4 +13,16 @@ margin-top: 200px;
 
 .spinner-border{
     margin-right: 15px;
+}
+
+.relativePosition{
+  position: relative;
+}
+
+
+p.alert-danger{
+  text-align: center;
+  width: max-content;
+    min-width: 400px;
+margin: 0 auto;
 }

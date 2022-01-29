@@ -1,8 +1,8 @@
 export interface SupplierProducts {
-  productId: number;
+  productId?: number;
   name: string;
   characteristics: string;
   basePrice: number;
   tax: number;
-  productCount?: number;
+  productCount: number;
 }

@@ -8,7 +8,9 @@
   {{ errorMessage }}
 </p>
 
-<div
+
+<div>
+  <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
 >
@@ -21,6 +23,7 @@
   {{ apiSuccessResponse }}
 </div>
 <div *ngIf="!showAddOrderForm && !showEditOrderForm">
+  
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="orders && orders.length > 0">
@@ -28,7 +31,8 @@
           <tr>
             <th scope="col">OrderNumber</th>
             <th scope="col">OrderName</th>
-            <th scope="col">OrderStatus</th>
+            <th scope="col">EmpPrice</th>
+            <th scope="col">Total Price</th>
             <th scope="col">Customer Name</th>
             <th scope="col">Report(pdf)</th>
             <th scope="col">Edit/Delete</th>
@@ -38,8 +42,8 @@
           <tr>
             <td>{{ order.orderId }}</td>
             <td>{{ order.orderName }}</td>
-            <td>{{ order.empPrice}}</td>
-            <td>{{ order.totalPrice}}</td>
+            <td>{{ order.empPrice }}</td>
+            <td>{{ order.totalPrice }}</td>
             <td>{{ order.customer.name }}</td>
             <td>
               <button
@@ -76,7 +80,7 @@
   </div>
   <router-outlet></router-outlet>
 </div>
-
+</div>
 <ng-container *ngIf="showAddOrderForm && !showEditOrderForm">
   <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new order</h1>
 

@@ -21,8 +21,16 @@ export class SuppliersComponent implements OnInit {
   newSupplier: Supplier = {
     supplierId: 0,
     supplierName: '',
+    supplierProducts: [
+      {
+        basePrice: 0,
+        characteristics: '',
+        name: '',
+        productCount: 0,
+        tax: 0,
+      },
+    ],
   };
-
   suppliers: Supplier[] = [
     {
       supplierId: 0,
@@ -34,6 +42,7 @@ export class SuppliersComponent implements OnInit {
           characteristics: 'asdfs',
           basePrice: 0,
           tax: 0,
+          productCount: 5,
         },
         {
           productId: 0,
@@ -41,6 +50,7 @@ export class SuppliersComponent implements OnInit {
           characteristics: 'xzcv',
           basePrice: 0,
           tax: 0,
+          productCount: 2,
         },
       ],
     },
@@ -54,11 +64,11 @@ export class SuppliersComponent implements OnInit {
           characteristics: 'rtyk',
           basePrice: 20,
           tax: 0,
+          productCount: 10,
         },
       ],
     },
   ];
-
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
   errorMessage!: string;
@@ -75,6 +85,7 @@ export class SuppliersComponent implements OnInit {
   };
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
+  numberOfProducts!: number;
 
   processingNetworkRequest = false;
   constructor(
@@ -215,19 +226,24 @@ export class SuppliersComponent implements OnInit {
       quantity = Number.parseInt(quantityToBuy);
     }
 
-    if (quantity && quantity != 0) {
+    if (quantity && quantity > 0) {
       this.httpSupplierService
         .buySupplierProducts(supplier, quantity)
-        .subscribe(() => (this.showSuccessAlert = true));
-
-      setTimeout(() => {
-        this.showSuccessAlert = false;
-      }, 1500);
+        .subscribe({
+          next: (response: any) => {
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+            } else this.showApiErrorResponse(response.message);
+          },
+          error: (error: any) => {
+            this.showApiErrorResponse();
+          },
+        });
     } else {
-      if (quantityToBuy != undefined) this.showErrorAlert = true;
+      this.errorMessage = 'please enter a correct quantity value';
       setTimeout(() => {
-        this.showErrorAlert = false;
-      }, 1500);
+        this.errorMessage = '';
+      }, 2500);
     }
   }
 

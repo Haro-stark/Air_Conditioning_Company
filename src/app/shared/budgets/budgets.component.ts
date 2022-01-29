@@ -145,6 +145,7 @@ export class BudgetsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
+      this.newBudget.budgetStatus = 'pendingAcceptance';
       this.budgetService.addBudget(this.newBudget).subscribe({
         next: (response: any) => {
           this.showApiSuccessResponse(response.message);

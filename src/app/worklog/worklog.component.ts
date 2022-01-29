@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { NgForm } from '@angular/forms';
 import { faEdit, faTrashAlt, faCheck, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -9,6 +8,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Order } from '../models/Order';
+import { Response } from '../models/Response';
 import { WorkLog } from '../models/WorkLog';
 import { AuthenticationService } from '../services/authentication.service';
 import { HttpService } from '../services/http.service';
@@ -23,111 +23,106 @@ export class WorklogComponent implements OnInit {
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
   closeIcon = faWindowClose;
-  workLogs$!: Observable<WorkLog[] | null | undefined>;
-  dateControl = new Date();
-  orders: Order[] = [];
-
-  worklogs: WorkLog[] = [
-    {
-      workLogId: 1,
-      date: new Date(),
-      numberOfHours: 5,
-      order: {
-        orderId: 1,
-        productList: [],
-        customer: { customerId: 112, name: 'cus1' },
-        orderName: '',
-        empPrice: 0,
-        totalPrice: 0,
-        service: [],
-      },
-    },
-    {
-      workLogId: 2,
-      date: new Date(),
-      numberOfHours: 3,
-      order: {
-        orderId: 3,
-        orderName: '',
-        empPrice: 0,
-        totalPrice: 0,
-        service: [],
-        productList: [],
-        customer: { customerId: 112, name: 'cus1' },
-      },
-    },
-    {
-      workLogId: 3,
-      date: new Date(),
-      numberOfHours: 4,
-      order: {
-        orderId: 1,
-        orderName: '',
-        empPrice: 0,
-        totalPrice: 0,
-        service: [],
-        customer: { customerId: 112, name: 'cus1' },
-      },
-    },
-  ];
-  logIdCount = 3;
-  user: any;
-  // postRef: any;
-  // post$: any;
 
   public createNewWorkLogModal!: NgbModalRef;
+  workLogs$!: Observable<WorkLog[] | null | undefined>;
+  orders$!: Observable<Order[] | null | undefined>;
+
+  dateControl = new Date();
+  worklogs!: WorkLog[];
+  orders!: Order[];
+  updatedWorklog!: WorkLog;
+
+  showErrorAlert: boolean = false;
+  showEditWorklogForm: boolean = false;
+  processingNetworkRequest: boolean = false;
+
+  user: any;
+
+  apiRequestError = {
+    error: { text: "" },
+    name: "",
+    message: "",
+    status: 0,
+    url: ""
+  };
+  apiSuccessResponse = '';
 
   constructor(
     config: NgbModalConfig,
     private modalService: NgbModal,
     public auth: AuthenticationService,
-    private afs: AngularFirestore,
     private httpService: HttpService
   ) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
-    this.auth.user$.subscribe((user) => (this.user = user));
+
   }
 
   ngOnInit(): void {
-    // this.workLogs$ = this.httpService.getWorkLogs().pipe(
-    //   map(data => {
-    //     console.log(data)
-    //     return data;
-    //   }),
-    //   catchError((error: string) => {
-    //     alert("Error retrieving data. : " + error);
-    //     return of(null);
-    //   }
-    //   )
-    // )
-    this.workLogs$ = of(this.worklogs);
+    this.auth.user$.subscribe(
+      (user) => {
+        console.log("user = ", user)
+        this.user = user
+
+
+        this.workLogs$ = this.httpService.getWorkLog(this.user.email).pipe(
+          map((response: any) => {
+            console.log("response of worklogs: ", response)
+            if (response.data && response.status === 200) {
+              this.worklogs = response.data;
+            } else {
+              this.showApiErrorResponse(response.message)
+            }
+            return this.worklogs;
+          }),
+          catchError((error: any) => {
+            this.showApiErrorResponse("Network Request Error");
+            return of(null);
+          })
+        );
+
+        this.orders$ = this.httpService.getOrder().pipe(
+          map((response: any) => {
+            console.log("response of orders: ", response)
+            if (response.data && response.status === 200) {
+              this.orders = response.data;
+            } else {
+              this.showApiErrorResponse(response.message)
+            }
+            return this.orders;
+          }),
+          catchError((error: any) => {
+            this.showApiErrorResponse("Network Request Error");
+            return of(null);
+          })
+        );
+      }
+    );
   }
 
   saveServer(createWorkLog: NgForm): void {
-    let log: WorkLog = {
-      workLogId: this.logIdCount++,
-      date: new Date(),
-      numberOfHours: createWorkLog.value.numberOfHours,
-      order: {
-        orderId: 1,
-        orderName: '',
-        empPrice: 0,
-        totalPrice: 0,
-        service: [],
-        customer: { customerId: 112, name: 'cus1' },
-      },
-    };
-    this.worklogs.push(log);
-    this.workLogs$ = of(this.worklogs);
-    this.createNewWorkLogModal.close();
-
-    //   console.log(createWorkLog.value.date);
-    //   if (createWorkLog.value.date && createWorkLog.value.order && createWorkLog.value.numberOfHours)
-    //     this.createNewWorkLogModal.close();
-    //   else
-    //     alert("Please provide all the fields")
+    if (createWorkLog.value.order && createWorkLog.value.numberOfHours) {
+      this.createNewWorkLogModal.close();
+      this.workLogs$ = this.httpService.addWorkLog(createWorkLog.value, this.user.email).pipe(
+        map((response: any) => {
+          console.log("response after saving log: ", response.response)
+          if (response.data && response.status === 200) {
+            this.worklogs = response.data
+          } else {
+            this.showApiErrorResponse(response.message)
+          }
+          return this.worklogs;
+        }),
+        catchError((error: any) => {
+          this.showApiErrorResponse("Network Request Failed");
+          return of(null);
+        })
+      )
+    }
+    else
+      alert("Please provide all the fields")
   }
 
   openCreateWorkLogModal(content: any) {
@@ -135,23 +130,104 @@ export class WorklogComponent implements OnInit {
   }
 
   deleteLog(log: WorkLog) {
-    // let data = this.worklogs.filter(
-    //   (worklog) => {
-    //     worklog.workLogId === log.workLogId;
-    //   }
-    // )
-    for (var i = 0; i < this.worklogs.length; i++) {
-      if (this.worklogs[i].workLogId === log.workLogId) {
-        this.worklogs.splice(i, 1);
-        i--;
-      }
-    }
-    this.workLogs$ = of(this.worklogs);
-  }
-  editLog(log: any) {}
+    console.log(log.workLogId)
 
-  // getDate(): Date {
-  //   let date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
-  //   return new Date(date);
-  // }
+    // this.httpService.deleteWorkLog(log.workLogId).subscribe({
+    //   next: (response: Response) => {
+    //     console.log(response);
+    //     if (response.status == 200) {
+    //       this.worklogs = this.worklogs.filter((response) => response.workLogId != log.workLogId);
+    //     } else {
+    //       this.showApiErrorResponse
+    //         (response.message);
+    //     }
+    //     // console.log('delete', log.workLogId, log);
+    //   },
+    //   error: (error: any) => {
+    //     this.showApiErrorResponse("Network Request Failed");
+    //   },
+    //   complete: () => {
+    //     this.showEditWorklogForm = false;
+    //     this.workLogs$ = of(this.worklogs);
+    //   },
+    // });
+    this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
+      map((response: Response) => {
+
+        console.log("resoinse status : ", response.status, "type = ", typeof response);
+        if (response.status == 200) {
+          this.worklogs = this.worklogs.filter((response) => response.workLogId != log.workLogId);
+        } else {
+          this.showApiErrorResponse
+            (response.message);
+        }
+        return this.worklogs;
+        // console.log('delete', log.workLogId, log);
+      }),
+      catchError((error: any) => {
+        this.showApiErrorResponse(error);
+        return of(this.worklogs);
+      })
+    );
+
+  }
+
+  editLog(log: WorkLog) {
+    this.updatedWorklog = log;
+    console.log("updateWorkLog: ", log)
+    this.showEditWorklogForm = !this.showEditWorklogForm;
+  }
+
+  onUpdateLog(log: WorkLog) {
+    this.processingNetworkRequest = !this.processingNetworkRequest;
+    if (log.order && log.numberOfHours) {
+      this.workLogs$ = this.httpService.updateWorkLog(log).pipe(
+        map((response: any) => {
+
+          if (response.data && response.status === 200) {
+            console.log("response inside response = ", response)
+
+            var i = this.worklogs.findIndex(log => log.workLogId === response.data.workLogId)
+            this.worklogs[i] = response.data;
+
+            this.processingNetworkRequest = !this.processingNetworkRequest;
+            this.showEditWorklogForm = !this.showEditWorklogForm;
+
+          } else {
+            this.showApiErrorResponse
+              (response.message);
+          }
+
+          return this.worklogs;
+        }),
+        catchError((error: any) => {
+          this.showApiErrorResponse("Network Request Failed");
+          return of(null);
+        })
+      )
+    }
+    else
+      alert("Please provide all the fields")
+  }
+
+
+  onClickToggleEditEmployeeForm() {
+    this.showEditWorklogForm = !this.showEditWorklogForm;
+  }
+
+  showApiErrorResponse(message?: any) {
+    console.log("message in shoAPiWrrorResponse: ", message)
+    if (message) {
+      this.apiRequestError.message = message;
+    } else {
+      this.apiRequestError.message =
+        'Error! please check your internet connection and try again';
+    }
+    this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
+
+    setTimeout(() => {
+      this.showErrorAlert = false;
+    }, 3500);
+  }
 }

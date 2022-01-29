@@ -1,1 +1,28 @@
-<p>officer works!</p>
+<div>
+    <div class="header">
+        <button class="btn btn-default" (click)="toggleSidebar()">
+            <fa-icon [icon]="displaySideBar ? faMinusIcon:faBarsIcon" title="toggle Taskbar" [ngClass]="'icon'">
+            </fa-icon>
+        </button>
+
+        <div id="nav-hamburger" [ngClass]="displaySideBar ? 'open' : 'close'">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar" [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'">
+            <ul>
+                <li><a [routerLink]="['budgets']">Budgets </a></li>
+                <li><a [routerLink]="['workLog']">WorkLogs </a></li>
+            </ul>
+        </div>
+
+        <div class="body">
+            <h1 style="color: red" class="m-5">Officer panel</h1>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

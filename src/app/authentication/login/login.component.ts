@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { map, take } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   error: { name: string; message: string } = { name: '', message: '' };
   constructor(
     public authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private injector: Injector
   ) { }
 
   ngOnInit() { }
@@ -42,15 +44,22 @@ export class LoginComponent implements OnInit {
       this.authService
         .login(this.email, this.password)
         .then(() => {
-          this.SigningIn = false;
-          this.router.navigate(['/home']);
+          this.authService.user$.subscribe((userData) => {
+            if (userData) {
+              this.SigningIn = false;
+              this.router.navigate([`/${userData.role}`]);
+              console.log("user data = ", userData)
+            }
+          })
+
         })
         .catch((_error) => {
-          console.log(_error);
+          console.log("error while logging in: ", _error);
           this.error = _error;
           this.SigningIn = false;
           this.router.navigate(['/login']);
         });
+
     } else {
       this.SigningIn = false;
     }
