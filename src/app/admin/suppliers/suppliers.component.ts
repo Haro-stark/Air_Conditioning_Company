@@ -226,17 +226,17 @@ export class SuppliersComponent implements OnInit {
     return this.errorMessage;
   }
 
-  buyProduct(supplier: Supplier) {
+  buyProduct(productId:number) {
     let quantityToBuy: any = prompt('Enter a Value');
     let quantity!: number;
-    console.log('quantit', quantityToBuy);
+    console.log('quantity', quantityToBuy, productId);
     if (quantityToBuy && quantityToBuy.trim().length !== 0) {
       quantity = Number.parseInt(quantityToBuy);
     }
 
     if (quantity && quantity > 0) {
       this.httpSupplierService
-        .buySupplierProducts(supplier, quantity)
+        .buySupplierProducts(productId, quantity)
         .subscribe({
           next: (response: any) => {
             if (response.status === 200) {

@@ -6,8 +6,8 @@ import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
-      window.console.log = window.console.debug = window.console.warn = window.console.error = () => {};
-      console.log = console.debug = console.warn = console.error = () => {};
+      // window.console.log = window.console.debug = window.console.warn = window.console.error = () => {};
+      // console.log = console.debug = console.warn = console.error = () => {};
 
 
 }

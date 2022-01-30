@@ -20,11 +20,14 @@ const httpOptions = {
 })
 export class HttpService {
   private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Budget';
-  private customerApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Customer';
-  private employeeApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Employee';
+  private customerApiUrl =
+    'https://hidden-bastion-05543.herokuapp.com//Customer';
+  private employeeApiUrl =
+    'https://hidden-bastion-05543.herokuapp.com//Employee';
   private orderApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Order';
   private productApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Product';
-  private supplierApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Supplier';
+  private supplierApiUrl =
+    'https://hidden-bastion-05543.herokuapp.com//Supplier';
   private workLogApiUrl = 'https://hidden-bastion-05543.herokuapp.com//WorkLog';
   private supplierPurchasedHistoryApiUrl =
     'https://hidden-bastion-05543.herokuapp.com//supplierPurchasedHistory';
@@ -301,13 +304,12 @@ export class HttpService {
     });
   }
   buySupplierProducts(
-    Supplier: Supplier,
+    productId: number,
     quantity: number
   ): Observable<Supplier> {
     return this.http.post<Supplier>(
       `${this.supplierApiUrl}/buyProductFromSupplier`,
-      Supplier,
-      { params: { quantity: quantity } }
+      { params: { quantity: quantity, product: productId } }
     );
   }
 }
