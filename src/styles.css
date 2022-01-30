@@ -44,3 +44,10 @@ p.alert-danger {
   position: absolute;
   height: 100vh;
 }
+
+.flexCenter{
+      display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+}

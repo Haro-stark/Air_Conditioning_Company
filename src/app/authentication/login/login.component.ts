@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
   password = '';
   errorMessage = '';
   SigningIn: Boolean = false;
-  isUserEmailLoggedIn!:Boolean;
+  isUserEmailLoggedIn!: Boolean;
   error: { name: string; message: string } = { name: '', message: '' };
   constructor(
     public authService: AuthenticationService,
@@ -25,22 +25,21 @@ export class LoginComponent implements OnInit {
     this.authService.user$.subscribe((userData) => {
       if (userData) {
         this.SigningIn = false;
-        this.isUserEmailLoggedIn=true;
-        if ((userData.role = 'admin')) {
+        this.isUserEmailLoggedIn = true;
+        if ((userData.role == 'admin')) {
           this.router.navigate([`/admin/employees`]);
         } else {
           this.router.navigate([`/${userData.role}`]);
           console.log('user data = ', userData);
         }
-      }
-      else this.isUserEmailLoggedIn=false; 
+      } else this.isUserEmailLoggedIn = false;
     });
   }
 
   checkUserInfo() {
     if (this.authService.isUserEmailLoggedIn) {
       console.log('login already');
-      this.isUserEmailLoggedIn=true;
+      this.isUserEmailLoggedIn = true;
       this.router.navigate(['/login']);
     } else {
       console.log('not logged in');
@@ -63,12 +62,13 @@ export class LoginComponent implements OnInit {
           this.authService.user$.subscribe((userData) => {
             if (userData) {
               this.SigningIn = false;
-              this.isUserEmailLoggedIn= true;
-              if ((userData.role = 'admin')) {
+              this.isUserEmailLoggedIn = true;
+              console.log('user data = ', userData);
+              if ((userData.role == 'admin')) {
                 this.router.navigate([`/admin/employees`]);
               } else {
                 this.router.navigate([`/${userData.role}`]);
-                console.log('user data = ', userData);
+                console.log('user = ', userData);
               }
             }
           });
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
   }
 
   signOut() {
-    this.isUserEmailLoggedIn = false;
+    this.authService.signOut().then(() => (this.isUserEmailLoggedIn = false)).catch((_error) => this.error = _error);
   }
 
   validateForm(email: string, password: string): boolean {

@@ -1,8 +1,11 @@
 <div class="d-flex justify-content-center form-container-div">
   <div class="form" style="width: 60%">
     <ng-container *ngIf="isUserEmailLoggedIn">
+      <div class="flexCenter">
       <h3>you are logged in</h3>
       <p>please wait while we redirect you......</p>
+              <button class="btn btn-danger" (click)="signOut()"> Sign Out</button>
+</div>
     </ng-container>
     <ng-container *ngIf="isUserEmailLoggedIn == false">
       <div>
@@ -70,12 +73,15 @@
         flex-direction: column;
       "
     >
-      <div>
-        <hr class="line-secondary" />
+            <hr class="line-secondary" />
+
+      <div class="flexCenter">
         <p class="text-center">Oops invalid url...</p>
         <br />
         <p>please wait while we redirect to your screen......</p>
         <hr />
+
+        <button class="btn btn-danger" (click)="signOut()"> Sign Out</button>
       </div>
     </ng-container>
   </div>

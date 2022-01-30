@@ -22,10 +22,7 @@ export class BudgetsComponent implements OnInit {
   checkIcon = faCheck;
   closeIcon = faWindowClose;
 
-  customers: Customer[] = [
-    { customerId: 1, name: 'rand' },
-    { customerId: 2, name: 'asd' },
-  ];
+  customers: Customer[] = [];
   customerName!: string;
 
   showNewCustomerForm: boolean = false;
@@ -109,7 +106,9 @@ export class BudgetsComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private budgetService: HttpService
-  ) {this.loading= true}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -120,7 +119,8 @@ export class BudgetsComponent implements OnInit {
           } else {
             this.showApiErrorResponse(response.message);
           }
-      this.loading= false  },
+          this.loading = false;
+        },
         error: (error: any) => {
           this.showApiErrorResponse();
         },
@@ -301,5 +301,10 @@ export class BudgetsComponent implements OnInit {
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
+  }
+
+  isNewCustomerSelected(customer: any) {
+    console.log('isNewCustomer', customer);
+    
   }
 }
