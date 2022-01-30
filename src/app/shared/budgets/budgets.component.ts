@@ -48,6 +48,8 @@ export class BudgetsComponent implements OnInit {
     budgetName: '',
     totalPrice: 0,
     budgetStatus: '',
+    assistantHours: 0,
+    officerHours: 0,
     productList: [],
     customer: { customerId: 0, name: '' },
     service: [],
@@ -58,6 +60,8 @@ export class BudgetsComponent implements OnInit {
       budgetName: 'abc',
       totalPrice: 546,
       budgetStatus: 'accepted',
+      assistantHours: 0,
+      officerHours: 0,
       productList: [],
       customer: { customerId: 112, name: 'cus1' },
       service: [],
@@ -107,7 +111,6 @@ export class BudgetsComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private budgetService: HttpService,
-    private generateOrderService: ShareDatabetweenComponentsService
   ) {}
 
   ngOnInit(): void {

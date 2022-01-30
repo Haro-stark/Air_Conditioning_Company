@@ -1,1 +1,262 @@
-<p>supplier-purchased-history works!</p>
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
+<div
+  *ngIf="
+    !showAddSupplierPurchasedHistoryForm &&
+    !showEditSupplierPurchasedHistoryForm
+  "
+>
+  <div class="table-responsive">
+    <table class="table">
+      <ng-container
+        *ngIf="supplierPurchasedHistory && supplierPurchasedHistory.length > 0"
+      >
+        <thead>
+          <tr>
+            <th scope="col">SupplierID</th>
+            <th scope="col">totalPrice</th>
+            <th scope="col">Product name</th>
+            <th scope="col">BasePrice</th>
+            <th scope="col">Tax</th>
+            <th scope="col">characteristics</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let purchasedHistory of supplierPurchasedHistory">
+          <tr *ngFor="let product of purchasedHistory.supplierProducts">
+            <td>{{ purchasedHistory.supplierOrderId }}</td>
+            <td>{{ purchasedHistory.totalPrice }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.tax }}</td>
+            <td>{{ product.characteristics }}</td>
+
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="
+                  onEditSupplierPurchasedHistory(
+                    purchasedHistory.supplierOrderId,
+                    purchasedHistory
+                  )
+                "
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="
+                  onDeleteSupplierPurchasedHistory(
+                    purchasedHistory.supplierOrderId,
+                    purchasedHistory
+                  )
+                "
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="!supplierPurchasedHistory || !supplierPurchasedHistory.length">
+      <div class="emptySupplier text-center alert-warning">
+        There are no purchased history currently available ...
+      </div>
+    </ng-container>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+
+<ng-container *ngIf="showAddSupplierPurchasedHistoryForm && !showEditSupplierPurchasedHistoryForm">
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">New supplier Purchased History</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="supplierForm"
+  >
+    <div class="form-group">
+      <label for="totalPrice" class="form-label">Total Price</label>
+      <input
+        required
+        id="totalPrice"
+        type="text"
+        name="totalPrice"
+        placeholder="enter totalPrice"
+        [(ngModel)]="newSupplierPurchasedHistory.totalPrice"
+        class="form-control"
+      />
+    </div>
+    <hr />
+
+    <p class="text-center m-3">supplierProducts</p>
+    <hr />
+
+    <div class="form-group">
+      <label for="productName" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="basePrice" class="form-label">Base Price </label>
+      <input
+        required
+        id="basePrice"
+        type="text"
+        name="basePrice"
+        placeholder="enter product base price"
+        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].price"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tax" class="form-label">Tax </label>
+      <input
+        required
+        id="tax"
+        type="text"
+        name="tax"
+        placeholder="enter product tax"
+        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].tax"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="characteristics" class="form-label">characteristics</label>
+      <input
+        required
+        id="characteristics"
+        type="text"
+        name="characteristics"
+        placeholder="enter product characteristics"
+        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].characteristics"
+        class="form-control"
+      />
+    </div>
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleAddSupplierPurchasedHistoryForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<ng-container *ngIf="showEditSupplierPurchasedHistoryForm && !showAddSupplierPurchasedHistoryForm">
+  <h1 style="color: greenyellow" class="mb-3">Editing a supplier purchasedHistory</h1>
+
+  <hr />
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="
+      onUpdateSupplierPurchasedHistory(updatedSupplierPurchasedHistory)
+    "
+    class="form"
+    name="supplierForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Total Price</label>
+      <input
+        required
+        id="totalPrice"
+        type="number"
+        name="totalPrice"
+        placeholder="enter supplier name"
+        [(ngModel)]="updatedSupplierPurchasedHistory"
+        class="form-control"
+      />
+    </div>
+
+    <p class="text-center m-3">supplierProducts</p>
+    <hr />
+
+    <div class="form-group">
+      <label for="productName" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="basePrice" class="form-label">Base Price </label>
+      <input
+        required
+        id="basePrice"
+        type="text"
+        name="basePrice"
+        placeholder="enter base price"
+        [(ngModel)]="
+          updatedSupplierPurchasedHistory.supplierProducts[0].price"
+        
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tax" class="form-label">Tax </label>
+      <input
+        required
+        id="tax"
+        type="text"
+        name="tax"
+        placeholder="enter tax"
+        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].tax"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="characteristics" class="form-label">characteristics</label>
+      <input
+        required
+        id="characteristics"
+        type="text"
+        name="characteristics"
+        placeholder="enter characteristics"
+        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].characteristics"
+        class="form-control"
+      />
+    </div>
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="onClickToggleEditSupplierPurchasedHistoryForm()"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>

@@ -10,9 +10,7 @@
     padding: 30px;
     height: fit-content;
     min-height: 300px;
+    min-width: 250px;
     background-color: white;
     box-shadow: 5px 2px 15px 5px rgb(211 211 211);
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }

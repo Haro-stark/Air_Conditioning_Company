@@ -17,6 +17,7 @@ import { OrdersComponent } from './admin/orders/orders.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { AuthenticationService } from './services/authentication.service';
+import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -34,6 +35,8 @@ const routes: Routes = [
       { path: 'orders', component: OrdersComponent },
       { path: 'products', component: ProductsComponent },
       { path: 'suppliers', component: SuppliersComponent },
+      { path: 'suppliersPurchasedHistory', component: SupplierPurchasedHistoryComponent },
+
       { path: 'budgets', component: BudgetsComponent },
       { path: 'workLog', component: WorklogComponent },
       { path: '', redirectTo: 'employees', pathMatch: 'full' },

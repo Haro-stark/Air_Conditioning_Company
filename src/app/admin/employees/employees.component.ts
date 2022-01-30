@@ -292,7 +292,7 @@ export class EmployeesComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! Server is not  please check your internet connection and try again';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

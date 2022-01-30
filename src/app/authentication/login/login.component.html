@@ -4,70 +4,78 @@
       <h3>you are logged in</h3>
       <p>please wait while we redirect you......</p>
     </ng-container>
-    <ng-container *ngIf="isUserEmailLoggedIn==false">
+    <ng-container *ngIf="isUserEmailLoggedIn == false">
       <div>
-      <h3 class="text-center text-info font-weight-bold">Log in</h3>
-      <p *ngIf="error.message.length > 0" class="text-danger">
-        {{ error.message }}
-      </p>
+        <h3 class="text-center text-info font-weight-bold">Log in</h3>
+        <hr />
+        <p *ngIf="error.message.length > 0" class="text-danger">
+          {{ error.message }}
+        </p>
 
-      <form (ngSubmit)="onLoginEmail()">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            required
-            [(ngModel)]="email"
-            minlength="5"
-            required
-          />
-        </div>
+        <form (ngSubmit)="onLoginEmail()">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              required
+              [(ngModel)]="email"
+              minlength="5"
+              required
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            required
-            [(ngModel)]="password"
-            minlength="1"
-            required
-          />
-        </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              required
+              [(ngModel)]="password"
+              minlength="1"
+              required
+            />
+          </div>
 
-        <button *ngIf="!SigningIn" type="submit" class="btn btn-success">
-          Log In
-        </button>
-        <button
-          *ngIf="SigningIn"
-          class="btn btn-primary"
-          type="button"
-          disabled
-        >
-          <span
-            class="spinner-border spinner-border-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          <span class="visually-hidden">Logging in...</span>
-        </button>
-      </form>
+          <button *ngIf="!SigningIn" type="submit" class="btn btn-success">
+            Log In
+          </button>
+          <button
+            *ngIf="SigningIn"
+            class="btn btn-primary"
+            type="button"
+            disabled
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden">Logging in...</span>
+          </button>
+        </form>
       </div>
     </ng-container>
 
-     <ng-container *ngIf="!isUserEmailLoggedIn && isUserEmailLoggedIn!=false" style="display: flex;
-     flex-direction: column; text-align: center">
-     <div>
-       <hr class="line-secondary">
-       <p class="text-center">Oops invalid url...</p>
-       <br>
-      <p>please wait while we redirect to your screen......</p>
-      <hr>
+    <ng-container
+      *ngIf="!isUserEmailLoggedIn && isUserEmailLoggedIn != false"
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      "
+    >
+      <div>
+        <hr class="line-secondary" />
+        <p class="text-center">Oops invalid url...</p>
+        <br />
+        <p>please wait while we redirect to your screen......</p>
+        <hr />
       </div>
     </ng-container>
   </div>

@@ -27,6 +27,7 @@ import { ProductsComponent } from './admin/products/products.component';
 import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
     WorklogComponent,
     AccessDeniedComponent,
     LoadingSpinnerComponent,
+    SupplierPurchasedHistoryComponent,
   ],
   imports: [
     BrowserModule,

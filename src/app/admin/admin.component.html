@@ -1,39 +1,45 @@
 <div>
   <div class="header">
-    <button class="btn btn-default " (click)="toggleSidebar()">
+    <button class="btn btn-default" (click)="toggleSidebar()">
       <fa-icon
-        [icon]="displaySideBar ? faMinusIcon:faBarsIcon"
+        [icon]="displaySideBar ? faMinusIcon : faBarsIcon"
         title="toggle Taskbar"
         [ngClass]="'icon'"
       ></fa-icon>
     </button>
 
-    <button class="btn btn-danger signoutbtn"(click)="signout()"> Sign out</button>
+    <button class="btn btn-danger signoutbtn" (click)="signout()">
+      Sign out
+    </button>
   </div>
- <div
-      class="sidebar"
-      [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
-    >
-      <ul>
-        <li><a [routerLink]="['employees']">Employees </a></li>
-        <li><a [routerLink]="['orders']">Orders </a></li>
-        <li><a [routerLink]="['products']">Products </a></li>
-        <li><a [routerLink]="['suppliers']">Suppliers </a></li>
-        <li><a [routerLink]="['budgets']">Budgets </a></li>
-        <li><a [routerLink]="['workLog']">WorkLogs </a></li>
-      </ul>
-    </div>
+  <div
+    class="sidebar"
+    [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
+  >
+    <ul>
+      <li><a [routerLink]="['employees']">Employees </a></li>
+      <li><a [routerLink]="['orders']">Orders </a></li>
+      <li><a [routerLink]="['products']">Products </a></li>
+      <li><a [routerLink]="['suppliers']">Suppliers </a></li>
+      <li>
+        <a [routerLink]="['suppliersPurchasedHistory']"
+          >suppliersPurchasedHistory
+        </a>
+      </li>
+
+      <li><a [routerLink]="['budgets']">Budgets </a></li>
+      <li><a [routerLink]="['workLog']">WorkLogs </a></li>
+    </ul>
+  </div>
   <div class="main">
-   
-<ng-container *ngIf="loading">
-  <app-loading-spinner></app-loading-spinner>
-</ng-container>
-<div *ngIf="!loading">
- 
-    <div class="body">
-      <h1 style="color: red" class="m-5">Admin panel</h1>
-      <router-outlet></router-outlet>
+    <ng-container *ngIf="loading">
+      <app-loading-spinner></app-loading-spinner>
+    </ng-container>
+    <div *ngIf="!loading">
+      <div class="body">
+        <h1 style="color: red" class="m-5">Admin panel</h1>
+        <router-outlet></router-outlet>
+      </div>
     </div>
-  </div>
   </div>
 </div>

@@ -7,6 +7,8 @@ export interface Budget {
   budgetName: string;
   totalPrice: number;
   budgetStatus: string;
+  assistantHours: number;
+  officerHours: number;
   productList: Product[];
   customer: Customer;
   service: Services[];

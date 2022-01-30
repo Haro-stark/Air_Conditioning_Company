@@ -19,15 +19,16 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class HttpService {
-  private budgetApiUrl = 'http://localhost:8080/Budget';
-  private customerApiUrl = 'http://localhost:8080/Customer';
-  private employeeApiUrl = 'http://localhost:8080/Employee';
-  private orderApiUrl = 'http://localhost:8080/Order';
-  private productApiUrl = 'http://localhost:8080/Product';
-  private supplierApiUrl = 'http://localhost:8080/Supplier';
-  private workLogApiUrl = 'http://localhost:8080/WorkLog';
+  private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Budget';
+  private customerApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Customer';
+  private employeeApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Employee';
+  private orderApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Order';
+  private productApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Product';
+  private supplierApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Supplier';
+  private workLogApiUrl = 'https://hidden-bastion-05543.herokuapp.com//WorkLog';
   private supplierPurchasedHistoryApiUrl =
-    'http://localhost:8080/supplierPurchasedHistory';
+    'https://hidden-bastion-05543.herokuapp.com//supplierPurchasedHistory';
+
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -178,10 +179,10 @@ export class HttpService {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);
   }
 
-  getsupplierPurchasedHistory(): Observable<any> {
+  getSupplierPurchasedHistory(): Observable<any> {
     return this.http.get<any>(`${this.supplierPurchasedHistoryApiUrl}/list`);
   }
-  getsupplierPurchasedHistoryById(
+  getSupplierPurchasedHistoryById(
     id: number
   ): Observable<SupplierPurchasedHistory> {
     return this.http.get<SupplierPurchasedHistory>(
@@ -191,7 +192,7 @@ export class HttpService {
       }
     );
   }
-  addsupplierPurchasedHistory(
+  addSupplierPurchasedHistory(
     supplierPurchasedHistory: SupplierPurchasedHistory
   ): Observable<SupplierPurchasedHistory> {
     return this.http.post<SupplierPurchasedHistory>(
@@ -199,7 +200,7 @@ export class HttpService {
       supplierPurchasedHistory
     );
   }
-  updatesupplierPurchasedHistory(
+  updateSupplierPurchasedHistory(
     supplierPurchasedHistory: SupplierPurchasedHistory
   ): Observable<SupplierPurchasedHistory> {
     return this.http.put<any>(
@@ -208,7 +209,7 @@ export class HttpService {
       httpOptions
     );
   }
-  deletesupplierPurchasedHistory(
+  deleteSupplierPurchasedHistory(
     id: number
   ): Observable<SupplierPurchasedHistory> {
     const httpOptions: Object = {
@@ -219,7 +220,7 @@ export class HttpService {
       httpOptions
     );
   }
-  getsupplierPurchasedHistoryPdf(id: number): Observable<any> {
+  getSupplierPurchasedHistoryPdf(id: number): Observable<any> {
     return this.http.get<any>(
       `${this.supplierPurchasedHistoryApiUrl}/exportToPDF`,
       {

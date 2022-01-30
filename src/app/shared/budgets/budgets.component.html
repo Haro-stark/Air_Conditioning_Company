@@ -159,7 +159,7 @@
           id="officerHours"
           type="number"
           name="officerHours"
-          [(ngModel)]="officerHours"
+          [(ngModel)]="newBudget.officerHours"
           class="form-control"
         />
       </div>
@@ -171,7 +171,7 @@
           id="assistantHours"
           type="number"
           name="assistantHours"
-          [(ngModel)]="assistantHours"
+          [(ngModel)]="newBudget.assistantHours"
           class="form-control"
         />
       </div>
@@ -258,7 +258,29 @@
         <option ngValue="Canceled">Canceled</option>
       </select>
     </div>
+ <div class="form-group">
+        <label for="officerHours" class="form-label">Officer Hours</label>
+        <input
+          required
+          id="officerHours"
+          type="number"
+          name="officerHours"
+          [(ngModel)]="newBudget.officerHours"
+          class="form-control"
+        />
+      </div>
 
+      <div class="form-group">
+        <label for="assistantHours" class="form-label">Assistant Hours</label>
+        <input
+          required
+          id="assistantHours"
+          type="number"
+          name="assistantHours"
+          [(ngModel)]="newBudget.assistantHours"
+          class="form-control"
+        />
+      </div>
     <div class="form-group">
       <label for="text" class="form-label">Total Price</label>
       <input
