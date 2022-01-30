@@ -19,18 +19,18 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class HttpService {
-  private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Budget';
+  private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com/Budget';
   private customerApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com//Customer';
+    'https://hidden-bastion-05543.herokuapp.com/Customer';
   private employeeApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com//Employee';
-  private orderApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Order';
-  private productApiUrl = 'https://hidden-bastion-05543.herokuapp.com//Product';
+    'https://hidden-bastion-05543.herokuapp.com/Employee';
+  private orderApiUrl = 'https://hidden-bastion-05543.herokuapp.com/Order';
+  private productApiUrl = 'https://hidden-bastion-05543.herokuapp.com/Product';
   private supplierApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com//Supplier';
+    'https://hidden-bastion-05543.herokuapp.com/Supplier';
   private workLogApiUrl = 'https://hidden-bastion-05543.herokuapp.com//WorkLog';
   private supplierPurchasedHistoryApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com//supplierPurchasedHistory';
+    'https://hidden-bastion-05543.herokuapp.com/supplierPurchasedHistory';
 
   constructor(private http: HttpClient) {}
 
