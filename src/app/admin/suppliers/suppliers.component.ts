@@ -226,7 +226,7 @@ export class SuppliersComponent implements OnInit {
     return this.errorMessage;
   }
 
-  buyProduct(productId:number) {
+  buyProduct(productId: any) {
     let quantityToBuy: any = prompt('Enter a Value');
     let quantity!: number;
     console.log('quantity', quantityToBuy, productId);
