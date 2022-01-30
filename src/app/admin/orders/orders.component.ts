@@ -50,11 +50,12 @@ export class OrdersComponent implements OnInit {
   apiErrorResponse: string = '';
   apiSuccessResponse = '';
   processingNetworkRequest = false;
+  loading = false;
   constructor(
     private cd: ChangeDetectorRef,
     private shareOrderDataService: ShareDatabetweenComponentsService,
     private httpOrderService: HttpService
-  ) {}
+  ) {this.loading=true;}
 
   ngOnInit(): void {
     this.httpOrderService.getOrder().subscribe({
@@ -65,10 +66,12 @@ export class OrdersComponent implements OnInit {
         } else {
           this.showApiErrorResponse(response.message);
         }
+        this.loading = false;
       },
       error: (error: any) => {
         this.showApiErrorResponse();
       },
+      
     });
     this.shareOrderDataService.onGenerateOrder().subscribe((value: Order) => {
       if (value) {
@@ -223,7 +226,10 @@ export class OrdersComponent implements OnInit {
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
+      this.loading = false;
     }, 3500);
+
+    
   }
 
   showApiSuccessResponse(message: string) {

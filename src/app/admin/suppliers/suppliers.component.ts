@@ -77,6 +77,7 @@ export class SuppliersComponent implements OnInit {
   formSubmitted = false;
   showErrorAlert = false;
   showSuccessAlert = false;
+  loading = false;
   apiRequestError!: {
     error: { text: string };
     name: string;
@@ -92,18 +93,24 @@ export class SuppliersComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private httpSupplierService: HttpService
-  ) {}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
-    this.httpSupplierService.getSupplier().subscribe((response: any) => {
-      if (response.data && response.status === 200) {
-        this.suppliers = response.data;
-      } else {
-        this.showApiErrorResponse(response.message);
-      }
-      (error: any) => {
+    this.httpSupplierService.getSupplier().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          this.suppliers = response.data;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+        this.loading = false;
+      },
+
+      error: (error: any) => {
         this.showApiErrorResponse();
-      };
+      },
     });
   }
 
@@ -258,6 +265,7 @@ export class SuppliersComponent implements OnInit {
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
+      this.loading = false;
     }, 3500);
   }
 

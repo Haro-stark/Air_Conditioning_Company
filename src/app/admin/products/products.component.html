@@ -1,15 +1,4 @@
-<div
-  class="text-center m-3"
-  *ngIf="!showAddProductForm && !showEditProductForm"
->
-  <button class="btn badge-success hideFromView" (click)="onClickToggleAddProductForm()">
-    Create New Product
-  </button>
-</div>
 
-<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
-  {{ errorMessage }}
-</p>
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -22,7 +11,30 @@
 >
   {{ apiSuccessResponse }}
 </div>
-<div *ngIf="!showAddProductForm && !showEditProductForm">
+
+
+<div
+  class="text-center m-3"
+  *ngIf="!showAddProductForm && !showEditProductForm"
+>
+  <button
+    class="btn badge-success hideFromView"
+    (click)="onClickToggleAddProductForm()"
+  >
+    Create New Product
+  </button>
+</div>
+
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<ng-container *ngIf="loading">
+  <app-loading-spinner> loading... </app-loading-spinner>
+</ng-container>
+
+<div *ngIf="!showAddProductForm && !showEditProductForm && !loading">
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="products && products.length > 0">
@@ -132,7 +144,7 @@
         class="form-control"
       />
     </div>
-  
+
     <span class="d-flex">
       <button
         *ngIf="!processingNetworkRequest"
@@ -198,7 +210,7 @@
         class="form-control"
       />
     </div>
-  <div class="form-group">
+    <div class="form-group">
       <label for="basePrice" class="form-label">Base Price </label>
       <input
         required
@@ -223,7 +235,6 @@
       />
     </div>
     <span class="d-flex">
-
       <button
         *ngIf="!processingNetworkRequest"
         class="btn btn-outline-success"
@@ -254,4 +265,3 @@
     </span>
   </form>
 </ng-container>
-

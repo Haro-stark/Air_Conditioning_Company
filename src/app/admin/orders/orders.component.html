@@ -1,16 +1,5 @@
-<!-- <div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
-  <button class="btn badge-success" (click)="onClickToggleAddOrderForm()">
-    Create New Order
-  </button>
-</div> -->
 
-<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
-  {{ errorMessage }}
-</p>
-
-
-<div>
-  <div
+<div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
 >
@@ -22,7 +11,30 @@
 >
   {{ apiSuccessResponse }}
 </div>
-<div *ngIf="!showAddOrderForm && !showEditOrderForm">
+
+
+
+<!-- <div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
+  <button class="btn badge-success" (click)="onClickToggleAddOrderForm()">
+    Create New Order
+  </button>
+</div> -->
+
+
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<ng-container *ngIf="loading">
+<app-loading-spinner>  loading...
+</app-loading-spinner>
+
+</ng-container>
+
+<div>
+
+<div *ngIf="!showAddOrderForm && !showEditOrderForm &&!loading">
   
   <div class="table-responsive">
     <table class="table">

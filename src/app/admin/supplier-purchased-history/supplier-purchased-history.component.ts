@@ -14,9 +14,7 @@ import { HttpService } from 'src/app/services/http.service';
   templateUrl: './supplier-purchased-history.component.html',
   styleUrls: ['./supplier-purchased-history.component.css'],
 })
-export class SupplierPurchasedHistoryComponent
-  implements OnInit
-{
+export class SupplierPurchasedHistoryComponent implements OnInit {
   editIcon = faEdit;
   deleteIcon = faTrashAlt;
   checkIcon = faCheck;
@@ -46,23 +44,30 @@ export class SupplierPurchasedHistoryComponent
   numberOfProducts!: number;
   productArray: Product[] = new Array<Product>();
   processingNetworkRequest = false;
+  loading = false;
+
   constructor(
     private cd: ChangeDetectorRef,
     private httpSupplierPurchasedHistoryService: HttpService
-  ) {}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
     this.httpSupplierPurchasedHistoryService
       .getSupplierPurchasedHistory()
-      .subscribe((response: any) => {
-        if (response.data && response.status === 200) {
-          this.supplierPurchasedHistory = response.data;
-        } else {
-          this.showApiErrorResponse(response.message);
-        }
-        (error: any) => {
+      .subscribe({
+        next: (response: any) => {
+          if (response.data && response.status === 200) {
+            this.supplierPurchasedHistory = response.data;
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+          this.loading = false;
+        },
+        error: (error: any) => {
           this.showApiErrorResponse();
-        };
+        },
       });
   }
 
@@ -211,6 +216,7 @@ export class SupplierPurchasedHistoryComponent
     this.showErrorAlert = true;
     setTimeout(() => {
       this.showErrorAlert = false;
+      this.loading = false;
     }, 3500);
   }
 

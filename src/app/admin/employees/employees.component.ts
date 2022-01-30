@@ -49,6 +49,7 @@ export class EmployeesComponent implements OnInit {
   services!: string | string[];
   showEditEmployeeForm: Boolean = false;
   processingNetworkRequest: Boolean = false;
+  loading: boolean = false;
   employees: Employee[] = [
     // {
     //   employeeId: 1,
@@ -122,9 +123,10 @@ export class EmployeesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private httpEmployeeService: HttpService,
     private authService: AuthenticationService
-  ) {}
+  ) { this.loading = true;}
 
   ngOnInit(): void {
+    this.loading = true;
     this.httpEmployeeService.getEmployee().subscribe({
       next: (response: any) => {
         console.log(response);
@@ -133,6 +135,8 @@ export class EmployeesComponent implements OnInit {
         } else {
           this.showApiErrorResponse(response.message);
         }
+
+        this.loading = false;
       },
       error: (error: any) => {
         this.showApiErrorResponse();

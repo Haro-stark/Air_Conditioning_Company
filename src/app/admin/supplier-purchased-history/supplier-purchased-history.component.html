@@ -1,6 +1,3 @@
-<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
-  {{ errorMessage }}
-</p>
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -13,10 +10,20 @@
 >
   {{ apiSuccessResponse }}
 </div>
+
+<p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
+  {{ errorMessage }}
+</p>
+
+<ng-container *ngIf="loading">
+  <app-loading-spinner> loading... </app-loading-spinner>
+</ng-container>
+
 <div
   *ngIf="
     !showAddSupplierPurchasedHistoryForm &&
-    !showEditSupplierPurchasedHistoryForm
+    !showEditSupplierPurchasedHistoryForm &&
+    !loading
   "
 >
   <div class="table-responsive">
@@ -73,7 +80,9 @@
         </tbody>
       </ng-container>
     </table>
-    <ng-container *ngIf="!supplierPurchasedHistory || !supplierPurchasedHistory.length">
+    <ng-container
+      *ngIf="!supplierPurchasedHistory || !supplierPurchasedHistory.length"
+    >
       <div class="emptySupplier text-center alert-warning">
         There are no purchased history currently available ...
       </div>
@@ -82,8 +91,14 @@
   <router-outlet></router-outlet>
 </div>
 
-<ng-container *ngIf="showAddSupplierPurchasedHistoryForm && !showEditSupplierPurchasedHistoryForm">
-  <h1 style="color: rgb(184, 15, 199)" class="mb-3">New supplier Purchased History</h1>
+<ng-container
+  *ngIf="
+    showAddSupplierPurchasedHistoryForm && !showEditSupplierPurchasedHistoryForm
+  "
+>
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">
+    New supplier Purchased History
+  </h1>
 
   <form
     #inputForm="ngForm"
@@ -152,7 +167,9 @@
         type="text"
         name="characteristics"
         placeholder="enter product characteristics"
-        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].characteristics"
+        [(ngModel)]="
+          newSupplierPurchasedHistory.supplierProducts[0].characteristics
+        "
         class="form-control"
       />
     </div>
@@ -169,8 +186,14 @@
     </span>
   </form>
 </ng-container>
-<ng-container *ngIf="showEditSupplierPurchasedHistoryForm && !showAddSupplierPurchasedHistoryForm">
-  <h1 style="color: greenyellow" class="mb-3">Editing a supplier purchasedHistory</h1>
+<ng-container
+  *ngIf="
+    showEditSupplierPurchasedHistoryForm && !showAddSupplierPurchasedHistoryForm
+  "
+>
+  <h1 style="color: greenyellow" class="mb-3">
+    Editing a supplier purchasedHistory
+  </h1>
 
   <hr />
   <form
@@ -217,9 +240,7 @@
         type="text"
         name="basePrice"
         placeholder="enter base price"
-        [(ngModel)]="
-          updatedSupplierPurchasedHistory.supplierProducts[0].price"
-        
+        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].price"
         class="form-control"
       />
     </div>
@@ -243,7 +264,9 @@
         type="text"
         name="characteristics"
         placeholder="enter characteristics"
-        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].characteristics"
+        [(ngModel)]="
+          updatedSupplierPurchasedHistory.supplierProducts[0].characteristics
+        "
         class="form-control"
       />
     </div>

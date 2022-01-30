@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
 
 @Component({
   selector: 'app-budgets',
@@ -39,7 +38,7 @@ export class BudgetsComponent implements OnInit {
   showProducts = false;
   showHoursInput = false;
   otherServicesSelected = false;
-
+  loading = false;
   officerHours!: number;
   assistantHours!: number;
   updatedBudget!: Budget;
@@ -78,7 +77,6 @@ export class BudgetsComponent implements OnInit {
   };
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
-
   processingNetworkRequest = false;
   products: Product[] = [
     {
@@ -110,8 +108,8 @@ export class BudgetsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private budgetService: HttpService,
-  ) {}
+    private budgetService: HttpService
+  ) {this.loading= true}
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -122,7 +120,7 @@ export class BudgetsComponent implements OnInit {
           } else {
             this.showApiErrorResponse(response.message);
           }
-        },
+      this.loading= false  },
         error: (error: any) => {
           this.showApiErrorResponse();
         },
@@ -293,6 +291,7 @@ export class BudgetsComponent implements OnInit {
     this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showErrorAlert = false;
+      this.loading = false;
     }, 3500);
   }
 
