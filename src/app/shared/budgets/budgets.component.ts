@@ -23,7 +23,6 @@ export class BudgetsComponent implements OnInit {
   closeIcon = faWindowClose;
 
   customers: Customer[] = [];
-  customerName!: string;
 
   showNewCustomerForm: boolean = false;
   showAddBudgetForm: boolean = false;
@@ -39,6 +38,10 @@ export class BudgetsComponent implements OnInit {
   officerHours!: number;
   assistantHours!: number;
   updatedBudget!: Budget;
+  customer: Customer = {
+    customerId: 0,
+    name: '',
+  };
   newBudget: Budget = {
     budgetId: 0,
     budgetName: '',
@@ -47,11 +50,12 @@ export class BudgetsComponent implements OnInit {
     assistantHours: 0,
     officerHours: 0,
     productList: [],
-    customer: { customerId: 0, name: '' },
     service: [],
+    customer: { customerId: 0, name: '' },
   };
   budgets: Budget[] = [
-    {
+    /*  
+   {
       budgetId: 1,
       budgetName: 'abc',
       totalPrice: 546,
@@ -61,7 +65,7 @@ export class BudgetsComponent implements OnInit {
       productList: [],
       customer: { customerId: 112, name: 'cus1' },
       service: [],
-    },
+    }, */
   ];
   showErrorAlert = false;
   showSuccessAlert = false;
@@ -76,7 +80,7 @@ export class BudgetsComponent implements OnInit {
   apiErrorResponse: string = '';
   processingNetworkRequest = false;
   products: Product[] = [
-    {
+  /*   {
       productId: 0,
       name: 'asdsa',
       characteristics: 'gh',
@@ -99,7 +103,7 @@ export class BudgetsComponent implements OnInit {
       price: 0,
       quantityInStock: 0,
       tax: 0,
-    },
+    }, */
   ];
   private subscriptions = new Subscription();
 
@@ -115,6 +119,7 @@ export class BudgetsComponent implements OnInit {
       this.budgetService.getBudget().subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
+            console.log(response);
             this.budgets = response.data;
           } else {
             this.showApiErrorResponse(response.message);
@@ -126,6 +131,23 @@ export class BudgetsComponent implements OnInit {
         },
       })
     );
+    this.budgetService.getCustomer().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          this.customers = response.data.filter(
+            (customer: Customer) => customer.name
+          );
+        }
+      },
+    });
+
+    this.budgetService.getProduct().subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.products = response.data;
+        }
+      },
+    });
   }
 
   budgetPdfDownload(id: number, budget: Budget): void {
@@ -149,21 +171,31 @@ export class BudgetsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      this.newBudget.budgetStatus = 'pendingAcceptance';
-      this.budgetService.addBudget(this.newBudget).subscribe({
-        next: (response: any) => {
-          this.showApiSuccessResponse(response.message);
-        },
-        error: () => {
-          this.showApiErrorResponse();
-        },
-        complete: () => {
-          this.budgets.push(this.newBudget);
-          this.showAddBudgetForm = false;
-          this.formSubmitted = true;
-          this.processingNetworkRequest = false;
-        },
-      });
+      if (!this.newBudget.customer.name && !this.customer.name) {
+        this.errorMessage =
+          'Please enter correct fields , All fields are necessary';
+      } else {
+        this.processingNetworkRequest = true;
+        this.newBudget.customer = { customerId: 0, name: this.customer.name };
+        this.newBudget.budgetStatus = 'pendingAcceptance';
+        console.log('final budgett', this.newBudget);
+        this.budgetService.addBudget(this.newBudget).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+              this.budgets.push(this.newBudget);
+            } else this.showApiErrorResponse(response.message);
+          },
+          error: () => {
+            this.showApiErrorResponse();
+          },
+          complete: () => {
+            this.showAddBudgetForm = false;
+            this.formSubmitted = true;
+            this.processingNetworkRequest = false;
+          },
+        });
+      }
     }
   }
 
@@ -231,6 +263,7 @@ export class BudgetsComponent implements OnInit {
       updatedBudget.budgetStatus.trim().toLowerCase() === 'accepted' &&
       this.generateOrder
     ) {
+      this.processingNetworkRequest = true;
       console.log('generating order');
       this.budgetService.budgetToOrder(updatedBudget.budgetId).subscribe({
         next: (response: any) => {
@@ -243,6 +276,7 @@ export class BudgetsComponent implements OnInit {
         },
       });
     } else {
+      this.processingNetworkRequest = true;
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
@@ -298,6 +332,7 @@ export class BudgetsComponent implements OnInit {
   showApiSuccessResponse(message: string) {
     this.apiSuccessResponse = message;
     this.showSuccessAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
@@ -305,6 +340,12 @@ export class BudgetsComponent implements OnInit {
 
   isNewCustomerSelected(customer: any) {
     console.log('isNewCustomer', customer);
-    
+    console.log(this.newBudget.customer);
+
+    if (customer == 'newCustomer') {
+      this.showNewCustomerForm = true;
+    } else this.showNewCustomerForm = false;
+
+    return customer;
   }
 }

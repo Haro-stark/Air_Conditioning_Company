@@ -309,7 +309,7 @@ export class HttpService {
   ): Observable<Supplier> {
     return this.http.post<Supplier>(
       `${this.supplierApiUrl}/buyProductFromSupplier`,
-      { params: { quantity: quantity, product: productId } }
+      { params: { product: productId, quantity: quantity } }
     );
   }
 }

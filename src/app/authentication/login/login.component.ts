@@ -26,12 +26,9 @@ export class LoginComponent implements OnInit {
       if (userData) {
         this.SigningIn = false;
         this.isUserEmailLoggedIn = true;
-        if ((userData.role == 'admin')) {
-          this.router.navigate([`/admin/employees`]);
-        } else {
           this.router.navigate([`/${userData.role}`]);
           console.log('user data = ', userData);
-        }
+        
       } else this.isUserEmailLoggedIn = false;
     });
   }
