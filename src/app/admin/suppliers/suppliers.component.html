@@ -1,5 +1,3 @@
-
-
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -25,12 +23,11 @@
   {{ errorMessage }}
 </p>
 
-
 <ng-container *ngIf="loading">
   <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
 
-<div *ngIf="!showAddSupplierForm && !showEditSupplierForm &&!loading">
+<div *ngIf="!showAddSupplierForm && !showEditSupplierForm && !loading">
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="suppliers && suppliers.length > 0">
@@ -43,6 +40,7 @@
             <th scope="col">Tax</th>
             <th scope="col">characteristics</th>
             <th scope="col">Buy</th>
+            <th scope="col">Buy Product</th>
             <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
@@ -54,13 +52,22 @@
             <td>{{ product.basePrice }}</td>
             <td>{{ product.tax }}</td>
             <td>{{ product.characteristics }}</td>
-
             <td>
-              <a class="btn btn-primary btn-sm" (click)="buyProduct(product.productId)">
+              <a
+                class="btn btn-primary btn-sm"
+                (click)="buyProduct(product.productId)"
+              >
                 Buy</a
               >
             </td>
-
+            <td>
+              <a
+                class="btn btn-primary btn-sm"
+                (click)="showSupplierProductsForm(supplier.supplierId)"
+              >
+                Add Product</a
+              >
+            </td>
             <td>
               <fa-icon
                 [icon]="editIcon"
@@ -110,11 +117,9 @@
         class="form-control"
       />
     </div>
-    <hr>
+    <hr />
 
-    
-
-    <p class="text-center m-3">supplierProducts</p>
+    <p class="text-center m-3">Supplier Products</p>
     <hr />
 
     <div class="form-group">
@@ -204,7 +209,7 @@
     <p class="text-center m-3">supplierProducts</p>
     <hr />
 
-     <div class="form-group">
+    <div class="form-group">
       <label for="productName" class="form-label">Product Name</label>
       <input
         required
@@ -265,3 +270,94 @@
     </span>
   </form>
 </ng-container>
+
+<ng-container
+  *ngIf="!showAddSupplierForm && !showEditSupplierForm && showAddProductForm"
+>
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new supplier</h1>
+
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="addSupplierProducts(); formSubmitted ? inputForm.reset() : ''"
+    class="form"
+    name="supplierForm"
+  >
+    <div class="form-group">
+      <label for="supplierId" class="form-label">Supplier Id</label>
+      <input
+        required
+        id="supplierId"
+        type="text"
+        name="supplierId"
+        placeholder="enter supplier Id"
+        [(ngModel)]="supplierId"
+        class="form-control"
+      />
+    </div>
+    <hr />
+
+    <p class="text-center m-3">Supplier Products</p>
+    <hr />
+
+    <div class="form-group">
+      <label for="productName" class="form-label">Product Name</label>
+      <input
+        required
+        id="productName"
+        type="text"
+        name="productName"
+        placeholder="enter product name"
+        [(ngModel)]="addSupplierProduct.name"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="basePrice" class="form-label">Base Price </label>
+      <input
+        required
+        id="basePrice"
+        type="text"
+        name="basePrice"
+        placeholder="enter product base price"
+        [(ngModel)]="addSupplierProduct.basePrice"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tax" class="form-label">Tax </label>
+      <input
+        required
+        id="tax"
+        type="text"
+        name="tax"
+        placeholder="enter product tax"
+        [(ngModel)]="addSupplierProduct.tax"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="characteristics" class="form-label">characteristics</label>
+      <input
+        required
+        id="characteristics"
+        type="text"
+        name="characteristics"
+        placeholder="enter product characteristics"
+        [(ngModel)]="addSupplierProduct.characteristics"
+        class="form-control"
+      />
+    </div>
+    <span class="d-flex">
+      <button class="btn btn-outline-success" type="submit">Save</button>
+
+      <button
+        class="btn btn-danger ml-auto"
+        type="button"
+        (click)="showAddProductForm = false"
+      >
+        Cancel
+      </button>
+    </span>
+  </form>
+</ng-container>
+<router-outlet></router-outlet>

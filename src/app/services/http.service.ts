@@ -9,6 +9,7 @@ import { Supplier } from '../models/Supplier';
 import { WorkLog } from '../models/WorkLog';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SupplierPurchasedHistory } from '../models/SupplierPurchasedHistory';
+import { SupplierProducts } from '../models/SupplierProducts';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-type': 'application/json',
@@ -113,7 +114,9 @@ export class HttpService {
     });
   }
   getOrderPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.orderApiUrl}/exportToPDF`);
+    return this.http.get<any>(`${this.orderApiUrl}/exportToPDF`, {
+      params: { Id: id },
+    });
   }
   budgetToOrder(id: number) {
     return this.http.get<any>(`${this.orderApiUrl}/budgetToOrder`, {
@@ -231,6 +234,7 @@ export class HttpService {
       }
     );
   }
+
   getWorkLog(email: string): Observable<WorkLog[]> {
     return this.http.get<WorkLog[]>(
       `${this.employeeApiUrl}/GetWorkLogByEmail`,
@@ -310,6 +314,14 @@ export class HttpService {
     return this.http.post<Supplier>(
       `${this.supplierApiUrl}/buyProductFromSupplier`,
       { params: { product: productId, quantity: quantity } }
+    );
+  }
+
+  addSupplierProducts(SupplierProducts: SupplierProducts,id:number): Observable<Supplier> {
+    return this.http.post<Supplier>(
+      `${this.supplierApiUrl}/addSingleProductInSupplier`,
+      SupplierProducts,
+      { params: { supplierId: id } }
     );
   }
 }

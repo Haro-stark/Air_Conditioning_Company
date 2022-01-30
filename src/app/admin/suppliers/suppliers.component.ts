@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   faEdit,
   faTrashAlt,
@@ -7,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Product } from 'src/app/models/Product';
 import { Supplier } from 'src/app/models/Supplier';
+import { SupplierProducts } from 'src/app/models/SupplierProducts';
 import { HttpService } from 'src/app/services/http.service';
 
 @Component({
@@ -73,6 +75,7 @@ export class SuppliersComponent implements OnInit {
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
   errorMessage!: string;
+  showAddProductForm = false;
   showEditSupplierForm: Boolean = false;
   formSubmitted = false;
   showErrorAlert = false;
@@ -89,10 +92,20 @@ export class SuppliersComponent implements OnInit {
   apiErrorResponse: string = '';
   numberOfProducts!: number;
   productArray: Product[] = new Array<Product>();
+  addSupplierProduct: SupplierProducts = {
+    name: '',
+    characteristics: '',
+    basePrice: 0,
+    tax: 0,
+    productCount: 0,
+  };
+  supplierId!: number;
   processingNetworkRequest = false;
+
   constructor(
     private cd: ChangeDetectorRef,
-    private httpSupplierService: HttpService
+    private httpSupplierService: HttpService,
+    private router: Router
   ) {
     this.loading = true;
   }
@@ -253,6 +266,26 @@ export class SuppliersComponent implements OnInit {
         this.errorMessage = '';
       }, 3500);
     }
+  }
+
+  addSupplierProducts() {
+    this.httpSupplierService
+      .addSupplierProducts(this.addSupplierProduct, this.supplierId)
+      .subscribe({
+        next: (response: any) => {
+          this.formSubmitted = true;
+          this.showAddProductForm= false;
+          this.router.navigate(['/admin/supplier']);
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+      });
+  }
+
+  showSupplierProductsForm(id: number) {
+    this.showAddProductForm = true;
+    this.supplierId = id;
   }
 
   showApiErrorResponse(message?: any) {
