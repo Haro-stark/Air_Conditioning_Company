@@ -17,18 +17,18 @@ export class LoginComponent implements OnInit {
   error: { name: string; message: string } = { name: '', message: '' };
   constructor(
     public authService: AuthenticationService,
-    private router: Router,
-    private injector: Injector
+    private router: Router
   ) {}
 
   ngOnInit() {
+    console.log(this.isUserEmailLoggedIn);
     this.authService.user$.subscribe((userData) => {
+      console.log(userData);
       if (userData) {
         this.SigningIn = false;
         this.isUserEmailLoggedIn = true;
-          this.router.navigate([`/${userData.role}`]);
-          console.log('user data = ', userData);
-        
+        this.router.navigate([`/${userData.role}`]);
+        console.log('user data = ', userData);
       } else this.isUserEmailLoggedIn = false;
     });
   }
@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
       this.isUserEmailLoggedIn = true;
       this.router.navigate(['/login']);
     } else {
+      this.isUserEmailLoggedIn = false;
       console.log('not logged in');
     }
   }
@@ -61,7 +62,7 @@ export class LoginComponent implements OnInit {
               this.SigningIn = false;
               this.isUserEmailLoggedIn = true;
               console.log('user data = ', userData);
-              if ((userData.role == 'admin')) {
+              if (userData.role == 'admin') {
                 this.router.navigate([`/admin/employees`]);
               } else {
                 this.router.navigate([`/${userData.role}`]);
@@ -82,7 +83,10 @@ export class LoginComponent implements OnInit {
   }
 
   signOut() {
-    this.authService.signOut().then(() => (this.isUserEmailLoggedIn = false)).catch((_error) => this.error = _error);
+    this.authService
+      .signOut()
+      .then(() => (this.isUserEmailLoggedIn = false))
+      .catch((_error) => (this.error = _error));
   }
 
   validateForm(email: string, password: string): boolean {

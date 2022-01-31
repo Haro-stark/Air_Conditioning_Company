@@ -18,6 +18,7 @@ import { ProductsComponent } from './admin/products/products.component';
 import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { AuthenticationService } from './services/authentication.service';
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -63,7 +64,7 @@ const routes: Routes = [
     component: LoginComponent,
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '404', component: LoginComponent },
+  { path: '404', component: LoadingSpinnerComponent },
   { path: '**', redirectTo: '/404' },
 ];
 
