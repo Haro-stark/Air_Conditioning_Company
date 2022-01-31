@@ -47,7 +47,7 @@
             <td>{{ purchasedHistory.supplierOrderId }}</td>
             <td>{{ purchasedHistory.totalPrice }}</td>
             <td>{{ product.name }}</td>
-            <td>{{ product.price }}</td>
+            <td>{{ product.basePrice }}</td>
             <td>{{ product.tax }}</td>
             <td>{{ product.characteristics }}</td>
 
@@ -143,7 +143,7 @@
         type="text"
         name="basePrice"
         placeholder="enter product base price"
-        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].price"
+        [(ngModel)]="newSupplierPurchasedHistory.supplierProducts[0].basePrice"
         class="form-control"
       />
     </div>
@@ -241,7 +241,7 @@
         type="text"
         name="basePrice"
         placeholder="enter base price"
-        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].price"
+        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].basePrice"
         class="form-control"
       />
     </div>
