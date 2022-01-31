@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { AdminComponent } from './admin/admin.component';
 import { AssistantComponent } from './assistant/assistant.component';
 import { LoginComponent } from './authentication/login/login.component';
@@ -8,7 +7,6 @@ import { SignupComponent } from './authentication/signup/signup.component';
 import { AdminGuardGuard } from './cores/guards/admin-guard.guard';
 import { AssistantGuardGuard } from './cores/guards/assistant-guard.guard';
 import { OfficerGuardGuard } from './cores/guards/officer-guard.guard';
-import { HomeComponent } from './home/home.component';
 import { OfficerComponent } from './officer/officer.component';
 import { WorklogComponent } from './worklog/worklog.component';
 import { BudgetsComponent } from './shared/budgets/budgets.component';
@@ -18,7 +16,8 @@ import { ProductsComponent } from './admin/products/products.component';
 import { SuppliersComponent } from './admin/suppliers/suppliers.component';
 import { AuthenticationService } from './services/authentication.service';
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
-import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -61,10 +60,10 @@ const routes: Routes = [
 
   {
     path: 'access-denied',
-    component: LoginComponent,
+    component: AccessDeniedComponent,
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '404', component: LoadingSpinnerComponent },
+  { path: '', redirectTo: '/404', pathMatch: 'full' },
+  { path: '404', component: UrlNotFoundComponent },
   { path: '**', redirectTo: '/404' },
 ];
 

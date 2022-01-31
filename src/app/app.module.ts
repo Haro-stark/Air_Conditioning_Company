@@ -28,6 +28,7 @@ import { BudgetsComponent } from './shared/budgets/budgets.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
+import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-hi
     AccessDeniedComponent,
     LoadingSpinnerComponent,
     SupplierPurchasedHistoryComponent,
+    UrlNotFoundComponent,
   ],
   imports: [
     BrowserModule,
