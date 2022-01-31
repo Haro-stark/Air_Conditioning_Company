@@ -29,6 +29,7 @@ export class UrlNotFoundComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.redirectToUrl);
     if (this.redirectToUrl) {
       this.router.navigate([this.redirectToUrl]);
     } else {

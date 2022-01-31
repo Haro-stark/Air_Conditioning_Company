@@ -32,6 +32,8 @@ export class HttpService {
   private workLogApiUrl = 'https://hidden-bastion-05543.herokuapp.com//WorkLog';
   private supplierPurchasedHistoryApiUrl =
     'https://hidden-bastion-05543.herokuapp.com/supplierPurchasedHistory';
+  private servicesApiUrl =
+    ' https://hidden-bastion-05543.herokuapp.com/services';
 
   constructor(private http: HttpClient) {}
 
@@ -58,9 +60,14 @@ export class HttpService {
       params: { Id: id },
     });
   }
-  getBudgetPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.budgetApiUrl}/exportToPDF`, {
-      params: { Id: id },
+  getBudgetPdf(id: number) {
+    return this.http.get<any>(`${this.budgetApiUrl}/downloadFile`, {
+      headers: new HttpHeaders({
+        'Content-type': 'application/pdf',
+        accept: 'application/pdf',
+      }),
+      params: { budgetId: id },
+      responseType: 'blob' as 'json',
     });
   }
 
@@ -89,9 +96,30 @@ export class HttpService {
       params: { Id: id },
     });
   }
-  getCustomerPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.customerApiUrl}/exportToPDF`);
-  }
+  /*   getCustomerPdf(id: number) {
+    return this.http
+      .get<any>(`${this.customerApiUrl}/downloadFile`, {
+        headers: new HttpHeaders({
+          'Content-type': 'application/pdf',
+          accept: 'application/pdf',
+        }),
+        params: { orderId: id },
+        responseType: 'blob' as 'json',
+      })
+      .subscribe({
+        next: (data) => {
+          let blob = new Blob([data], { type: 'application/pdf' });
+          let downloadURL = window.URL.createObjectURL(blob);
+          let link = document.createElement('a');
+          link.href = downloadURL;
+          link.target = '_blank';
+          link.click();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+  } */
 
   getOrder(): Observable<any> {
     return this.http.get<any>(`${this.orderApiUrl}/list`);
@@ -114,8 +142,13 @@ export class HttpService {
     });
   }
   getOrderPdf(id: number): Observable<any> {
-    return this.http.get<any>(`${this.orderApiUrl}/exportToPDF`, {
-      params: { Id: id },
+    return this.http.get<any>(`${this.orderApiUrl}/downloadFile`, {
+      headers: new HttpHeaders({
+        'Content-type': 'application/pdf',
+        accept: 'application/pdf',
+      }),
+      params: { orderId: id },
+      responseType: 'blob' as 'json',
     });
   }
   budgetToOrder(id: number) {
@@ -312,8 +345,9 @@ export class HttpService {
     quantity: number
   ): Observable<Supplier> {
     return this.http.post<Supplier>(
-      `${this.supplierApiUrl}/buyProductFromSupplier`,null,
-      { params: { product: productId, quantity: quantity } },
+      `${this.supplierApiUrl}/buyProductFromSupplier`,
+      null,
+      { params: { product: productId, quantity: quantity } }
     );
   }
 
@@ -326,5 +360,9 @@ export class HttpService {
       SupplierProducts,
       { params: { supplierId: id } }
     );
+  }
+
+  getServices(): Observable<any> {
+    return this.http.get<any>(`${this.servicesApiUrl}/list`);
   }
 }

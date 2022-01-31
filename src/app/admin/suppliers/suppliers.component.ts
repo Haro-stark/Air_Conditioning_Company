@@ -177,7 +177,7 @@ export class SuppliersComponent implements OnInit {
     }, 200);
   }
   onEditSupplier(id: number, supplier: Supplier) {
-    this.updatedSupplier = supplier;
+    this.updatedSupplier = {...supplier};
     setTimeout(() => {
       this.showEditSupplierForm = true;
       this.cd.markForCheck();

@@ -127,7 +127,7 @@ export class ProductsComponent implements OnInit {
     }, 200);
   }
   onEditProduct(id: number, product: Product) {
-    this.updatedProduct = product;
+    this.updatedProduct = {...product};
     setTimeout(() => {
       this.showEditProductForm = true;
       this.cd.markForCheck();

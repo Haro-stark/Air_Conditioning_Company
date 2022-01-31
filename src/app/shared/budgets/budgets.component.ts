@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { Services } from 'src/app/models/Services';
 
 @Component({
   selector: 'app-budgets',
@@ -22,12 +23,9 @@ export class BudgetsComponent implements OnInit {
   checkIcon = faCheck;
   closeIcon = faWindowClose;
 
-  customers: Customer[] = [];
-
   showNewCustomerForm: boolean = false;
   showAddBudgetForm: boolean = false;
   errorMessage!: string;
-  services!: string | string[];
   showEditBudgetForm: boolean = false;
   formSubmitted = false;
   generateOrder = false;
@@ -67,18 +65,6 @@ export class BudgetsComponent implements OnInit {
       service: [],
     }, */
   ];
-  showErrorAlert = false;
-  showSuccessAlert = false;
-  apiRequestError!: {
-    error: { text: string };
-    name: string;
-    message: string;
-    status: 0;
-    url: string;
-  };
-  apiSuccessResponse = '';
-  apiErrorResponse: string = '';
-  processingNetworkRequest = false;
   products: Product[] = [
     /*   {
       productId: 0,
@@ -105,6 +91,21 @@ export class BudgetsComponent implements OnInit {
       tax: 0,
     }, */
   ];
+  customers: Customer[] = [];
+  services: Services[] = [];
+  showErrorAlert = false;
+  showSuccessAlert = false;
+  apiRequestError!: {
+    error: { text: string };
+    name: string;
+    message: string;
+    status: 0;
+    url: string;
+  };
+  apiSuccessResponse = '';
+  apiErrorResponse: string = '';
+  processingNetworkRequest = false;
+
   private subscriptions = new Subscription();
 
   constructor(
@@ -148,11 +149,26 @@ export class BudgetsComponent implements OnInit {
         }
       },
     });
+
+    this.budgetService.getServices().subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.services = response.data;
+        }
+      },
+    });
   }
 
   budgetPdfDownload(id: number, budget: Budget): void {
     this.budgetService.getBudgetPdf(id).subscribe({
-      error: (error) => this.showApiErrorResponse(error.message),
+      next: (data) => {
+        this.showApiSuccessResponse();
+        this.downloadPdf(data);
+      },
+      error: (err) => {
+        const errMessage = 'pdf does not exist';
+        this.showApiErrorResponse(errMessage);
+      },
     });
     console.log('budget to download with id ', id, 'object ', budget);
   }
@@ -176,22 +192,22 @@ export class BudgetsComponent implements OnInit {
           'Please enter correct fields , All fields are necessary';
       } else {
         this.processingNetworkRequest = true;
-        this.newBudget.customer = { customerId: 0, name: this.customer.name };
-        this.newBudget.budgetStatus = 'pendingAcceptance';
-        console.log('final budgett', this.newBudget);
+        this.newBudget.budgetStatus = 'pending';
+        console.log('final budgett...', this.newBudget);
         this.budgetService.addBudget(this.newBudget).subscribe({
           next: (response: any) => {
             if (response.status === 200) {
+              console.log(response);
+              console.log(this.newBudget);
               this.showApiSuccessResponse(response.message);
-              this.budgets.push(this.newBudget);
+              this.budgets.push({ ...this.newBudget });
+              this.formSubmitted = true;
             } else this.showApiErrorResponse(response.message);
           },
           error: () => {
             this.showApiErrorResponse();
           },
           complete: () => {
-            this.showAddBudgetForm = false;
-            this.formSubmitted = true;
             this.processingNetworkRequest = false;
           },
         });
@@ -216,7 +232,7 @@ export class BudgetsComponent implements OnInit {
     }, 200);
   }
   onEditBudget(id: number, budget: Budget) {
-    this.updatedBudget = budget;
+    this.updatedBudget = { ...budget };
     if (budget.budgetStatus.trim().toLowerCase() !== 'accepted') {
       this.generateOrder = true;
     }
@@ -299,19 +315,29 @@ export class BudgetsComponent implements OnInit {
 
     return this.errorMessage;
   }
-  isInstallationSelected(services: any) {
-    console.log('isInstallation', services);
+  isInstallationSelected(services: Services[]) {
+    console.log(services);
+    let newArr = services.map((service: Services) =>
+      service.type.trim().toLowerCase()
+    );
 
-    if (services.includes('installation')) {
+    console.log('isInstallation', newArr.includes('installation'), newArr);
+
+    console.log(services);
+
+    if (newArr.includes('installation')) {
       this.showProducts = true;
     } else {
       this.showProducts = false;
+      this.newBudget.productList = [];
     }
 
-    if (services.includes('maintenance') || services.includes('labour')) {
+    if (newArr.includes('maintenance') || newArr.includes('laborwork')) {
       this.showHoursInput = true;
     } else {
       this.showHoursInput = false;
+      this.newBudget.assistantHours = 0;
+      this.newBudget.officerHours = 0;
     }
   }
 
@@ -330,13 +356,16 @@ export class BudgetsComponent implements OnInit {
     }, 3500);
   }
 
-  showApiSuccessResponse(message: string) {
-    this.apiSuccessResponse = message;
+  showApiSuccessResponse(message?: string) {
+    if (message) this.apiSuccessResponse = message;
+    else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
-    this.formSubmitted = true;
+    this.showAddBudgetForm = false;
+
     setTimeout(() => {
       this.showSuccessAlert = false;
+      this.formSubmitted = true;
     }, 3500);
   }
 
@@ -349,5 +378,14 @@ export class BudgetsComponent implements OnInit {
     } else this.showNewCustomerForm = false;
 
     return customer;
+  }
+
+  downloadPdf(data: any) {
+    let blob = new Blob([data], { type: 'application/pdf' });
+    let downloadURL = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = downloadURL;
+    link.target = '_blank';
+    link.click();
   }
 }

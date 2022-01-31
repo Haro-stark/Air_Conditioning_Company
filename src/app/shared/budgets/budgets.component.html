@@ -12,7 +12,11 @@
 </div>
 
 <div class="text-center m-3" *ngIf="!showAddBudgetForm && !showEditBudgetForm">
-  <button class="btn badge-success" (click)="onClickToggleAddBudgetForm()">
+  <button
+    class="btn badge-success"
+    (click)="onClickToggleAddBudgetForm()"
+    [disabled]="loading"
+  >
     Create New Budget
   </button>
 </div>
@@ -115,10 +119,7 @@
       >
         <option ngValue="newCustomer">New customer</option>
 
-        <option
-          *ngFor="let customer of customers; let i = index"
-          [ngValue]="customer"
-        >
+        <option *ngFor="let customer of customers" [ngValue]="customer">
           {{ customer.name }}
         </option>
       </select>
@@ -133,7 +134,7 @@
           type="text"
           name="customerName"
           placeholder="enter customer name"
-          [(ngModel)]="customer.name"
+          [(ngModel)]="newBudget.customer.name"
           class="form-control"
         />
       </div>
@@ -144,13 +145,13 @@
         class="form-select form-control"
         name="services"
         id="services"
-        [(ngModel)]="services"
+        [(ngModel)]="newBudget.service"
         [multiple]="true"
-        (ngModelChange)="isInstallationSelected(services)"
+        (ngModelChange)="isInstallationSelected(newBudget.service)"
       >
-        <option ngValue="installation">installation</option>
-        <option ngValue="maintenance">maintenance</option>
-        <option ngValue="labour">labour</option>
+        <option *ngFor="let service of services" [ngValue]="service">
+          {{ service.type }}
+        </option>
       </select>
     </div>
     <ng-container *ngIf="showProducts">

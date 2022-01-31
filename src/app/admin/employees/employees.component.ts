@@ -123,7 +123,9 @@ export class EmployeesComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private httpEmployeeService: HttpService,
     private authService: AuthenticationService
-  ) { this.loading = true;}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
     this.loading = true;
@@ -208,7 +210,7 @@ export class EmployeesComponent implements OnInit {
     }, 200);
   }
   onEditEmployee(employee: Employee) {
-    this.updatedEmployee = employee;
+    this.updatedEmployee = { ...employee };
 
     setTimeout(() => {
       this.showEditEmployeeForm = true;

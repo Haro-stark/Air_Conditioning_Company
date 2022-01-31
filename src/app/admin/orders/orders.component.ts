@@ -21,7 +21,7 @@ export class OrdersComponent implements OnInit {
   closeIcon = faWindowClose;
 
   orders: Order[] = [
-   /*  {
+    /*  {
       orderId: 1,
       orderName: 'orderPdfDownload',
       productList: [],
@@ -55,7 +55,9 @@ export class OrdersComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private shareOrderDataService: ShareDatabetweenComponentsService,
     private httpOrderService: HttpService
-  ) {this.loading=true;}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
     this.httpOrderService.getOrder().subscribe({
@@ -71,7 +73,6 @@ export class OrdersComponent implements OnInit {
       error: (error: any) => {
         this.showApiErrorResponse();
       },
-      
     });
     this.shareOrderDataService.onGenerateOrder().subscribe((value: Order) => {
       if (value) {
@@ -83,15 +84,16 @@ export class OrdersComponent implements OnInit {
 
   orderPdfDownload(id: number, order: Order): void {
     this.httpOrderService.getOrderPdf(id).subscribe({
-      next: (response: any) => {
-        if (response.status === 500)
-          this.showApiErrorResponse('opps somer server error');
+      next: (data: any) => {
+        this.downloadPdf(data);
+        this.showApiSuccessResponse();
       },
       error: (error: any) => {
-        this.showApiErrorResponse(error.message);
+        const errMessage = 'pdf does not exist';
+
+        this.showApiErrorResponse(errMessage);
       },
     });
-    console.log('order to download with id ', id, 'object ', order);
   }
 
   onSubmit() {
@@ -150,7 +152,7 @@ export class OrdersComponent implements OnInit {
     }, 200);
   }
   onEditOrder(id: number, order: Order) {
-    this.updatedOrder = order;
+    this.updatedOrder = { ...order };
     setTimeout(() => {
       this.showEditOrderForm = true;
       this.cd.markForCheck();
@@ -228,15 +230,23 @@ export class OrdersComponent implements OnInit {
       this.showErrorAlert = false;
       this.loading = false;
     }, 3500);
-
-    
   }
 
-  showApiSuccessResponse(message: string) {
-    this.apiSuccessResponse = message;
+  showApiSuccessResponse(message?: string) {
+    if (message) this.apiSuccessResponse = message;
+    else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
+  }
+
+  downloadPdf(data: any) {
+    let blob = new Blob([data], { type: 'application/pdf' });
+    let downloadURL = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = downloadURL;
+    link.target = '_blank';
+    link.click();
   }
 }

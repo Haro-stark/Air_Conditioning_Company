@@ -127,7 +127,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     id: number,
     supplierPurchasedHistory: SupplierPurchasedHistory
   ) {
-    this.updatedSupplierPurchasedHistory = supplierPurchasedHistory;
+    this.updatedSupplierPurchasedHistory = {...supplierPurchasedHistory};
     setTimeout(() => {
       this.showEditSupplierPurchasedHistoryForm = true;
       this.cd.markForCheck();

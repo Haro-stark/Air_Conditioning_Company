@@ -35,7 +35,10 @@ const routes: Routes = [
       { path: 'orders', component: OrdersComponent },
       { path: 'products', component: ProductsComponent },
       { path: 'suppliers', component: SuppliersComponent },
-      { path: 'suppliersPurchasedHistory', component: SupplierPurchasedHistoryComponent },
+      {
+        path: 'suppliersPurchasedHistory',
+        component: SupplierPurchasedHistoryComponent,
+      },
 
       { path: 'budgets', component: BudgetsComponent },
       { path: 'workLog', component: WorklogComponent },
