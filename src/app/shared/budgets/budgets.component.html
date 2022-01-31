@@ -196,8 +196,6 @@
       </div>
     </ng-container>
 
-  
-
     <span class="d-flex">
       <button
         *ngIf="!processingNetworkRequest"
@@ -222,7 +220,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleAddBudgetForm()"
+        (click)="onClickToggleAddBudgetForm(); inputForm.reset()"
       >
         Cancel
       </button>
@@ -234,8 +232,10 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
-    (ngSubmit)="onUpdateBudget(updatedBudget)"
+    #editForm="ngForm"
+    (ngSubmit)="
+      onUpdateBudget(updatedBudget); formSubmitted ? editForm.reset() : ''
+    "
     class="form"
     name="budgetForm"
   >
@@ -315,7 +315,7 @@
     </div>
 
     <span class="d-flex">
-  <button
+      <button
         *ngIf="!processingNetworkRequest"
         class="btn btn-outline-success"
         type="submit"
@@ -338,7 +338,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditBudgetForm()"
+        (click)="onClickToggleEditBudgetForm(); editForm.reset()"
       >
         Cancel
       </button>

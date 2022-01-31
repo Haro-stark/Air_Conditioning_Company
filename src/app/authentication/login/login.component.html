@@ -1,11 +1,12 @@
+  <ng-container *ngIf="isUserEmailLoggedIn">
 <div class="d-flex justify-content-center form-container-div">
   <div class="form" style="width: 60%">
     <ng-container *ngIf="isUserEmailLoggedIn">
       <div class="flexCenter">
-      <h3>you are logged in</h3>
-      <p>please wait while we redirect you......</p>
-              <button class="btn btn-danger" (click)="signOut()"> Sign Out</button>
-</div>
+        <h3>you are logged in</h3>
+        <p>please wait while we redirect you......</p>
+        <button class="btn btn-danger" (click)="signOut()">Sign Out</button>
+      </div>
     </ng-container>
     <ng-container *ngIf="isUserEmailLoggedIn == false">
       <div>
@@ -64,25 +65,27 @@
       </div>
     </ng-container>
 
- <!--    <ng-container
-      *ngIf="!isUserEmailLoggedIn && isUserEmailLoggedIn != false"
-      style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-      "
-    >
-            <hr class="line-secondary" />
-
-      <div class="flexCenter">
-        <p class="text-center">Oops invalid url...</p>
-        <br />
-        <p>please wait while we redirect to your screen......</p>
-        <hr />
-
-        <button class="btn btn-danger" (click)="signOut()"> Sign Out</button>
-      </div>
-    </ng-container> -->
+ 
   </div>
 </div>
+</ng-container>
+
+   <ng-container *ngIf="!isUserEmailLoggedIn && isUserEmailLoggedIn != false">
+      <hr class="line-secondary" />
+
+      <div class="flexCenter">
+        <br />
+        <p>please wait while we redirect to your screen......</p>
+
+        <button class="btn btn-danger mb-3" (click)="signOut()">
+          Sign Out
+        </button>
+                <hr />
+
+      </div>
+
+      <br>
+      <br>
+      <app-loading-spinner></app-loading-spinner>
+
+    </ng-container>

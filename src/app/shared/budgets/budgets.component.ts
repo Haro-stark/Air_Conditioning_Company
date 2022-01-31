@@ -80,7 +80,7 @@ export class BudgetsComponent implements OnInit {
   apiErrorResponse: string = '';
   processingNetworkRequest = false;
   products: Product[] = [
-  /*   {
+    /*   {
       productId: 0,
       name: 'asdsa',
       characteristics: 'gh',
@@ -269,6 +269,7 @@ export class BudgetsComponent implements OnInit {
         next: (response: any) => {
           if (response.status === 200) {
             this.showApiSuccessResponse(response.message);
+            this.showEditBudgetForm = false;
           } else this.showApiErrorResponse(response.message);
         },
         error: (error: any) => {
@@ -333,6 +334,7 @@ export class BudgetsComponent implements OnInit {
     this.apiSuccessResponse = message;
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
+    this.formSubmitted = true;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);

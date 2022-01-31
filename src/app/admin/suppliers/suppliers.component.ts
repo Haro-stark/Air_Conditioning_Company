@@ -140,6 +140,7 @@ export class SuppliersComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
+      this.processingNetworkRequest = true;
       this.httpSupplierService.addSupplier(this.newSupplier).subscribe({
         next: (response: any) => {
           if (response === 200) {
@@ -163,6 +164,7 @@ export class SuppliersComponent implements OnInit {
   onClickToggleAddSupplierForm() {
     setTimeout(() => {
       this.errorMessage = '';
+      console.log('form', this.formSubmitted);
       this.showAddSupplierForm = !this.showAddSupplierForm;
       this.cd.markForCheck();
     }, 200);
@@ -202,8 +204,6 @@ export class SuppliersComponent implements OnInit {
   }
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
-    console.log('update', updatedSupplier);
-    console.log('supplier is ', updatedSupplier.supplierId);
     console.log(
       this.updatedSupplier.supplierId,
       this.updatedSupplier.supplierProducts?.map((product) => product)
@@ -218,6 +218,7 @@ export class SuppliersComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
+      this.processingNetworkRequest = true;
       this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
@@ -269,13 +270,22 @@ export class SuppliersComponent implements OnInit {
   }
 
   addSupplierProducts() {
+    this.processingNetworkRequest = true;
     this.httpSupplierService
       .addSupplierProducts(this.addSupplierProduct, this.supplierId)
       .subscribe({
         next: (response: any) => {
-          this.formSubmitted = true;
-          this.showAddProductForm= false;
-          this.router.navigate(['/admin/supplier']);
+          if (response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+            this.suppliers.map((value) => {
+              if (value.supplierId === this.supplierId)
+                value.supplierProducts.push({ ...this.addSupplierProduct });
+            });
+            this.formSubmitted = true;
+            this.showAddProductForm = false;
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
         },
         error: (error: any) => {
           this.showApiErrorResponse();
@@ -296,6 +306,7 @@ export class SuppliersComponent implements OnInit {
         'Error! please check your internet connection and try again';
     }
     this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showErrorAlert = false;
       this.loading = false;
@@ -305,6 +316,7 @@ export class SuppliersComponent implements OnInit {
   showApiSuccessResponse(message: string) {
     this.apiSuccessResponse = message;
     this.showSuccessAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);

@@ -312,12 +312,15 @@ export class HttpService {
     quantity: number
   ): Observable<Supplier> {
     return this.http.post<Supplier>(
-      `${this.supplierApiUrl}/buyProductFromSupplier`,
-      { params: { product: productId, quantity: quantity } }
+      `${this.supplierApiUrl}/buyProductFromSupplier`,null,
+      { params: { product: productId, quantity: quantity } },
     );
   }
 
-  addSupplierProducts(SupplierProducts: SupplierProducts,id:number): Observable<Supplier> {
+  addSupplierProducts(
+    SupplierProducts: SupplierProducts,
+    id: number
+  ): Observable<Supplier> {
     return this.http.post<Supplier>(
       `${this.supplierApiUrl}/addSingleProductInSupplier`,
       SupplierProducts,

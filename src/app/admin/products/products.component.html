@@ -1,4 +1,3 @@
-
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -12,7 +11,6 @@
   {{ apiSuccessResponse }}
 </div>
 
-
 <div
   class="text-center m-3"
   *ngIf="!showAddProductForm && !showEditProductForm"
@@ -24,7 +22,6 @@
     Create New Product
   </button>
 </div>
-
 
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
@@ -169,7 +166,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleAddProductForm()"
+        (click)="onClickToggleAddProductForm(); inputForm.reset()"
       >
         Cancel
       </button>
@@ -181,7 +178,7 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
+    #editForm="ngForm"
     (ngSubmit)="onUpdateProduct(updatedProduct)"
     class="form"
     name="productForm"
@@ -258,7 +255,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditProductForm()"
+        (click)="onClickToggleEditProductForm();editForm.reset()"
       >
         Cancel
       </button>

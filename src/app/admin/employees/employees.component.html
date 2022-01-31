@@ -20,21 +20,13 @@
   </button>
 </div>
 
-
-
-
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
 
 <ng-container *ngIf="loading">
-<app-loading-spinner>  loading...
-</app-loading-spinner>
-
+  <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
-
-
-
 
 <div *ngIf="!showAddEmployeeForm && !showEditEmployeeForm && !loading">
   <div class="table-responsive">
@@ -48,7 +40,6 @@
             <th scope="col">email</th>
             <th scope="col">password</th>
             <th scope="col">priceTime</th>
-            <th scope="col">workLogList</th>
             <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
@@ -60,7 +51,6 @@
             <td>{{ employee.email }}</td>
             <td>{{ employee.password }}</td>
             <td>{{ employee.priceTime }}</td>
-            <td><a [routerLink]="['/logs', employee.employeeId]"> list</a></td>
             <td>
               <fa-icon
                 [icon]="editIcon"
@@ -184,7 +174,7 @@
         *ngIf="!processingNetworkRequest"
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleAddEmployeeForm()"
+        (click)="onClickToggleAddEmployeeForm(); inputForm.reset()"
       >
         Cancel
       </button>
@@ -196,7 +186,7 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
+    #editForm="ngForm"
     (ngSubmit)="onUpdateEmployee(updatedEmployee)"
     class="form"
     name="employeeForm"
@@ -289,13 +279,12 @@
         *ngIf="!processingNetworkRequest"
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditEmployeeForm()"
+        (click)="onClickToggleEditEmployeeForm(); editForm.reset()"
       >
         Cancel
       </button>
     </span>
   </form>
 </ng-container>
-
 
 <router-outlet></router-outlet>

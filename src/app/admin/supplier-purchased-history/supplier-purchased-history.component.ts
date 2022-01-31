@@ -183,6 +183,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
+      this.processingNetworkRequest = true;
       this.httpSupplierPurchasedHistoryService
         .updateSupplierPurchasedHistory(updatedSupplierPurchasedHistory)
         .subscribe({
@@ -214,6 +215,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
         'Error! please check your internet connection and try again';
     }
     this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showErrorAlert = false;
       this.loading = false;
@@ -223,6 +225,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
   showApiSuccessResponse(message: string) {
     this.apiSuccessResponse = message;
     this.showSuccessAlert = true;
+    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);

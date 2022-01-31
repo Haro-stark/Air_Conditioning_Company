@@ -1,4 +1,3 @@
-
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -12,86 +11,78 @@
   {{ apiSuccessResponse }}
 </div>
 
-
-
 <!-- <div class="text-center m-3" *ngIf="!showAddOrderForm && !showEditOrderForm">
   <button class="btn badge-success" (click)="onClickToggleAddOrderForm()">
     Create New Order
   </button>
 </div> -->
 
-
-
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
   {{ errorMessage }}
 </p>
 
 <ng-container *ngIf="loading">
-<app-loading-spinner>  loading...
-</app-loading-spinner>
-
+  <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
 
 <div>
-
-<div *ngIf="!showAddOrderForm && !showEditOrderForm &&!loading">
-  
-  <div class="table-responsive">
-    <table class="table">
-      <ng-container *ngIf="orders && orders.length > 0">
-        <thead>
-          <tr>
-            <th scope="col">OrderNumber</th>
-            <th scope="col">OrderName</th>
-            <th scope="col">EmpPrice</th>
-            <th scope="col">Total Price</th>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Report(pdf)</th>
-            <th scope="col">Edit/Delete</th>
-          </tr>
-        </thead>
-        <tbody *ngFor="let order of orders">
-          <tr>
-            <td>{{ order.orderId }}</td>
-            <td>{{ order.orderName }}</td>
-            <td>{{ order.empPrice }}</td>
-            <td>{{ order.totalPrice }}</td>
-            <td>{{ order.customer.name }}</td>
-            <td>
-              <button
-                class="btn btn-sm badge-secondary"
-                (click)="orderPdfDownload(order.orderId, order)"
-              >
-                Download
-              </button>
-            </td>
-            <td>
-              <fa-icon
-                [icon]="editIcon"
-                title="Edit"
-                (click)="onEditOrder(order.orderId, order)"
-                [ngClass]="'edit-icon icon-button-properties mr-1'"
-              ></fa-icon>
-              <fa-icon
-                [icon]="deleteIcon"
-                title="Delete"
-                (click)="onDeleteOrder(order.orderId, order)"
-                [ngClass]="'delete-icon icon-button-properties'"
-              >
-              </fa-icon>
-            </td>
-          </tr>
-        </tbody>
+  <div *ngIf="!showAddOrderForm && !showEditOrderForm && !loading">
+    <div class="table-responsive">
+      <table class="table">
+        <ng-container *ngIf="orders && orders.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">OrderNumber</th>
+              <th scope="col">OrderName</th>
+              <th scope="col">EmpPrice</th>
+              <th scope="col">Total Price</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Report(pdf)</th>
+              <th scope="col">Edit/Delete</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let order of orders">
+            <tr>
+              <td>{{ order.orderId }}</td>
+              <td>{{ order.orderName }}</td>
+              <td>{{ order.empPrice }}</td>
+              <td>{{ order.totalPrice }}</td>
+              <td>{{ order.customer.name }}</td>
+              <td>
+                <button
+                  class="btn btn-sm badge-secondary"
+                  (click)="orderPdfDownload(order.orderId, order)"
+                >
+                  Download
+                </button>
+              </td>
+              <td>
+                <fa-icon
+                  [icon]="editIcon"
+                  title="Edit"
+                  (click)="onEditOrder(order.orderId, order)"
+                  [ngClass]="'edit-icon icon-button-properties mr-1'"
+                ></fa-icon>
+                <fa-icon
+                  [icon]="deleteIcon"
+                  title="Delete"
+                  (click)="onDeleteOrder(order.orderId, order)"
+                  [ngClass]="'delete-icon icon-button-properties'"
+                >
+                </fa-icon>
+              </td>
+            </tr>
+          </tbody>
+        </ng-container>
+      </table>
+      <ng-container *ngIf="!orders || !orders.length">
+        <div class="emptyOrder text-center alert-warning">
+          There are no orders currently available ...
+        </div>
       </ng-container>
-    </table>
-    <ng-container *ngIf="!orders || !orders.length">
-      <div class="emptyOrder text-center alert-warning">
-        There are no orders currently available ...
-      </div>
-    </ng-container>
+    </div>
+    <router-outlet></router-outlet>
   </div>
-  <router-outlet></router-outlet>
-</div>
 </div>
 <ng-container *ngIf="showAddOrderForm && !showEditOrderForm">
   <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new order</h1>
@@ -152,7 +143,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleAddOrderForm()"
+        (click)="onClickToggleAddOrderForm(); inputForm.reset()"
       >
         Cancel
       </button>
@@ -164,7 +155,7 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
+    #editForm="ngForm"
     (ngSubmit)="onUpdateOrder(updatedOrder)"
     class="form"
     name="orderForm"
@@ -219,7 +210,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditOrderForm()"
+        (click)="onClickToggleEditOrderForm(); editForm.reset()"
       >
         Cancel
       </button>

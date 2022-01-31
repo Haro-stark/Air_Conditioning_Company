@@ -197,9 +197,10 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
+    #editForm="ngForm"
     (ngSubmit)="
-      onUpdateSupplierPurchasedHistory(updatedSupplierPurchasedHistory)
+      onUpdateSupplierPurchasedHistory(updatedSupplierPurchasedHistory);
+      formSubmitted ? editForm.reset() : ''
     "
     class="form"
     name="supplierForm"
@@ -271,12 +272,32 @@
       />
     </div>
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditSupplierPurchasedHistoryForm()"
+        (click)="
+          onClickToggleEditSupplierPurchasedHistoryForm(); editForm.reset()
+        "
       >
         Cancel
       </button>

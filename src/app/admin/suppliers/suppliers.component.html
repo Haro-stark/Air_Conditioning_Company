@@ -40,7 +40,7 @@
             <th scope="col">Tax</th>
             <th scope="col">characteristics</th>
             <th scope="col">Buy</th>
-            <th scope="col">Buy Product</th>
+            <th scope="col">Add Product</th>
             <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
@@ -171,12 +171,30 @@
       />
     </div>
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleAddSupplierForm()"
+        (click)="onClickToggleAddSupplierForm(); inputForm.reset()"
       >
         Cancel
       </button>
@@ -188,8 +206,10 @@
 
   <hr />
   <form
-    #inputForm="ngForm"
-    (ngSubmit)="onUpdateSupplier(updatedSupplier)"
+    #editForm="ngForm"
+    (ngSubmit)="
+      onUpdateSupplier(updatedSupplier); formSubmitted ? editForm.reset() : ''
+    "
     class="form"
     name="supplierForm"
   >
@@ -263,7 +283,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditSupplierForm()"
+        (click)="onClickToggleEditSupplierForm(); editForm.reset()"
       >
         Cancel
       </button>
@@ -274,11 +294,15 @@
 <ng-container
   *ngIf="!showAddSupplierForm && !showEditSupplierForm && showAddProductForm"
 >
-  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new supplier</h1>
+  <h1 style="color: rgb(184, 15, 199)" class="mb-3">
+    Add a new product to the supplier
+  </h1>
 
   <form
-    #inputForm="ngForm"
-    (ngSubmit)="addSupplierProducts(); formSubmitted ? inputForm.reset() : ''"
+    #addProductForm="ngForm"
+    (ngSubmit)="
+      addSupplierProducts(); formSubmitted ? addProductForm.reset() : ''
+    "
     class="form"
     name="supplierForm"
   >
@@ -291,6 +315,7 @@
         name="supplierId"
         placeholder="enter supplier Id"
         [(ngModel)]="supplierId"
+        disabled
         class="form-control"
       />
     </div>
@@ -348,12 +373,30 @@
       />
     </div>
     <span class="d-flex">
-      <button class="btn btn-outline-success" type="submit">Save</button>
-
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="showAddProductForm = false"
+        (click)="showAddProductForm = false; addProductForm.reset()"
       >
         Cancel
       </button>
