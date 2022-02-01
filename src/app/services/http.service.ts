@@ -252,7 +252,7 @@ export class HttpService {
     id: number
   ): Observable<SupplierPurchasedHistory> {
     const httpOptions: Object = {
-      params: { Id: id },
+      params: { id: id },
     };
     return this.http.delete<SupplierPurchasedHistory>(
       `${this.supplierPurchasedHistoryApiUrl}/delete`,
