@@ -32,6 +32,9 @@
 </ng-container>
 
 <div *ngIf="!showAddSupplierForm && !showEditSupplierForm && !loading">
+  <ng-container *ngIf="processingNetworkRequest">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="suppliers && suppliers.length > 0">
@@ -84,12 +87,14 @@
                   )
                 "
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete"
                 (click)="onDeleteSupplier(supplier.supplierId, supplier)"
                 [ngClass]="'delete-icon icon-button-properties'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >
               </fa-icon>
             </td>
@@ -240,60 +245,6 @@
     <p class="text-center m-3">supplierProducts</p>
     <hr />
 
-    <!--    <ng-container
-      *ngFor="let product of updatedSupplier.supplierProducts; let i = index"
-    >
-      <h1>Product {{ i + 1 }}</h1>
-      <div class="form-group">
-        <label for="productName" class="form-label">Product Name</label>
-        <input
-          required
-          id="productName"
-          type="text"
-          name="productName"
-          placeholder="enter product name"
-          [(ngModel)]="product.name"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="basePrice" class="form-label">Base Price </label>
-        <input
-          required
-          id="basePrice"
-          type="text"
-          name="basePrice"
-          placeholder="enter base price"
-          [(ngModel)]="product.basePrice"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="tax" class="form-label">Tax </label>
-        <input
-          required
-          id="tax"
-          type="text"
-          name="tax"
-          placeholder="enter tax"
-          [(ngModel)]="product.tax"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="characteristics" class="form-label">characteristics</label>
-        <input
-          required
-          id="characteristics"
-          type="text"
-          name="characteristics"
-          placeholder="enter characteristics"
-          [(ngModel)]="product.characteristics"
-          class="form-control"
-        />
-      </div>
-    </ng-container> -->
-
     <div class="form-group">
       <label for="productName" class="form-label">Product Name</label>
       <input
@@ -302,7 +253,7 @@
         type="text"
         name="productName"
         placeholder="enter product name"
-        [(ngModel)]="updatedSupplier.supplierProducts[0].name"
+        [(ngModel)]="updatedSupplier.supplierProducts[productIndex].name"
         class="form-control"
       />
     </div>
@@ -314,7 +265,7 @@
         type="text"
         name="basePrice"
         placeholder="enter base price"
-        [(ngModel)]="updatedSupplier.supplierProducts[0].basePrice"
+        [(ngModel)]="updatedSupplier.supplierProducts[productIndex].basePrice"
         class="form-control"
       />
     </div>
@@ -326,7 +277,7 @@
         type="text"
         name="tax"
         placeholder="enter tax"
-        [(ngModel)]="updatedSupplier.supplierProducts[0].tax"
+        [(ngModel)]="updatedSupplier.supplierProducts[productIndex].tax"
         class="form-control"
       />
     </div>
@@ -338,7 +289,9 @@
         type="text"
         name="characteristics"
         placeholder="enter characteristics"
-        [(ngModel)]="updatedSupplier.supplierProducts[0].characteristics"
+        [(ngModel)]="
+          updatedSupplier.supplierProducts[productIndex].characteristics
+        "
         class="form-control"
       />
     </div>

@@ -11,6 +11,7 @@ import {
 import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Services } from 'src/app/models/Services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-budgets',
@@ -109,7 +110,8 @@ export class BudgetsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private budgetService: HttpService
+    private budgetService: HttpService,
+    private router: Router
   ) {
     this.loading = true;
   }
@@ -247,6 +249,8 @@ export class BudgetsComponent implements OnInit {
   }
 
   onDeleteBudget(id: number, budget: Budget) {
+    this.processingNetworkRequest = true;
+
     this.budgetService.deleteBudget(id).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
@@ -254,6 +258,7 @@ export class BudgetsComponent implements OnInit {
           this.budgets = this.budgets.filter(
             (o) => o.budgetId != budget.budgetId
           );
+          this.processingNetworkRequest = false;
         } else {
           this.showApiErrorResponse(response.message);
         }
@@ -302,6 +307,10 @@ export class BudgetsComponent implements OnInit {
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
+            this.budgets = this.budgets.filter(
+              (budget: Budget) => budget.budgetId != updatedBudget.budgetId
+            );
+            this.budgets.push({ ...updatedBudget });
             this.showApiSuccessResponse(response.message);
             this.showEditBudgetForm = false;
             this.processingNetworkRequest = false;
@@ -394,7 +403,24 @@ export class BudgetsComponent implements OnInit {
     link.click();
   }
 
-  changeEvent(product:any) {
-    console.log(this.newBudget.productList , product)
-  };
+  changeEvent(product: any) {
+    console.log(this.newBudget.productList, product);
+  }
+
+  generateNewOrder(id: any, acceptedBudget: Budget) {
+    this.processingNetworkRequest = true;
+    console.log('generating order');
+    if (id)
+      this.budgetService.budgetToOrder(id).subscribe({
+        next: (response: any) => {
+          if (response.status === 200) {
+            this.router.navigate(['/404']);
+            this.showApiSuccessResponse(response.message);
+          } else this.showApiErrorResponse(response.message);
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+      });
+  }
 }

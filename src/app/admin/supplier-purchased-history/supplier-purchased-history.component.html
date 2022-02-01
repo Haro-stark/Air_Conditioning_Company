@@ -26,6 +26,9 @@
     !loading
   "
 >
+  <ng-container *ngIf="processingNetworkRequest">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
   <div class="table-responsive">
     <table class="table">
       <ng-container
@@ -39,8 +42,9 @@
             <th scope="col">BasePrice</th>
             <th scope="col">Tax</th>
             <th scope="col">characteristics</th>
-            <th scope="col">Edit/Delete</th>
             <th scope="col">Report(pdf)</th>
+
+            <th scope="col">Edit/Delete</th>
           </tr>
         </thead>
         <tbody *ngFor="let purchasedHistory of supplierPurchasedHistory">
@@ -76,6 +80,8 @@
                   )
                 "
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
+                                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
@@ -87,6 +93,8 @@
                   )
                 "
                 [ngClass]="'delete-icon icon-button-properties'"
+                                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+
               >
               </fa-icon>
             </td>

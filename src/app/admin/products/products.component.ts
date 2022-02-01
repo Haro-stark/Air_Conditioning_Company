@@ -6,6 +6,7 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { Response } from 'src/app/models/Response';
 import { HttpService } from 'src/app/services/http.service';
 import { Product } from '../../models/Product';
 
@@ -62,7 +63,9 @@ export class ProductsComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private HttpProductService: HttpService
-  ) {this.loading = true;}
+  ) {
+    this.loading = true;
+  }
 
   ngOnInit(): void {
     this.HttpProductService.getProduct().subscribe({
@@ -127,7 +130,7 @@ export class ProductsComponent implements OnInit {
     }, 200);
   }
   onEditProduct(id: number, product: Product) {
-    this.updatedProduct = {...product};
+    this.updatedProduct = { ...product };
     setTimeout(() => {
       this.showEditProductForm = true;
       this.cd.markForCheck();
@@ -136,12 +139,22 @@ export class ProductsComponent implements OnInit {
   }
 
   onDeleteProduct(id: number, product: Product) {
+    this.processingNetworkRequest = true;
     this.HttpProductService.deleteProduct(id).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
+          console.log('deleted', response);
           this.showApiSuccessResponse(response.message);
-          this.products = this.products.filter((o) => o.name != product.name);
+          this.products = this.products.filter(
+            (o) => o.productId != product.productId
+          );
+          this.processingNetworkRequest = false;
         } else {
+          console.log('else', response);
+          const { status } = response;
+          console.log('else', status);
+
+          console.log(response.status, response.status === 200);
           this.showApiErrorResponse(response.message);
         }
       },
@@ -166,10 +179,10 @@ export class ProductsComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
-      this.processingNetworkRequest=true;
+      this.processingNetworkRequest = true;
       this.HttpProductService.updateProduct(updatedProduct).subscribe({
         next: (response: any) => {
-          if ( response.status === 200) {
+          if (response.status === 200) {
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);
@@ -196,6 +209,8 @@ export class ProductsComponent implements OnInit {
         'Error! please check your internet connection and try again';
     }
     this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
+
     setTimeout(() => {
       this.showErrorAlert = false;
       this.loading = false;

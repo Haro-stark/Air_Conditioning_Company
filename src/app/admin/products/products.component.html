@@ -1,3 +1,5 @@
+<h1 class="page-header alert-heading text-center">Manage Products</h1>
+
 <div
   class="alert-warning alert apiResponse"
   *ngIf="showErrorAlert && !showSuccessAlert"
@@ -32,6 +34,9 @@
 </ng-container>
 
 <div *ngIf="!showAddProductForm && !showEditProductForm && !loading">
+  <ng-container *ngIf="processingNetworkRequest">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
   <div class="table-responsive">
     <table class="table">
       <ng-container *ngIf="products && products.length > 0">
@@ -61,12 +66,14 @@
                 title="Edit"
                 (click)="onEditProduct(product.productId, product)"
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete"
                 (click)="onDeleteProduct(product.productId, product)"
                 [ngClass]="'delete-icon icon-button-properties'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >
               </fa-icon>
             </td>

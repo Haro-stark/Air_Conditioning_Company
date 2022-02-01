@@ -172,6 +172,7 @@ export class EmployeesComponent implements OnInit {
                   .signUp(email, password, type, username)
                   .then(
                     () => {
+                      this.newEmployee.employeeId = response.data.employeeId;
                       this.employees.push({ ...this.newEmployee });
                       this.showApiSuccessResponse(response.message);
                       this.errorMessage = '';

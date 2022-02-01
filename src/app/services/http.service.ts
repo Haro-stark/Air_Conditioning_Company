@@ -10,6 +10,7 @@ import { WorkLog } from '../models/WorkLog';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SupplierPurchasedHistory } from '../models/SupplierPurchasedHistory';
 import { SupplierProducts } from '../models/SupplierProducts';
+import { Response } from '../models/Response';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-type': 'application/json',
@@ -79,7 +80,6 @@ export class HttpService {
   }
   getCustomerById(id: number): Observable<Customer> {
     return this.http.get<Customer>(`${this.customerApiUrl}`, {
-      responseType: 'text' as 'json',
       params: { Id: id },
     });
   }
@@ -95,7 +95,6 @@ export class HttpService {
   }
   deleteCustomer(id: number): Observable<Customer> {
     return this.http.delete<Customer>(`${this.customerApiUrl}/delete`, {
-      responseType: 'text' as 'json',
       params: { Id: id },
     });
   }
@@ -130,7 +129,6 @@ export class HttpService {
   getOrderById(id: number): Observable<Order> {
     return this.http.get<Order>(`${this.orderApiUrl}`, {
       params: { Id: id },
-      responseType: 'text' as 'json',
     });
   }
   addOrder(Order: Order): Observable<Order> {
@@ -166,7 +164,6 @@ export class HttpService {
   getEmployeeById(id: number): Observable<Employee> {
     return this.http.get<Employee>(`${this.employeeApiUrl}/getByID`, {
       params: { Id: id },
-      responseType: 'text' as 'json',
     });
   }
   addEmployee(Employee: Employee): Observable<Employee> {
@@ -207,15 +204,10 @@ export class HttpService {
       httpOptions
     );
   }
-  deleteProduct(id: number): Observable<Product> {
-    const httpOptions: Object = {
-      responseType: 'text' as 'text',
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.productApiUrl}/delete`, {
       params: { Id: id },
-    };
-    return this.http.delete<Product>(
-      `${this.productApiUrl}/delete`,
-      httpOptions
-    );
+    });
   }
   getProductPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.productApiUrl}/exportToPDF`);

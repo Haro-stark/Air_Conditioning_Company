@@ -139,6 +139,8 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     id: number,
     supplierPurchasedHistory: SupplierPurchasedHistory
   ) {
+        this.processingNetworkRequest = true;
+
     this.httpSupplierPurchasedHistoryService
       .deleteSupplierPurchasedHistory(id)
       .subscribe({
@@ -150,6 +152,8 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
                 (o) =>
                   o.supplierOrderId != supplierPurchasedHistory.supplierOrderId
               );
+                this.processingNetworkRequest = false;
+
           } else {
             this.showApiErrorResponse(response.message);
           }

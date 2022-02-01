@@ -26,6 +26,9 @@
 </ng-container>
 
 <div>
+  <ng-container *ngIf="processingNetworkRequest">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
   <div *ngIf="!showAddOrderForm && !showEditOrderForm && !loading">
     <div class="table-responsive">
       <table class="table">
@@ -61,12 +64,18 @@
                   [icon]="editIcon"
                   title="Edit"
                   (click)="onEditOrder(order.orderId, order)"
+                  [style]="
+                    processingNetworkRequest ? 'pointer-events:none' : ''
+                  "
                   [ngClass]="'edit-icon icon-button-properties mr-1'"
                 ></fa-icon>
                 <fa-icon
                   [icon]="deleteIcon"
                   title="Delete"
                   (click)="onDeleteOrder(order.orderId, order)"
+                  [style]="
+                    processingNetworkRequest ? 'pointer-events:none' : ''
+                  "
                   [ngClass]="'delete-icon icon-button-properties'"
                 >
                 </fa-icon>
@@ -107,7 +116,7 @@
     </div>
     <div class="form-group">
       <label for="empPrice">empPrice</label>
-       <input
+      <input
         required
         id="empPrice"
         type="number"
@@ -142,7 +151,6 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        
         (click)="onClickToggleAddOrderForm(); inputForm.reset()"
       >
         Cancel
@@ -172,7 +180,7 @@
         class="form-control"
       />
     </div>
-   <div class="form-group">
+    <div class="form-group">
       <label for="text" class="form-label">Customer Name</label>
       <input
         required
@@ -186,7 +194,7 @@
     </div>
     <div class="form-group">
       <label for="empPrice">empPrice</label>
-       <input
+      <input
         required
         id="empPrice"
         type="number"
@@ -197,9 +205,9 @@
       />
     </div>
 
-     <div class="form-group">
+    <div class="form-group">
       <label for="totalPrice">Total Price</label>
-       <input
+      <input
         required
         id="totalPrice"
         type="number"

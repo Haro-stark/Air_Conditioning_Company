@@ -161,11 +161,14 @@ export class OrdersComponent implements OnInit {
   }
   onDeleteOrder(id: number, order: Order) {
     console.log('delete', id, order);
+    this.processingNetworkRequest = true;
+
     this.httpOrderService.deleteOrder(id).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
           this.showApiSuccessResponse(response.message);
           this.orders = this.orders.filter((o) => o.orderId != order.orderId);
+          this.processingNetworkRequest = false;
         } else {
           this.showApiErrorResponse(response.message);
         }
@@ -227,6 +230,8 @@ export class OrdersComponent implements OnInit {
         'Error! please check your internet connection and try again';
     }
     this.showErrorAlert = true;
+    this.processingNetworkRequest = false;
+
     setTimeout(() => {
       this.showErrorAlert = false;
       this.loading = false;
@@ -237,6 +242,7 @@ export class OrdersComponent implements OnInit {
     if (message) this.apiSuccessResponse = message;
     else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
+
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);

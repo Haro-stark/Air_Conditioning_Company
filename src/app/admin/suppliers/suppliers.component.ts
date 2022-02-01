@@ -144,18 +144,17 @@ export class SuppliersComponent implements OnInit {
       this.processingNetworkRequest = true;
       this.httpSupplierService.addSupplier(this.newSupplier).subscribe({
         next: (response: any) => {
-          if (response === 200) {
+          if (response.status === 200) {
+            this.newSupplier.supplierId = response.data.supplierId;
+            this.suppliers.push(this.newSupplier);
+            console.log(response, this.newSupplier);
             this.showApiSuccessResponse(response.message);
-            this.suppliers.push({ ...this.newSupplier });
+            this.showAddSupplierForm = false;
+            this.formSubmitted = true;
           } else this.showApiErrorResponse(response.message);
         },
         error: () => {
           this.showApiErrorResponse();
-        },
-        complete: () => {
-          this.showAddSupplierForm = false;
-          this.showAddSupplierForm = false;
-          this.formSubmitted = true;
         },
       });
     }
@@ -178,23 +177,19 @@ export class SuppliersComponent implements OnInit {
     }, 200);
   }
   onEditSupplier(id: number, supplier: Supplier, productid: any) {
-    console.log(supplier);
-    console.log(
-      this.suppliers.filter((supplier: Supplier) =>
-        supplier.supplierProducts
-          .map((product: SupplierProducts) => product.productId)
-          .findIndex((product: any) => product === productid)
-      )
+    this.productIndex = supplier.supplierProducts.findIndex(
+      (product: SupplierProducts) => product.productId === productid
     );
+
     this.updatedSupplier = { ...supplier };
     setTimeout(() => {
       this.showEditSupplierForm = true;
       this.cd.markForCheck();
     }, 250);
-    console.log('edit', id, supplier);
   }
 
   onDeleteSupplier(id: number, supplier: Supplier) {
+    this.processingNetworkRequest= true;
     this.httpSupplierService.deleteSupplier(id).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
@@ -202,6 +197,8 @@ export class SuppliersComponent implements OnInit {
           this.suppliers = this.suppliers.filter(
             (o) => o.supplierId != supplier.supplierId
           );
+              this.processingNetworkRequest = false;
+
         } else {
           this.showApiErrorResponse(response.message);
         }
@@ -288,7 +285,7 @@ export class SuppliersComponent implements OnInit {
             this.showApiSuccessResponse(response.message);
             this.suppliers.map((value) => {
               if (value.supplierId === this.supplierId)
-                value.supplierProducts.push({ ...this.addSupplierProduct });
+                value.supplierProducts.push(this.addSupplierProduct);
             });
             this.formSubmitted = true;
             this.showAddProductForm = false;
