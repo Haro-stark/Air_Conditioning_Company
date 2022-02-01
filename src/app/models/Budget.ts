@@ -3,9 +3,9 @@ import { Product } from './Product';
 import { Services } from './Services';
 
 export interface Budget {
-  budgetId: number;
+  budgetId: any;
   budgetName: string;
-  totalPrice: number;
+  totalPrice?: number;
   budgetStatus: string;
   assistantHours: number;
   officerHours: number;

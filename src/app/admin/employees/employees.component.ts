@@ -220,6 +220,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   onDeleteEmployee(id: any, employee: Employee) {
+    this.processingNetworkRequest = true;
     console.log('delete', id, employee);
     this.httpEmployeeService.deleteEmployee(id).subscribe({
       next: (response) => {
@@ -232,9 +233,12 @@ export class EmployeesComponent implements OnInit {
         } else {
           this.showApiErrorResponse(response.message);
         }
+            this.processingNetworkRequest = false;
+
       },
       error: (error: any) => {
         this.showApiErrorResponse();
+
       },
     });
   }

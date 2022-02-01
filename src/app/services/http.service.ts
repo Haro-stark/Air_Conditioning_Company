@@ -20,7 +20,7 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class HttpService {
-  private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com/Budget';
+  private budgetApiUrl = 'http://hidden-bastion-05543.herokuapp.com/Budget';
   private customerApiUrl =
     'https://hidden-bastion-05543.herokuapp.com/Customer';
   private employeeApiUrl =

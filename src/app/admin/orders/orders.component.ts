@@ -153,6 +153,7 @@ export class OrdersComponent implements OnInit {
   }
   onEditOrder(id: number, order: Order) {
     this.updatedOrder = { ...order };
+    console.log(this.updatedOrder);
     setTimeout(() => {
       this.showEditOrderForm = true;
       this.cd.markForCheck();

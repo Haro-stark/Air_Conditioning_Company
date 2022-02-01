@@ -255,7 +255,8 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
-        (click)="onClickToggleEditProductForm();editForm.reset()"
+        [disabled]="processingNetworkRequest"
+        (click)="onClickToggleEditProductForm(); editForm.reset()"
       >
         Cancel
       </button>

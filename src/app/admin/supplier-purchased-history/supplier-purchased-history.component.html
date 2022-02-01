@@ -241,7 +241,9 @@
         type="text"
         name="basePrice"
         placeholder="enter base price"
-        [(ngModel)]="updatedSupplierPurchasedHistory.supplierProducts[0].basePrice"
+        [(ngModel)]="
+          updatedSupplierPurchasedHistory.supplierProducts[0].basePrice
+        "
         class="form-control"
       />
     </div>
@@ -295,6 +297,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
+        [disabled]="processingNetworkRequest"
         (click)="
           onClickToggleEditSupplierPurchasedHistoryForm(); editForm.reset()
         "

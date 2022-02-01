@@ -4,7 +4,7 @@ import { Product } from './Product';
 import { Services } from './Services';
 
 export interface Order {
-  orderId: number;
+  orderId: any;
   orderName: string;
   empPrice: number;
   totalPrice: number;

@@ -15,9 +15,17 @@
   class="text-center m-3"
   *ngIf="!showAddEmployeeForm && !showEditEmployeeForm"
 >
-  <button class="btn badge-success" (click)="onClickToggleAddEmployeeForm()">
+  <button
+    class="btn badge-success"
+    (click)="onClickToggleAddEmployeeForm()"
+    [disabled]="loading"
+  >
     Create New Employee
   </button>
+
+  <ng-container *ngIf="processingNetworkRequest">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
 </div>
 
 <p *ngIf="errorMessage && errorMessage.trim().length > 0" class="alert-danger">
@@ -55,12 +63,14 @@
               <fa-icon
                 [icon]="editIcon"
                 title="Edit"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
                 (click)="onEditEmployee(employee)"
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
                 (click)="onDeleteEmployee(employee.employeeId, employee)"
                 [ngClass]="'delete-icon icon-button-properties'"
               >

@@ -14,7 +14,11 @@
   class="text-center m-3"
   *ngIf="!showAddSupplierForm && !showEditSupplierForm"
 >
-  <button class="btn badge-success" (click)="onClickToggleAddSupplierForm()">
+  <button
+    class="btn badge-success"
+    (click)="onClickToggleAddSupplierForm()"
+    [disabled]="loading"
+  >
     Create New Supplier
   </button>
 </div>
@@ -396,6 +400,7 @@
       <button
         class="btn btn-danger ml-auto"
         type="button"
+        [disabled]="processingNetworkRequest"
         (click)="showAddProductForm = false; addProductForm.reset()"
       >
         Cancel

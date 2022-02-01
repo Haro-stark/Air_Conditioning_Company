@@ -29,6 +29,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
 import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
+import { FilterCustomerPipe } from './pipes/filter-customer.pipe';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
     LoadingSpinnerComponent,
     SupplierPurchasedHistoryComponent,
     UrlNotFoundComponent,
+    FilterCustomerPipe,
   ],
   imports: [
     BrowserModule,

@@ -41,15 +41,14 @@ export class BudgetsComponent implements OnInit {
     name: '',
   };
   newBudget: Budget = {
-    budgetId: 0,
     budgetName: '',
-    totalPrice: 0,
     budgetStatus: '',
     assistantHours: 0,
     officerHours: 0,
     productList: [],
     service: [],
     customer: { customerId: 0, name: '' },
+    budgetId: 0,
   };
   budgets: Budget[] = [
     /*  
@@ -182,7 +181,9 @@ export class BudgetsComponent implements OnInit {
     );
     if (
       !this.newBudget.budgetName ||
-      this.newBudget.budgetName.trim().length === 0
+      this.newBudget.budgetName.trim().length === 0 ||
+      this.newBudget.assistantHours < 0 ||
+      this.newBudget.officerHours < 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
@@ -193,13 +194,15 @@ export class BudgetsComponent implements OnInit {
       } else {
         this.processingNetworkRequest = true;
         this.newBudget.budgetStatus = 'pending';
-        console.log('final budgett...', this.newBudget);
+        console.log('final budget is ...', this.newBudget);
         this.budgetService.addBudget(this.newBudget).subscribe({
           next: (response: any) => {
             if (response.status === 200) {
               console.log(response);
               console.log(this.newBudget);
               this.showApiSuccessResponse(response.message);
+              this.newBudget.budgetId = response.data.budgetId;
+              this.newBudget.totalPrice = response.data.totalPrice;
               this.budgets.push({ ...this.newBudget });
               this.formSubmitted = true;
             } else this.showApiErrorResponse(response.message);
@@ -273,42 +276,42 @@ export class BudgetsComponent implements OnInit {
       return this.errorMessage;
     }
     console.log('update', updatedBudget);
-    console.log('customer is ', updatedBudget.customer);
 
+    console.log(this.processingNetworkRequest, 'network request');
     if (
       updatedBudget.budgetStatus.trim().toLowerCase() === 'accepted' &&
       this.generateOrder
     ) {
       this.processingNetworkRequest = true;
       console.log('generating order');
-      this.budgetService.budgetToOrder(updatedBudget.budgetId).subscribe({
-        next: (response: any) => {
-          if (response.status === 200) {
-            this.showApiSuccessResponse(response.message);
-            this.showEditBudgetForm = false;
-          } else this.showApiErrorResponse(response.message);
-        },
-        error: (error: any) => {
-          this.showApiErrorResponse();
-        },
-      });
+      if (updatedBudget.budgetId)
+        this.budgetService.budgetToOrder(updatedBudget.budgetId).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+              this.showEditBudgetForm = false;
+            } else this.showApiErrorResponse(response.message);
+          },
+          error: (error: any) => {
+            this.showApiErrorResponse();
+          },
+        });
     } else {
       this.processingNetworkRequest = true;
+      console.log(this.processingNetworkRequest, 'network request');
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
             this.showApiSuccessResponse(response.message);
+            this.showEditBudgetForm = false;
+            this.processingNetworkRequest = false;
+            this.formSubmitted = true;
           } else {
             this.showApiErrorResponse(response.message);
           }
         },
         error: (error: any) => {
           this.showApiErrorResponse();
-        },
-        complete: () => {
-          this.showEditBudgetForm = false;
-          this.formSubmitted = true;
-          this.processingNetworkRequest = false;
         },
       });
     }
@@ -317,7 +320,7 @@ export class BudgetsComponent implements OnInit {
   }
   isInstallationSelected(services: Services[]) {
     console.log(services);
-    let newArr = services.map((service: Services) =>
+    let newArr = services?.map((service: Services) =>
       service.type.trim().toLowerCase()
     );
 
@@ -325,19 +328,21 @@ export class BudgetsComponent implements OnInit {
 
     console.log(services);
 
-    if (newArr.includes('installation')) {
-      this.showProducts = true;
-    } else {
-      this.showProducts = false;
-      this.newBudget.productList = [];
-    }
+    if (newArr.length > 0) {
+      if (newArr?.includes('installation')) {
+        this.showProducts = true;
+      } else {
+        this.showProducts = false;
+        this.newBudget.productList = [];
+      }
 
-    if (newArr.includes('maintenance') || newArr.includes('laborwork')) {
-      this.showHoursInput = true;
-    } else {
-      this.showHoursInput = false;
-      this.newBudget.assistantHours = 0;
-      this.newBudget.officerHours = 0;
+      if (newArr?.includes('maintenance') || newArr.includes('laborwork')) {
+        this.showHoursInput = true;
+      } else {
+        this.showHoursInput = false;
+        this.newBudget.assistantHours = 0;
+        this.newBudget.officerHours = 0;
+      }
     }
   }
 
@@ -388,4 +393,8 @@ export class BudgetsComponent implements OnInit {
     link.target = '_blank';
     link.click();
   }
+
+  changeEvent(product:any) {
+    console.log(this.newBudget.productList , product)
+  };
 }
