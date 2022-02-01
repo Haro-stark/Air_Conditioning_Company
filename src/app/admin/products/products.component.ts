@@ -166,9 +166,10 @@ export class ProductsComponent implements OnInit {
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
+      this.processingNetworkRequest=true;
       this.HttpProductService.updateProduct(updatedProduct).subscribe({
         next: (response: any) => {
-          if (response.data && response.status === 200) {
+          if ( response.status === 200) {
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);

@@ -188,7 +188,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
         .updateSupplierPurchasedHistory(updatedSupplierPurchasedHistory)
         .subscribe({
           next: (response: any) => {
-            if (response.data && response.status === 200) {
+            if (response.status === 200) {
               this.showApiSuccessResponse(response.message);
             } else {
               this.showApiErrorResponse(response.message);

@@ -221,7 +221,7 @@ export class SuppliersComponent implements OnInit {
       this.processingNetworkRequest = true;
       this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
         next: (response: any) => {
-          if (response.data && response.status === 200) {
+          if ( response.status === 200) {
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);
