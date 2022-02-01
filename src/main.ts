@@ -6,13 +6,13 @@ import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
-  window.console.log =
-    window.console.debug =
-    window.console.warn =
-    console.log =
-    console.debug =
-    console.warn =
-      () => {};
+  // window.console.log =
+  //   window.console.debug =
+  //   window.console.warn =
+  //   console.log =
+  //   console.debug =
+  //   console.warn =
+  //     () => {};
 }
 
 platformBrowserDynamic()

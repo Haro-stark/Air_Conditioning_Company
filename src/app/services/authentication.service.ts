@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import { User } from '../models/User';
 import { first, switchMap } from 'rxjs/operators';
 import { getDatabase, ref, set } from 'firebase/database';
+import { HttpService } from './http.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +20,8 @@ export class AuthenticationService implements OnInit {
   constructor(
     private angularFireAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private httpService: HttpService
   ) {
     console.log('calling service constructor:-------- ');
     console.log(this.angularFireAuth, this.afs, this.router);
@@ -45,20 +47,42 @@ export class AuthenticationService implements OnInit {
     username: string
   ) {
     try {
-      const singupStatus = await this.angularFireAuth
-        .createUserWithEmailAndPassword(email, password)
-        .then((credential) => {
-          let user: User = {
-            uid: credential.user?.uid,
-            role: role,
-            username: username,
-            email: credential.user?.email,
-            password: password,
-          };
-          console.log('user after signup : ', user);
-          this.updateUserData(user);
+      await this.httpService
+        .createEmployeeInFirebase(email, password)
+        .subscribe({
+          next: (response: { data: { uid: any; email: any } }) => {
+            console.log('user record = ', response.data);
+            let user: User = {
+              uid: response.data.uid,
+              role: role,
+              username: username,
+              email: response.data.email,
+              password: password,
+            };
+            this.updateUserData(user);
+          },
         });
-      // if (singupStatus.user) console.log("auth service signup: singupStatus = ", singupStatus.credential);
+    } catch (err: any) {
+      window.alert(err.message);
+    }
+  }
+
+  async deleteEmployeeInFirebase(email: string) {
+    try {
+      let uid: string;
+      await this.httpService.getUserUid(email).subscribe({
+        next: async (responseUid: any) => {
+          console.log('Response after getting uid = ', responseUid);
+          uid = responseUid.data;
+          await this.httpService.deleteEmployeeInFirebase(uid).subscribe({
+            next: (responseDeleteUser: any) => {
+              console.log('Response after deletion = ', responseDeleteUser);
+              return responseDeleteUser;
+            },
+          });
+          return responseUid;
+        },
+      });
     } catch (err: any) {
       window.alert(err.message);
     }

@@ -88,6 +88,7 @@ export class SuppliersComponent implements OnInit {
     status: 0;
     url: string;
   };
+  productIndex: number = -1;
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
   numberOfProducts!: number;
@@ -145,7 +146,7 @@ export class SuppliersComponent implements OnInit {
         next: (response: any) => {
           if (response === 200) {
             this.showApiSuccessResponse(response.message);
-            this.suppliers.push(this.newSupplier);
+            this.suppliers.push({ ...this.newSupplier });
           } else this.showApiErrorResponse(response.message);
         },
         error: () => {
@@ -176,8 +177,16 @@ export class SuppliersComponent implements OnInit {
       this.cd.markForCheck();
     }, 200);
   }
-  onEditSupplier(id: number, supplier: Supplier) {
-    this.updatedSupplier = {...supplier};
+  onEditSupplier(id: number, supplier: Supplier, productid: any) {
+    console.log(supplier);
+    console.log(
+      this.suppliers.filter((supplier: Supplier) =>
+        supplier.supplierProducts
+          .map((product: SupplierProducts) => product.productId)
+          .findIndex((product: any) => product === productid)
+      )
+    );
+    this.updatedSupplier = { ...supplier };
     setTimeout(() => {
       this.showEditSupplierForm = true;
       this.cd.markForCheck();
@@ -221,7 +230,7 @@ export class SuppliersComponent implements OnInit {
       this.processingNetworkRequest = true;
       this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
         next: (response: any) => {
-          if ( response.status === 200) {
+          if (response.status === 200) {
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);

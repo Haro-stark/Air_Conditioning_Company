@@ -35,6 +35,9 @@ export class HttpService {
   private servicesApiUrl =
     ' https://hidden-bastion-05543.herokuapp.com/services';
 
+  private firebaseAdmin =
+    'https://hidden-bastion-05543.herokuapp.com//firebase';
+
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -261,9 +264,9 @@ export class HttpService {
   }
   getSupplierPurchasedHistoryPdf(id: number): Observable<any> {
     return this.http.get<any>(
-      `${this.supplierPurchasedHistoryApiUrl}/exportToPDF`,
+      `${this.supplierPurchasedHistoryApiUrl}/downloadFile`,
       {
-        params: { Id: id },
+        params: { supplierBudgetId: id },
       }
     );
   }
@@ -364,5 +367,21 @@ export class HttpService {
 
   getServices(): Observable<any> {
     return this.http.get<any>(`${this.servicesApiUrl}/list`);
+  }
+
+  createEmployeeInFirebase(email: string, password: string) {
+    return this.http.get<any>(`${this.firebaseAdmin}/createEmployee`, {
+      params: { email: email, password: password },
+    });
+  }
+  deleteEmployeeInFirebase(uid: string) {
+    return this.http.delete<any>(`${this.firebaseAdmin}/deleteEmployee`, {
+      params: { uid: uid },
+    });
+  }
+  getUserUid(email: string) {
+    return this.http.get<any>(`${this.firebaseAdmin}/getUserUid`, {
+      params: { email: email },
+    });
   }
 }

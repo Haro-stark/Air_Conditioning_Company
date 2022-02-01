@@ -40,6 +40,7 @@
             <th scope="col">Tax</th>
             <th scope="col">characteristics</th>
             <th scope="col">Edit/Delete</th>
+            <th scope="col">Report(pdf)</th>
           </tr>
         </thead>
         <tbody *ngFor="let purchasedHistory of supplierPurchasedHistory">
@@ -50,6 +51,19 @@
             <td>{{ product.basePrice }}</td>
             <td>{{ product.tax }}</td>
             <td>{{ product.characteristics }}</td>
+
+            <td>
+              <button
+                class="btn btn-sm badge-secondary"
+                (click)="
+                  supplierPurchasedHistoryPdfDownload(
+                    purchasedHistory.supplierOrderId
+                  )
+                "
+              >
+                Download
+              </button>
+            </td>
 
             <td>
               <fa-icon

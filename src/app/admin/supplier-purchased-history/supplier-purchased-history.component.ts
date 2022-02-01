@@ -127,7 +127,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     id: number,
     supplierPurchasedHistory: SupplierPurchasedHistory
   ) {
-    this.updatedSupplierPurchasedHistory = {...supplierPurchasedHistory};
+    this.updatedSupplierPurchasedHistory = { ...supplierPurchasedHistory };
     setTimeout(() => {
       this.showEditSupplierPurchasedHistoryForm = true;
       this.cd.markForCheck();
@@ -207,6 +207,32 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     return this.errorMessage;
   }
 
+  supplierPurchasedHistoryPdfDownload(
+    id: number,
+  ): void {
+    this.httpSupplierPurchasedHistoryService
+      .getSupplierPurchasedHistoryPdf(id)
+      .subscribe({
+        next: (data: any) => {
+          this.downloadPdf(data);
+          this.showApiSuccessResponse();
+        },
+        error: (error: any) => {
+          const errMessage = 'pdf does not exist';
+
+          this.showApiErrorResponse(errMessage);
+        },
+      });
+  }
+
+  downloadPdf(data: any) {
+    let blob = new Blob([data], { type: 'application/pdf' });
+    let downloadURL = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = downloadURL;
+    link.target = '_blank';
+    link.click();
+  }
   showApiErrorResponse(message?: any) {
     if (message) {
       this.apiErrorResponse = message;
@@ -222,10 +248,10 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     }, 3500);
   }
 
-  showApiSuccessResponse(message: string) {
-    this.apiSuccessResponse = message;
+  showApiSuccessResponse(message?: string) {
+    if (message) this.apiSuccessResponse = message;
+    else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
-    this.processingNetworkRequest = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);

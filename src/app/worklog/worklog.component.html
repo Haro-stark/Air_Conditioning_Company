@@ -1,7 +1,11 @@
 <!-- <div class="row"> -->
+
 <h2 class="page-header text-center">Work Log</h2>
+
 <!-- </div> -->
+
 <br />
+
 <div class="text-center" *ngIf="auth.isAllowedToAssistantAndOfficer(user)">
   <a data-toggle="modal">
     <button class="btn badge-success ml-auto" type="button" (click)="openCreateWorkLogModal(content)">
@@ -9,22 +13,30 @@
     </button>
   </a>
 </div>
+
 <table class="table table-striped table-hover" id="servers">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Order Id</th>
-      <th>Number Of Hours</th>
-      <th *ngIf="auth.isAllowedToAdmin(user)">Edit</th>
-      <th *ngIf="auth.isAllowedToAdmin(user)">Delete</th>
-    </tr>
-  </thead>
+  <ng-container *ngIf="!(showEditWorklogForm)">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Order Id</th>
+        <th>Order Name</th>
+        <th>Customer</th>
+        <th>Number Of Hours</th>
+        <th *ngIf="auth.isAllowedToAdmin(user)">Edit</th>
+        <th *ngIf="auth.isAllowedToAdmin(user)">Delete</th>
+      </tr>
+    </thead>
+  </ng-container>
+
   <ng-container *ngIf="(workLogs$ | async) as workLogs">
     <ng-container *ngIf="!(showEditWorklogForm)">
       <tbody *ngFor="let log of workLogs;">
         <tr>
           <td>{{ log.date }}</td>
-          <td>{{ log.order.orderId }}</td>
+          <td>{{ log.order?.orderId }}</td>
+          <td>{{ log.order?.orderName }}</td>
+          <td>{{ log.order?.customer?.name }}</td>
           <td>{{ log.numberOfHours }}</td>
           <td>
             <a *ngIf="auth.isAllowedToAdmin(user)" style="cursor: pointer">
@@ -44,10 +56,12 @@
     </ng-container>
   </ng-container>
 </table>
+
 <ng-container *ngIf="showEditWorklogForm">
   <h1 style="color: greenyellow" class="mb-3">Editing WorkLog</h1>
+
   <hr />
-  <form #inputForm="ngForm" (ngSubmit)="onUpdateLog(updatedWorklog)" class="form" name="employeeForm">
+  <form #inputForm="ngForm" (ngSubmit)="onUpdateLog(inputForm)" class="form" name="employeeForm">
     <div class="form-group">
       <label for="text" class="form-label">Date</label>
       <input required id="date" type="text" name="date" value="updatedWorklog.date" class="form-control" disabled />
@@ -58,10 +72,16 @@
         [(ngModel)]="updatedWorklog.numberOfHours" class="form-control" />
     </div>
     <div class="form-group">
-      <label for="text" class="form-label">Order Id</label>
-      <input required id="orderId" type="number" name="orderId" value="updatedWorklog.order.orderId"
-        class="form-control" disabled />
+      <label>Order</label>
+      <select name="Order" ngModel="" class="form-control" name="order" required>
+        <ng-container *ngIf="orders$ | async as currentOrders">
+          <option *ngFor="let order of currentOrders;" [ngValue]="order">
+            {{ order.orderId }} - {{order.orderName}}
+          </option>
+        </ng-container>
+      </select>
     </div>
+
     <span class="d-flex">
       <button *ngIf="!processingNetworkRequest" class="btn btn-outline-success" type="submit">
         Save
@@ -77,6 +97,8 @@
     </span>
   </form>
 </ng-container>
+
+
 <ng-template #content let-c="close" let-d="dismiss">
   <form #serverForm="ngForm" (ngSubmit)="saveServer(serverForm)">
     <div class="modal-header">
@@ -108,6 +130,7 @@
     </div>
   </form>
 </ng-template>
+
 <div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
   {{
   apiRequestError.error.text

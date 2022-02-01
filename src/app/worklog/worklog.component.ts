@@ -66,7 +66,6 @@ export class WorklogComponent implements OnInit {
         console.log("user = ", user)
         this.user = user
 
-
         this.workLogs$ = this.httpService.getWorkLog(this.user.email).pipe(
           map((response: any) => {
             console.log("response of worklogs: ", response)
@@ -131,26 +130,6 @@ export class WorklogComponent implements OnInit {
 
   deleteLog(log: WorkLog) {
     console.log(log.workLogId)
-
-    // this.httpService.deleteWorkLog(log.workLogId).subscribe({
-    //   next: (response: Response) => {
-    //     console.log(response);
-    //     if (response.status == 200) {
-    //       this.worklogs = this.worklogs.filter((response) => response.workLogId != log.workLogId);
-    //     } else {
-    //       this.showApiErrorResponse
-    //         (response.message);
-    //     }
-    //     // console.log('delete', log.workLogId, log);
-    //   },
-    //   error: (error: any) => {
-    //     this.showApiErrorResponse("Network Request Failed");
-    //   },
-    //   complete: () => {
-    //     this.showEditWorklogForm = false;
-    //     this.workLogs$ = of(this.worklogs);
-    //   },
-    // });
     this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
       map((response: any) => {
 
@@ -162,7 +141,6 @@ export class WorklogComponent implements OnInit {
             (response.message);
         }
         return this.worklogs;
-        // console.log('delete', log.workLogId, log);
       }),
       catchError((error: any) => {
         this.showApiErrorResponse(error);
@@ -178,10 +156,14 @@ export class WorklogComponent implements OnInit {
     this.showEditWorklogForm = !this.showEditWorklogForm;
   }
 
-  onUpdateLog(log: WorkLog) {
+  onUpdateLog(editFormWorklog: NgForm) {
     this.processingNetworkRequest = !this.processingNetworkRequest;
-    if (log.order && log.numberOfHours) {
-      this.workLogs$ = this.httpService.updateWorkLog(log).pipe(
+    if (editFormWorklog.value.order && editFormWorklog.value.numberOfHours) {
+
+      this.updatedWorklog.numberOfHours = editFormWorklog.value.numberOfHours;
+      this.updatedWorklog.order = editFormWorklog.value.order;
+
+      this.workLogs$ = this.httpService.updateWorkLog(this.updatedWorklog).pipe(
         map((response: any) => {
 
           if (response.data && response.status === 200) {

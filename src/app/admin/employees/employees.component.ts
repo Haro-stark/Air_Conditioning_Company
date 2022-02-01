@@ -168,20 +168,31 @@ export class EmployeesComponent implements OnInit {
           this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
             next: (response: any) => {
               if (response.status === 200) {
-                this.employees.push(this.newEmployee);
-                this.showApiSuccessResponse(response.message);
+                this.authService
+                  .signUp(email, password, type, username)
+                  .then(
+                    () => {
+                      this.employees.push({ ...this.newEmployee });
+                      this.showApiSuccessResponse(response.message);
+                      this.errorMessage = '';
+                      this.showAddEmployeeForm = false;
+                      this.formSubmitted = true;
+                      this.processingNetworkRequest = false;
+                    },
+                    (error: any) => {
+                      this.showApiErrorResponse(error);
+                    }
+                  )
+                  .catch((_error: string) => {
+                    this.errorMessage = _error;
+                    this.showApiErrorResponse(this.errorMessage);
+                  });
               } else {
                 this.showApiErrorResponse(response.message);
               }
             },
             error: (error: any) => {
               this.showApiErrorResponse();
-            },
-            complete: () => {
-              this.errorMessage = '';
-              this.showAddEmployeeForm = false;
-              this.formSubmitted = true;
-              this.processingNetworkRequest = false;
             },
           });
         })
@@ -220,30 +231,36 @@ export class EmployeesComponent implements OnInit {
   }
 
   onDeleteEmployee(id: any, employee: Employee) {
-    this.processingNetworkRequest = true;
     console.log('delete', id, employee);
+    this.processingNetworkRequest = true;
     this.httpEmployeeService.deleteEmployee(id).subscribe({
       next: (response) => {
         console.log('response', response);
         if (response.status === 200) {
-          this.showApiSuccessResponse(response.message);
-          this.employees = this.employees.filter(
-            (e) => e.username !== employee.username
-          );
+          this.authService
+            .deleteEmployeeInFirebase(employee.email)
+            .finally(() => {
+              this.showApiSuccessResponse(response.message);
+              this.employees = this.employees.filter(
+                (e) => e.username !== employee.username
+              );
+            })
+            .catch((errorMsg: string) => {
+              this.showApiErrorResponse(errorMsg);
+            });
         } else {
           this.showApiErrorResponse(response.message);
         }
-            this.processingNetworkRequest = false;
-
+        this.processingNetworkRequest = false;
       },
       error: (error: any) => {
         this.showApiErrorResponse();
-
       },
     });
   }
 
   onUpdateEmployee(updatedEmployee: Employee) {
+    let updateEmployee = { ...updatedEmployee };
     this.processingNetworkRequest = true;
 
     this.errorMessage = '';
@@ -261,21 +278,19 @@ export class EmployeesComponent implements OnInit {
       this.processingNetworkRequest = false;
       return this.errorMessage;
     } else {
-      this.httpEmployeeService.updateEmployee(updatedEmployee).subscribe({
+      this.httpEmployeeService.updateEmployee(updateEmployee).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
             this.showApiSuccessResponse(response.message);
+            this.showEditEmployeeForm = false;
+            this.formSubmitted = true;
+            this.processingNetworkRequest = false;
           } else {
             this.showApiErrorResponse(response.message);
           }
         },
         error: (error: any) => {
           this.showApiErrorResponse();
-        },
-        complete: () => {
-          this.showEditEmployeeForm = false;
-          this.formSubmitted = true;
-          this.processingNetworkRequest = false;
         },
       });
     }
