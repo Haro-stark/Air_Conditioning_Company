@@ -12,6 +12,8 @@ import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Services } from 'src/app/models/Services';
 import { Router } from '@angular/router';
+import { budgetStatus } from 'src/app/enums/budgetStatus';
+import { Response } from 'src/app/models/Response';
 
 @Component({
   selector: 'app-budgets',
@@ -34,6 +36,7 @@ export class BudgetsComponent implements OnInit {
   showHoursInput = false;
   otherServicesSelected = false;
   loading = false;
+  resetForm = false;
   officerHours!: number;
   assistantHours!: number;
   updatedBudget!: Budget;
@@ -164,7 +167,7 @@ export class BudgetsComponent implements OnInit {
     this.budgetService.getBudgetPdf(id).subscribe({
       next: (data) => {
         this.showApiSuccessResponse();
-        this.downloadPdf(data);
+        this.downloadPdf(data, id);
       },
       error: (err) => {
         const errMessage = 'pdf does not exist';
@@ -190,30 +193,32 @@ export class BudgetsComponent implements OnInit {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
-      if (!this.newBudget.customer.name && !this.customer.name) {
+      this.newBudget.customer = { ...this.customer };
+      if (!this.newBudget.customer.name) {
         this.errorMessage =
           'Please enter correct fields , All fields are necessary';
       } else {
+        let budgetToSave = { ...this.newBudget };
         this.processingNetworkRequest = true;
-        this.newBudget.budgetStatus = 'pending';
-        console.log('final budget is ...', this.newBudget);
-        this.budgetService.addBudget(this.newBudget).subscribe({
-          next: (response: any) => {
+        budgetToSave.budgetStatus = budgetStatus.pendingAcceptance;
+        console.log('final budget is ...', budgetToSave);
+        this.budgetService.addBudget(budgetToSave).subscribe({
+          next: (response: Response) => {
             if (response.status === 200) {
               console.log(response);
-              console.log(this.newBudget);
-              this.showApiSuccessResponse(response.message);
-              this.newBudget.budgetId = response.data.budgetId;
-              this.newBudget.totalPrice = response.data.totalPrice;
-              this.budgets.push({ ...this.newBudget });
+              console.log(budgetToSave);
+              budgetToSave.budgetId = response.data.budgetId;
+              budgetToSave.totalPrice = response.data.totalPrice;
+              this.budgets.push({ ...budgetToSave });
               this.formSubmitted = true;
-            } else this.showApiErrorResponse(response.message);
+              this.showApiSuccessResponse(response.message);
+              console.log('form status', this.formSubmitted);
+              console.log(this.newBudget);
+              console.log(budgetToSave);
+            } else this.showApiErrorResponse(response.message.trim().slice(0,100));
           },
           error: () => {
             this.showApiErrorResponse();
-          },
-          complete: () => {
-            this.processingNetworkRequest = false;
           },
         });
       }
@@ -227,6 +232,8 @@ export class BudgetsComponent implements OnInit {
 
       this.cd.markForCheck();
     }, 200);
+
+    console.log('form submit ', this.formSubmitted);
   }
   onClickToggleEditBudgetForm() {
     setTimeout(() => {
@@ -328,12 +335,9 @@ export class BudgetsComponent implements OnInit {
     return this.errorMessage;
   }
   isInstallationSelected(services: Services[]) {
-    console.log(services);
     let newArr = services?.map((service: Services) =>
       service.type.trim().toLowerCase()
     );
-
-    console.log('isInstallation', newArr.includes('installation'), newArr);
 
     console.log(services);
 
@@ -394,12 +398,13 @@ export class BudgetsComponent implements OnInit {
     return customer;
   }
 
-  downloadPdf(data: any) {
+  downloadPdf(data: any, id: any) {
     let blob = new Blob([data], { type: 'application/pdf' });
     let downloadURL = URL.createObjectURL(blob);
     let link = document.createElement('a');
     link.href = downloadURL;
     link.target = '_blank';
+    link.download = `budgetId_${id}.pdf`;
     link.click();
   }
 
@@ -414,7 +419,14 @@ export class BudgetsComponent implements OnInit {
       this.budgetService.budgetToOrder(id).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
-            this.router.navigate(['/404']);
+            this.budgets = this.budgets.map((budget: Budget) => {
+              if (budget.budgetId == acceptedBudget.budgetId)
+                budget.budgetStatus = budgetStatus.accepted;
+              return budget;
+            });
+
+            console.log(this.budgets);
+            //   this.router.navigate(['/admin/budgets']);
             this.showApiSuccessResponse(response.message);
           } else this.showApiErrorResponse(response.message);
         },

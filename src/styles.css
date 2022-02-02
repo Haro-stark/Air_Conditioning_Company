@@ -50,11 +50,11 @@ p.alert-danger {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: auto;
 }
 
-
 .delete-icon {
-    margin-left: 20px;
+  margin-left: 20px;
   color: rgb(245, 0, 0);
 }
 
@@ -89,3 +89,45 @@ form {
 table.table tr {
   text-align: center !important;
 }
+
+.center-item {
+  margin: 0px auto;
+  text-align: center !important;
+}
+
+.table {
+  margin: 0px auto;
+}
+
+  .alert-warning {
+  width: max-content;
+  min-width: 400px;
+  padding: 0 10px;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 50px;
+}
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .alert-warning {
+  width: max-content;
+  min-width: 300px;
+  padding: 0 10px;
+  margin: 0 auto;
+  text-align: center;
+}
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {}

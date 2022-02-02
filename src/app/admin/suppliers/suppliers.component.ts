@@ -255,6 +255,7 @@ export class SuppliersComponent implements OnInit {
     }
 
     if (quantity && quantity > 0) {
+      this.processingNetworkRequest = true;
       this.httpSupplierService
         .buySupplierProducts(productId, quantity)
         .subscribe({
@@ -262,7 +263,7 @@ export class SuppliersComponent implements OnInit {
             if (response.status === 200) {
               this.showApiSuccessResponse(response.message);
             } else this.showApiErrorResponse(response.message);
-          },
+         this.processingNetworkRequest=false; },
           error: (error: any) => {
             this.showApiErrorResponse();
           },

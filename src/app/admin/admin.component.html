@@ -11,8 +11,8 @@
     <button class="btn btn-danger signoutbtn" (click)="signout()">
       Sign out
     </button>
-  </div>
-  <div
+
+     <div
     class="sidebar"
     [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
   >
@@ -26,18 +26,19 @@
           >Suppliers Purchased History
         </a>
       </li>
-
       <li><a [routerLink]="['budgets']">Budgets </a></li>
       <li><a [routerLink]="['workLog']">WorkLogs </a></li>
     </ul>
   </div>
+  </div>
+ 
   <div class="main">
     <ng-container *ngIf="loading">
       <app-loading-spinner></app-loading-spinner>
     </ng-container>
     <div *ngIf="!loading">
       <div class="body">
-        <h1 style="color: red" class="m-5">Admin panel</h1>
+        <h1 style="color: red" class="m-5 text-center">Admin panel</h1>
         <router-outlet></router-outlet>
       </div>
     </div>

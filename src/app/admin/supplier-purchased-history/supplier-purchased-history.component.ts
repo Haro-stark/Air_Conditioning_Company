@@ -139,7 +139,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     id: number,
     supplierPurchasedHistory: SupplierPurchasedHistory
   ) {
-        this.processingNetworkRequest = true;
+    this.processingNetworkRequest = true;
 
     this.httpSupplierPurchasedHistoryService
       .deleteSupplierPurchasedHistory(id)
@@ -152,8 +152,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
                 (o) =>
                   o.supplierOrderId != supplierPurchasedHistory.supplierOrderId
               );
-                this.processingNetworkRequest = false;
-
+            this.processingNetworkRequest = false;
           } else {
             this.showApiErrorResponse(response.message);
           }
@@ -211,30 +210,34 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     return this.errorMessage;
   }
 
-  supplierPurchasedHistoryPdfDownload(
-    id: number,
-  ): void {
+  supplierPurchasedHistoryPdfDownload(id: any) {
     this.httpSupplierPurchasedHistoryService
       .getSupplierPurchasedHistoryPdf(id)
       .subscribe({
         next: (data: any) => {
-          this.downloadPdf(data);
+          this.downloadPdf(data, id);
           this.showApiSuccessResponse();
         },
         error: (error: any) => {
-          const errMessage = 'pdf does not exist';
+          console.log(error);
+          const errMessage =
+            'Some error occurred while downloading or pdf does not exist';
 
           this.showApiErrorResponse(errMessage);
         },
       });
   }
 
-  downloadPdf(data: any) {
+  downloadPdf(data: any, id: any) {
     let blob = new Blob([data], { type: 'application/pdf' });
     let downloadURL = URL.createObjectURL(blob);
     let link = document.createElement('a');
     link.href = downloadURL;
     link.target = '_blank';
+    link.download = `supplierPurchasedHistoryId_${id}.pdf`;
+    //append if want to open in new tab
+    //  document.body.appendChild(link);
+
     link.click();
   }
   showApiErrorResponse(message?: any) {

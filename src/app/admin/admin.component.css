@@ -3,9 +3,9 @@
   padding: 0;
   min-width: 200px;
   background-color: #f1f1f1;
-  height: 100vh;
+  height: 90vh;
   overflow: auto;
-  z-index: 10;
+  z-index: 9;
   border-right: 1px solid #555;
 }
 
@@ -80,21 +80,16 @@ div.content {
 }
 
 div.main {
-  height: 100vh;
   width: 100%;
 }
 
 div.body {
-  height: auto;
   width: 100%;
   z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 }
-
-
+.body::after {
+  overflow: hidden;
+}
 
 .icon {
   color: white;
@@ -107,3 +102,19 @@ div.body {
   outline: none;
   border: none;
 }
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {}

@@ -33,69 +33,69 @@
   <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
 
-<div *ngIf="!showAddProductForm && !showEditProductForm && !loading">
+<div class="table-responsive"
+  *ngIf="!showAddProductForm && !showEditProductForm && !loading">
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <div class="table-responsive">
-    <table class="table">
-      <ng-container *ngIf="products && products.length > 0">
-        <thead>
-          <tr>
-            <th scope="col">ProductID</th>
-            <th scope="col">ProductName</th>
-            <th scope="col">Characteristic</th>
-            <th scope="col">Price</th>
-            <th scope="col">Stock Quantity</th>
-            <th scope="col">Tax</th>
-            <th scope="col">Edit/Delete</th>
-          </tr>
-        </thead>
-        <tbody *ngFor="let product of products">
-          <tr>
-            <td>{{ product.productId }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.characteristics }}</td>
-            <td>{{ product.price }}</td>
-            <td>{{ product.quantityInStock }}</td>
-            <td>{{ product.tax }}</td>
 
-            <td>
-              <fa-icon
-                [icon]="editIcon"
-                title="Edit"
-                (click)="onEditProduct(product.productId, product)"
-                [ngClass]="'edit-icon icon-button-properties mr-1'"
-                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-              ></fa-icon>
-              <fa-icon
-                [icon]="deleteIcon"
-                title="Delete"
-                (click)="onDeleteProduct(product.productId, product)"
-                [ngClass]="'delete-icon icon-button-properties'"
-                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-              >
-              </fa-icon>
-            </td>
-          </tr>
-        </tbody>
-      </ng-container>
-    </table>
-    <ng-container *ngIf="!products || !products.length">
-      <div class="emptyProduct text-center alert-warning">
-        There are no products currently available ...
-      </div>
+  <table class="table table-hover align-middle mx-auto w-auto">
+    <ng-container *ngIf="products && products.length">
+      <thead>
+        <tr>
+          <th scope="col">ProductID</th>
+          <th scope="col">ProductName</th>
+          <th scope="col">Characteristic</th>
+          <th scope="col">Price</th>
+          <th scope="col">Stock Quantity</th>
+          <th scope="col">Tax</th>
+          <th scope="col">Edit/Delete</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let product of products">
+        <tr>
+          <td>{{ product.productId }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.characteristics }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.quantityInStock }}</td>
+          <td>{{ product.tax }}</td>
+
+          <td>
+            <fa-icon
+              [icon]="editIcon"
+              title="Edit"
+              (click)="onEditProduct(product.productId, product)"
+              [ngClass]="'edit-icon icon-button-properties mr-1'"
+              [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+            ></fa-icon>
+            <fa-icon
+              [icon]="deleteIcon"
+              title="Delete"
+              (click)="onDeleteProduct(product.productId, product)"
+              [ngClass]="'delete-icon icon-button-properties'"
+              [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+            >
+            </fa-icon>
+          </td>
+        </tr>
+      </tbody>
     </ng-container>
-  </div>
-  <router-outlet></router-outlet>
+  </table>
+  <ng-container *ngIf="!products || !products.length">
+    <div class="emptyProduct text-center alert-warning">
+      There are no products currently available ...
+    </div>
+  </ng-container>
 </div>
+<div class="flexCenter">
 
-<ng-container *ngIf="showAddProductForm && !showEditProductForm">
+<div *ngIf="showAddProductForm && !showEditProductForm">
   <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new product</h1>
 
   <form
     #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
     class="form"
     name="productForm"
   >
@@ -179,8 +179,8 @@
       </button>
     </span>
   </form>
-</ng-container>
-<ng-container *ngIf="showEditProductForm && !showAddProductForm">
+</div>
+<div *ngIf="showEditProductForm && !showAddProductForm">
   <h1 style="color: greenyellow" class="mb-3">Editing a product</h1>
 
   <hr />
@@ -269,4 +269,5 @@
       </button>
     </span>
   </form>
-</ng-container>
+</div>
+</div>

@@ -1,6 +1,6 @@
 <!-- <div class="row"> -->
 
-<h2 class="page-header text-center">Work Log</h2>
+<h2 class="page-header text-center main-header">Work Log</h2>
 
 <!-- </div> -->
 
@@ -8,116 +8,210 @@
 
 <div class="text-center" *ngIf="auth.isAllowedToAssistantAndOfficer(user)">
   <a data-toggle="modal">
-    <button class="btn badge-success ml-auto" type="button" (click)="openCreateWorkLogModal(content)">
+    <button
+      class="btn badge-success ml-auto"
+      type="button"
+      (click)="openCreateWorkLogModal(content)"
+    >
       Create New Work Log
     </button>
   </a>
 </div>
 
-<table class="table table-striped table-hover" id="servers">
-  <ng-container *ngIf="!(showEditWorklogForm)">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Order Id</th>
-        <th>Order Name</th>
-        <th>Customer</th>
-        <th>Number Of Hours</th>
-        <th *ngIf="auth.isAllowedToAdmin(user)">Edit</th>
-        <th *ngIf="auth.isAllowedToAdmin(user)">Delete</th>
-      </tr>
-    </thead>
-  </ng-container>
+<ng-container *ngIf="loading || processingNetworkRequest">
+  <app-loading-spinner> loading... </app-loading-spinner>
+</ng-container>
+<ng-container *ngIf="workLogs$ | async as workLogs">
+  <div
+    class="table-responsive"
+    *ngIf="!showEditWorklogForm && !loading && worklogs"
+  >
+    <table class="table table-hover align-middle mx-auto w-auto">
+      <ng-container *ngIf="!showEditWorklogForm">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Order Id</th>
+            <th>Order Name</th>
+            <th>Customer</th>
+            <th>Number Of Hours</th>
+            <th *ngIf="auth.isAllowedToAdmin(user)">Edit</th>
+            <th *ngIf="auth.isAllowedToAdmin(user)">Delete</th>
+          </tr>
+        </thead>
 
-  <ng-container *ngIf="(workLogs$ | async) as workLogs">
-    <ng-container *ngIf="!(showEditWorklogForm)">
-      <tbody *ngFor="let log of workLogs;">
-        <tr>
-          <td>{{ log.date }}</td>
-          <td>{{ log.order?.orderId }}</td>
-          <td>{{ log.order?.orderName }}</td>
-          <td>{{ log.order?.customer?.name }}</td>
-          <td>{{ log.numberOfHours }}</td>
-          <td>
-            <a *ngIf="auth.isAllowedToAdmin(user)" style="cursor: pointer">
-              <fa-icon [icon]="editIcon" title="Edit" (click)="editLog(log)"
-                [ngClass]="'edit-icon icon-button-properties mr-1'"></fa-icon>
-            </a>
-          </td>
-          <td>
-            <a *ngIf="auth.isAllowedToAdmin(user)" class="delete" data-toggle="modal" style="cursor: pointer">
-              <fa-icon [icon]="deleteIcon" title="Delete" (click)="deleteLog(log)"
-                [ngClass]="'delete-icon icon-button-properties'">
-              </fa-icon>
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </ng-container>
-  </ng-container>
-</table>
+        <tbody *ngFor="let log of workLogs">
+          <tr>
+            <td>{{ log.date }}</td>
+            <td>{{ log.order?.orderId }}</td>
+            <td>{{ log.order?.orderName }}</td>
+            <td>{{ log.order?.customer?.name }}</td>
+            <td>{{ log.numberOfHours }}</td>
+            <td>
+              <a *ngIf="auth.isAllowedToAdmin(user)" style="cursor: pointer">
+                <fa-icon
+                  [icon]="editIcon"
+                  title="Edit"
+                  (click)="editLog(log)"
+                  [ngClass]="'edit-icon icon-button-properties mr-1'"
+                  [style]="
+                    processingNetworkRequest ? 'pointer-events:none' : ''
+                  "
+                ></fa-icon>
+              </a>
+            </td>
+            <td>
+              <a
+                *ngIf="auth.isAllowedToAdmin(user)"
+                class="delete"
+                data-toggle="modal"
+                style="cursor: pointer"
+              >
+                <fa-icon
+                  [icon]="deleteIcon"
+                  title="Delete"
+                  (click)="deleteLog(log)"
+                  [ngClass]="'delete-icon icon-button-properties'"
+                  [style]="
+                    processingNetworkRequest ? 'pointer-events:none' : ''
+                  "
+                >
+                </fa-icon>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </ng-container>
+    </table>
+  </div>
+</ng-container>
+<ng-container *ngIf="!worklogs && !loading">
+  <div class="alert-warning text-center">
+    There are no workLogs available at this moment
+  </div>
+</ng-container>
 
 <ng-container *ngIf="showEditWorklogForm">
   <h1 style="color: greenyellow" class="mb-3">Editing WorkLog</h1>
 
   <hr />
-  <form #inputForm="ngForm" (ngSubmit)="onUpdateLog(inputForm)" class="form" name="employeeForm">
+  <form
+    #inputForm="ngForm"
+    (ngSubmit)="onUpdateLog(inputForm)"
+    class="form"
+    name="employeeForm"
+  >
     <div class="form-group">
       <label for="text" class="form-label">Date</label>
-      <input required id="date" type="text" name="date" value="updatedWorklog.date" class="form-control" disabled />
+      <input
+        required
+        id="date"
+        type="text"
+        name="date"
+        value="updatedWorklog.date"
+        class="form-control"
+        disabled
+      />
     </div>
     <div class="form-group">
       <label for="email" class="form-label">Number Of Hours</label>
-      <input required id="numberOfHours" type="text" name="numberOfHours" placeholder="enter number Of Hours"
-        [(ngModel)]="updatedWorklog.numberOfHours" class="form-control" />
+      <input
+        required
+        id="numberOfHours"
+        type="text"
+        name="numberOfHours"
+        placeholder="enter number Of Hours"
+        [(ngModel)]="updatedWorklog.numberOfHours"
+        class="form-control"
+      />
     </div>
     <div class="form-group">
       <label>Order</label>
-      <select name="Order" ngModel="" class="form-control" name="order" required>
+      <select
+        name="Order"
+        ngModel=""
+        class="form-control"
+        name="order"
+        required
+      >
         <ng-container *ngIf="orders$ | async as currentOrders">
-          <option *ngFor="let order of currentOrders;" [ngValue]="order">
-            {{ order.orderId }} - {{order.orderName}}
+          <option *ngFor="let order of currentOrders" [ngValue]="order">
+            {{ order.orderId }} - {{ order.orderName }}
           </option>
         </ng-container>
       </select>
     </div>
 
     <span class="d-flex">
-      <button *ngIf="!processingNetworkRequest" class="btn btn-outline-success" type="submit">
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+      >
         Save
       </button>
-      <button *ngIf="processingNetworkRequest" class="btn btn-primary" type="button" disabled>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
         <span class="visually-hidden">Saving...</span>
       </button>
-      <button *ngIf="!processingNetworkRequest" class="btn btn-danger ml-auto" type="button"
-        (click)="onClickToggleEditEmployeeForm()">
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-danger ml-auto"
+        [disabled]="processingNetworkRequest"
+        type="button"
+        (click)="onClickToggleEditEmployeeForm()"
+      >
         Cancel
       </button>
     </span>
   </form>
 </ng-container>
 
-
 <ng-template #content let-c="close" let-d="dismiss">
   <form #serverForm="ngForm" (ngSubmit)="saveServer(serverForm)">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Create Work Log</h4>
-      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="d('Cross click')"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       <div class="form-group">
         <label>Number Of Hours</label>
-        <input type="text" ngModel name="numberOfHours" class="form-control" required />
+        <input
+          type="text"
+          ngModel
+          name="numberOfHours"
+          class="form-control"
+          required
+        />
       </div>
       <div class="form-group">
         <label>Order</label>
-        <select name="Order" ngModel="" class="form-control" name="order" required>
+        <select
+          name="Order"
+          ngModel=""
+          class="form-control"
+          name="order"
+          required
+        >
           <ng-container *ngIf="orders$ | async as currentOrders">
-            <option *ngFor="let order of currentOrders;" [ngValue]="order">
-              {{ order.orderId }} - {{order.orderName}}
+            <option *ngFor="let order of currentOrders" [ngValue]="order">
+              {{ order.orderId }} - {{ order.orderName }}
             </option>
           </ng-container>
         </select>
@@ -133,8 +227,8 @@
 
 <div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
   {{
-  apiRequestError.error.text
-  ? apiRequestError.error.text
-  : apiRequestError.message
+    apiRequestError.error.text
+      ? apiRequestError.error.text
+      : apiRequestError.message
   }}
 </div>

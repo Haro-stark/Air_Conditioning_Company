@@ -29,223 +29,222 @@
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <div *ngIf="!showAddOrderForm && !showEditOrderForm && !loading">
-    <div class="table-responsive">
-      <table class="table">
-        <ng-container *ngIf="orders && orders.length > 0">
-          <thead>
-            <tr>
-              <th scope="col">OrderNumber</th>
-              <th scope="col">OrderName</th>
-              <th scope="col">EmpPrice</th>
-              <th scope="col">Total Price</th>
-              <th scope="col">Customer Name</th>
-              <th scope="col">Report(pdf)</th>
-              <th scope="col">Edit/Delete</th>
-            </tr>
-          </thead>
-          <tbody *ngFor="let order of orders">
-            <tr>
-              <td>{{ order.orderId }}</td>
-              <td>{{ order.orderName }}</td>
-              <td>{{ order.empPrice }}</td>
-              <td>{{ order.totalPrice }}</td>
-              <td>{{ order.customer.name }}</td>
-              <td>
-                <button
-                  class="btn btn-sm badge-secondary"
-                  (click)="orderPdfDownload(order.orderId, order)"
-                >
-                  Download
-                </button>
-              </td>
-              <td>
-                <fa-icon
-                  [icon]="editIcon"
-                  title="Edit"
-                  (click)="onEditOrder(order.orderId, order)"
-                  [style]="
-                    processingNetworkRequest ? 'pointer-events:none' : ''
-                  "
-                  [ngClass]="'edit-icon icon-button-properties mr-1'"
-                ></fa-icon>
-                <fa-icon
-                  [icon]="deleteIcon"
-                  title="Delete"
-                  (click)="onDeleteOrder(order.orderId, order)"
-                  [style]="
-                    processingNetworkRequest ? 'pointer-events:none' : ''
-                  "
-                  [ngClass]="'delete-icon icon-button-properties'"
-                >
-                </fa-icon>
-              </td>
-            </tr>
-          </tbody>
-        </ng-container>
-      </table>
-      <ng-container *ngIf="!orders || !orders.length">
-        <div class="emptyOrder text-center alert-warning">
-          There are no orders currently available ...
-        </div>
+  <div
+    class="table-responsive"
+    *ngIf="!showAddOrderForm && !showEditOrderForm && !loading"
+  >
+    <table class="table table table-hover align-middle mx-auto w-auto">
+      <ng-container *ngIf="orders && orders.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">OrderNumber</th>
+            <th scope="col">OrderName</th>
+            <th scope="col">EmpPrice</th>
+            <th scope="col">Total Price</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Report(pdf)</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let order of orders">
+          <tr>
+            <td>{{ order.orderId }}</td>
+            <td>{{ order.orderName }}</td>
+            <td>{{ order.empPrice }}</td>
+            <td>{{ order.totalPrice }}</td>
+            <td>{{ order.customer.name }}</td>
+            <td>
+              <button
+                class="btn btn-sm badge-secondary"
+                (click)="orderPdfDownload(order.orderId, order)"
+              >
+                Download
+              </button>
+            </td>
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="onEditOrder(order.orderId, order)"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteOrder(order.orderId, order)"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+                [ngClass]="'delete-icon icon-button-properties'"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
       </ng-container>
-    </div>
-    <router-outlet></router-outlet>
+    </table>
+    <ng-container *ngIf="!orders || !orders.length">
+      <p class="emptyOrder text-center alert-warning">
+        There are no orders currently available ...
+      </p>
+    </ng-container>
+  </div>
+  <router-outlet></router-outlet>
+</div>
+<div class="flexCenter">
+  <div *ngIf="showAddOrderForm && !showEditOrderForm">
+    <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new order</h1>
+
+    <form
+      #inputForm="ngForm"
+      (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+      class="form"
+      name="orderForm"
+    >
+      <div class="form-group">
+        <label for="text" class="form-label">Order Name</label>
+        <input
+          required
+          id="orderName"
+          type="text"
+          name="orderName"
+          placeholder="enter order name"
+          [(ngModel)]="newOrder.orderName"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="empPrice">empPrice</label>
+        <input
+          required
+          id="empPrice"
+          type="number"
+          name="empPrice"
+          placeholder="enter emp wage"
+          [(ngModel)]="newOrder.empPrice"
+          class="form-control"
+        />
+      </div>
+
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          (click)="onClickToggleAddOrderForm(); inputForm.reset()"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
+  </div>
+  <div *ngIf="showEditOrderForm && !showAddOrderForm">
+    <h1 style="color: greenyellow" class="mb-3">Editing a order</h1>
+
+    <hr />
+    <form
+      #editForm="ngForm"
+      (ngSubmit)="onUpdateOrder(updatedOrder)"
+      class="form"
+      name="orderForm"
+    >
+      <div class="form-group">
+        <label for="orderName" class="form-label">Order Name</label>
+        <input
+          required
+          id="orderName"
+          type="text"
+          name="orderName"
+          placeholder="enter order name"
+          [(ngModel)]="updatedOrder.orderName"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="text" class="form-label">Customer Name</label>
+        <input
+          required
+          id="customerName"
+          type="text"
+          name="customerName"
+          placeholder="enter customer name"
+          [(ngModel)]="updatedOrder.customer.name"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="empPrice">empPrice</label>
+        <input
+          required
+          id="empPrice"
+          type="number"
+          name="empPrice"
+          placeholder="enter emp wage"
+          [(ngModel)]="updatedOrder.empPrice"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="totalPrice">Total Price</label>
+        <input
+          required
+          id="totalPrice"
+          type="number"
+          name="totalPrice"
+          placeholder="enter total wage"
+          [(ngModel)]="updatedOrder.totalPrice"
+          class="form-control"
+        />
+      </div>
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          [disabled]="processingNetworkRequest"
+          type="button"
+          (click)="onClickToggleEditOrderForm(); editForm.reset()"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
   </div>
 </div>
-<ng-container *ngIf="showAddOrderForm && !showEditOrderForm">
-  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new order</h1>
-
-  <form
-    #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
-    class="form"
-    name="orderForm"
-  >
-    <div class="form-group">
-      <label for="text" class="form-label">Order Name</label>
-      <input
-        required
-        id="orderName"
-        type="text"
-        name="orderName"
-        placeholder="enter order name"
-        [(ngModel)]="newOrder.orderName"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="empPrice">empPrice</label>
-      <input
-        required
-        id="empPrice"
-        type="number"
-        name="empPrice"
-        placeholder="enter emp wage"
-        [(ngModel)]="newOrder.empPrice"
-        class="form-control"
-      />
-    </div>
-
-    <span class="d-flex">
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-outline-success"
-        type="submit"
-      >
-        Save
-      </button>
-      <button
-        *ngIf="processingNetworkRequest"
-        class="btn btn-primary"
-        type="button"
-        disabled
-      >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="visually-hidden">Saving...</span>
-      </button>
-      <button
-        class="btn btn-danger ml-auto"
-        type="button"
-        (click)="onClickToggleAddOrderForm(); inputForm.reset()"
-      >
-        Cancel
-      </button>
-    </span>
-  </form>
-</ng-container>
-<ng-container *ngIf="showEditOrderForm && !showAddOrderForm">
-  <h1 style="color: greenyellow" class="mb-3">Editing a order</h1>
-
-  <hr />
-  <form
-    #editForm="ngForm"
-    (ngSubmit)="onUpdateOrder(updatedOrder)"
-    class="form"
-    name="orderForm"
-  >
-    <div class="form-group">
-      <label for="orderName" class="form-label">Order Name</label>
-      <input
-        required
-        id="orderName"
-        type="text"
-        name="orderName"
-        placeholder="enter order name"
-        [(ngModel)]="updatedOrder.orderName"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="text" class="form-label">Customer Name</label>
-      <input
-        required
-        id="customerName"
-        type="text"
-        name="customerName"
-        placeholder="enter customer name"
-        [(ngModel)]="updatedOrder.customer.name"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="empPrice">empPrice</label>
-      <input
-        required
-        id="empPrice"
-        type="number"
-        name="empPrice"
-        placeholder="enter emp wage"
-        [(ngModel)]="updatedOrder.empPrice"
-        class="form-control"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="totalPrice">Total Price</label>
-      <input
-        required
-        id="totalPrice"
-        type="number"
-        name="totalPrice"
-        placeholder="enter total wage"
-        [(ngModel)]="updatedOrder.totalPrice"
-        class="form-control"
-      />
-    </div>
-    <span class="d-flex">
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-outline-success"
-        type="submit"
-      >
-        Save
-      </button>
-      <button
-        *ngIf="processingNetworkRequest"
-        class="btn btn-primary"
-        type="button"
-        disabled
-      >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="visually-hidden">Saving...</span>
-      </button>
-      <button
-        class="btn btn-danger ml-auto"
-        [disabled]="processingNetworkRequest"
-        type="button"
-        (click)="onClickToggleEditOrderForm(); editForm.reset()"
-      >
-        Cancel
-      </button>
-    </span>
-  </form>
-</ng-container>

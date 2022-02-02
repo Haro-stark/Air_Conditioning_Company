@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { faEdit, faTrashAlt, faCheck, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faTrashAlt,
+  faCheck,
+  faWindowClose,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   NgbModal,
   NgbModalConfig,
@@ -36,15 +41,15 @@ export class WorklogComponent implements OnInit {
   showErrorAlert: boolean = false;
   showEditWorklogForm: boolean = false;
   processingNetworkRequest: boolean = false;
-
+  loading: Boolean = false;
   user: any;
 
   apiRequestError = {
-    error: { text: "" },
-    name: "",
-    message: "",
+    error: { text: '' },
+    name: '',
+    message: '',
     status: 0,
-    url: ""
+    url: '',
   };
   apiSuccessResponse = '';
 
@@ -57,71 +62,75 @@ export class WorklogComponent implements OnInit {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
-
+    this.loading = true;
   }
 
   ngOnInit(): void {
-    this.auth.user$.subscribe(
-      (user) => {
-        console.log("user = ", user)
-        this.user = user
+    this.auth.user$.subscribe((user) => {
+      console.log('user = ', user);
+      this.user = user;
 
-        this.workLogs$ = this.httpService.getWorkLog(this.user.email).pipe(
-          map((response: any) => {
-            console.log("response of worklogs: ", response)
-            if (response.data && response.status === 200) {
-              this.worklogs = response.data;
-            } else {
-              this.showApiErrorResponse(response.message)
-            }
-            return this.worklogs;
-          }),
-          catchError((error: any) => {
-            this.showApiErrorResponse("Network Request Error");
-            return of(null);
-          })
-        );
+      this.workLogs$ = this.httpService.getWorkLog(this.user.email).pipe(
+        map((response: any) => {
+          console.log('response of worklogs: ', response);
+          if (response.data && response.status === 200) {
+            this.worklogs = response.data;
+            this.loading = false;
+          } else {
+            this.showApiErrorResponse(response.message);
+            this.loading = false;
+          }
+          return this.worklogs;
+        }),
+        catchError((error: any) => {
+          this.showApiErrorResponse('Network Request Error');
+          this.loading = false;
 
-        this.orders$ = this.httpService.getOrder().pipe(
-          map((response: any) => {
-            console.log("response of orders: ", response)
-            if (response.data && response.status === 200) {
-              this.orders = response.data;
-            } else {
-              this.showApiErrorResponse(response.message)
-            }
-            return this.orders;
-          }),
-          catchError((error: any) => {
-            this.showApiErrorResponse("Network Request Error");
-            return of(null);
-          })
-        );
-      }
-    );
+          return of(null);
+        })
+      );
+
+      this.orders$ = this.httpService.getOrder().pipe(
+        map((response: any) => {
+          console.log('response of orders: ', response);
+          if (response.data && response.status === 200) {
+            this.orders = response.data;
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+          return this.orders;
+        }),
+        catchError((error: any) => {
+          this.showApiErrorResponse('Network Request Error');
+          return of(null);
+        })
+      );
+    });
+
+    console.log(this.workLogs$);
   }
 
   saveServer(createWorkLog: NgForm): void {
     if (createWorkLog.value.order && createWorkLog.value.numberOfHours) {
       this.createNewWorkLogModal.close();
-      this.workLogs$ = this.httpService.addWorkLog(createWorkLog.value, this.user.email).pipe(
-        map((response: any) => {
-          console.log("response after saving log: ", response.response)
-          if (response.data && response.status === 200) {
-            this.worklogs = response.data
-          } else {
-            this.showApiErrorResponse(response.message)
-          }
-          return this.worklogs;
-        }),
-        catchError((error: any) => {
-          this.showApiErrorResponse("Network Request Failed");
-          return of(null);
-        })
-      )
-    }
-    else
-      alert("Please provide all the fields")
+      this.workLogs$ = this.httpService
+        .addWorkLog(createWorkLog.value, this.user.email)
+        .pipe(
+          map((response: any) => {
+            console.log('response after saving log: ', response.response);
+            if (response.data && response.status === 200) {
+              this.worklogs = response.data;
+            } else {
+              this.showApiErrorResponse(response.message);
+            }
+            return this.worklogs;
+          }),
+          catchError((error: any) => {
+            this.showApiErrorResponse('Network Request Failed');
+            return of(null);
+          })
+        );
+    } else alert('Please provide all the fields');
   }
 
   openCreateWorkLogModal(content: any) {
@@ -129,16 +138,24 @@ export class WorklogComponent implements OnInit {
   }
 
   deleteLog(log: WorkLog) {
-    console.log(log.workLogId)
+    console.log(log.workLogId);
+    this.processingNetworkRequest = true;
+
     this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
       map((response: any) => {
-
-        console.log("resoinse status : ", response.status, "type = ", typeof response);
+        console.log(
+          'resoinse status : ',
+          response.status,
+          'type = ',
+          typeof response
+        );
         if (response.status == 200) {
-          this.worklogs = this.worklogs.filter((data) => data.workLogId != log.workLogId);
+          this.worklogs = this.worklogs.filter(
+            (data) => data.workLogId != log.workLogId
+          );
+          this.processingNetworkRequest = true;
         } else {
-          this.showApiErrorResponse
-            (response.message);
+          this.showApiErrorResponse(response.message);
         }
         return this.worklogs;
       }),
@@ -147,58 +164,53 @@ export class WorklogComponent implements OnInit {
         return of(this.worklogs);
       })
     );
-
   }
 
   editLog(log: WorkLog) {
     this.updatedWorklog = log;
-    console.log("updateWorkLog: ", log)
+    console.log('updateWorkLog: ', log);
     this.showEditWorklogForm = !this.showEditWorklogForm;
   }
 
   onUpdateLog(editFormWorklog: NgForm) {
     this.processingNetworkRequest = !this.processingNetworkRequest;
     if (editFormWorklog.value.order && editFormWorklog.value.numberOfHours) {
-
       this.updatedWorklog.numberOfHours = editFormWorklog.value.numberOfHours;
       this.updatedWorklog.order = editFormWorklog.value.order;
+      this.processingNetworkRequest = true;
 
       this.workLogs$ = this.httpService.updateWorkLog(this.updatedWorklog).pipe(
         map((response: any) => {
-
           if (response.data && response.status === 200) {
-            console.log("response inside response = ", response)
+            console.log('response inside response = ', response);
 
-            var i = this.worklogs.findIndex(log => log.workLogId === response.data.workLogId)
+            var i = this.worklogs.findIndex(
+              (log) => log.workLogId === response.data.workLogId
+            );
             this.worklogs[i] = response.data;
+            this.processingNetworkRequest = false;
 
-            this.processingNetworkRequest = !this.processingNetworkRequest;
             this.showEditWorklogForm = !this.showEditWorklogForm;
-
           } else {
-            this.showApiErrorResponse
-              (response.message);
+            this.showApiErrorResponse(response.message);
           }
 
           return this.worklogs;
         }),
         catchError((error: any) => {
-          this.showApiErrorResponse("Network Request Failed");
+          this.showApiErrorResponse('Network Request Failed');
           return of(null);
         })
-      )
-    }
-    else
-      alert("Please provide all the fields")
+      );
+    } else alert('Please provide all the fields');
   }
-
 
   onClickToggleEditEmployeeForm() {
     this.showEditWorklogForm = !this.showEditWorklogForm;
   }
 
   showApiErrorResponse(message?: any) {
-    console.log("message in shoAPiWrrorResponse: ", message)
+    console.log('message in shoAPiWrrorResponse: ', message);
     if (message) {
       this.apiRequestError.message = message;
     } else {

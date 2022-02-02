@@ -19,7 +19,7 @@
   <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
 
-<div
+<div class="table-responsive"
   *ngIf="
     !showAddSupplierPurchasedHistoryForm &&
     !showEditSupplierPurchasedHistoryForm &&
@@ -29,8 +29,8 @@
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <div class="table-responsive">
-    <table class="table">
+  
+    <table class="table table-hover align-middle mx-auto w-auto">
       <ng-container
         *ngIf="supplierPurchasedHistory && supplierPurchasedHistory.length > 0"
       >
@@ -80,8 +80,7 @@
                   )
                 "
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
-                                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
@@ -93,8 +92,7 @@
                   )
                 "
                 [ngClass]="'delete-icon icon-button-properties'"
-                                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >
               </fa-icon>
             </td>
@@ -110,10 +108,9 @@
       </div>
     </ng-container>
   </div>
-  <router-outlet></router-outlet>
-</div>
+<div class="flexCenter">
 
-<ng-container
+<div
   *ngIf="
     showAddSupplierPurchasedHistoryForm && !showEditSupplierPurchasedHistoryForm
   "
@@ -124,7 +121,7 @@
 
   <form
     #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
     class="form"
     name="supplierForm"
   >
@@ -207,8 +204,8 @@
       </button>
     </span>
   </form>
-</ng-container>
-<ng-container
+</div>
+<div
   *ngIf="
     showEditSupplierPurchasedHistoryForm && !showAddSupplierPurchasedHistoryForm
   "
@@ -328,4 +325,5 @@
       </button>
     </span>
   </form>
-</ng-container>
+</div>
+</div>

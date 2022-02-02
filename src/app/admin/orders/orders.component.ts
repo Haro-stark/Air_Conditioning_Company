@@ -85,7 +85,7 @@ export class OrdersComponent implements OnInit {
   orderPdfDownload(id: number, order: Order): void {
     this.httpOrderService.getOrderPdf(id).subscribe({
       next: (data: any) => {
-        this.downloadPdf(data);
+        this.downloadPdf(data,id);
         this.showApiSuccessResponse();
       },
       error: (error: any) => {
@@ -248,12 +248,14 @@ export class OrdersComponent implements OnInit {
     }, 3500);
   }
 
-  downloadPdf(data: any) {
+  downloadPdf(data: any, id: any) {
     let blob = new Blob([data], { type: 'application/pdf' });
     let downloadURL = URL.createObjectURL(blob);
     let link = document.createElement('a');
     link.href = downloadURL;
     link.target = '_blank';
+    link.download = `orderId_${id}.pdf`;
+
     link.click();
   }
 }

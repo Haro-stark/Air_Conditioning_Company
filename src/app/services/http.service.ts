@@ -21,6 +21,9 @@ const httpOptions = {
   providedIn: 'root',
 })
 export class HttpService {
+  //http://localhost:8080
+  //https://hidden-bastion-05543.herokuapp.com
+
   private budgetApiUrl = 'https://hidden-bastion-05543.herokuapp.com/Budget';
   private customerApiUrl =
     'https://hidden-bastion-05543.herokuapp.com/Customer';
@@ -49,8 +52,8 @@ export class HttpService {
       params: { Id: id },
     });
   }
-  addBudget(Budget: Budget): Observable<Budget> {
-    return this.http.post<Budget>(`${this.budgetApiUrl}/add`, Budget);
+  addBudget(Budget: Budget): Observable<Response> {
+    return this.http.post<Response>(`${this.budgetApiUrl}/add`, Budget);
   }
   updateBudget(Budget: Budget): Observable<Budget> {
     return this.http.put<any>(
@@ -254,11 +257,12 @@ export class HttpService {
       httpOptions
     );
   }
-  getSupplierPurchasedHistoryPdf(id: number): Observable<any> {
+  getSupplierPurchasedHistoryPdf(id: any): Observable<any> {
     return this.http.get<any>(
       `${this.supplierPurchasedHistoryApiUrl}/downloadFile`,
       {
         params: { supplierBudgetId: id },
+        responseType: 'blob' as 'json',
       }
     );
   }
@@ -333,6 +337,7 @@ export class HttpService {
   getSupplierPdf(id: number): Observable<any> {
     return this.http.get<any>(`${this.supplierApiUrl}/exportToPDF`, {
       params: { Id: id },
+      responseType: 'blob' as 'json',
     });
   }
   buySupplierProducts(

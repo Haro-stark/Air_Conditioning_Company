@@ -28,94 +28,104 @@
 <ng-container *ngIf="loading">
   <app-loading-spinner> loading... </app-loading-spinner>
 </ng-container>
-<div *ngIf="!showAddBudgetForm && !showEditBudgetForm && !loading">
+<div
+  class="table-responsive"
+  *ngIf="
+    !showAddBudgetForm &&
+    !showEditBudgetForm &&
+    !loading &&
+    budgets &&
+    budgets.length
+  "
+>
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <div class="table-responsive">
-    <table class="table">
-      <ng-container *ngIf="budgets">
-        <thead>
-          <tr>
-            <th scope="col">BudgetNumber</th>
-            <th scope="col">BudgetName</th>
-            <th scope="col">Total Price</th>
-            <th scope="col">BudgetStatus</th>
-            <th scope="col">Change Status</th>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Report(pdf)</th>
-            <th scope="col">Edit/Delete</th>
-          </tr>
-        </thead>
-        <tbody *ngFor="let budget of budgets">
-          <tr>
-            <td>{{ budget.budgetId }}</td>
-            <td>{{ budget.budgetName }}</td>
-            <td>{{ budget.totalPrice }}</td>
-            <td>{{ budget.budgetStatus }}</td>
-            <td>
-              <button
-                [class]="
-                  budget.budgetStatus == 'Accepted'
-                    ? 'btn-success btn btn-sm'
-                    : 'btn-primary btn btn-sm'
-                "
-                (click)="generateNewOrder(budget.budgetId, budget)"
-                [disabled]="
-                  budget.budgetStatus == 'Accepted' || processingNetworkRequest
-                "
-              >
-                {{ budget.budgetStatus == "Accepted" ? "Accepted" : "Accept" }}
-              </button>
-            </td>
+  <table class="table table-hover align-middle mx-auto w-auto">
+    <ng-container *ngIf="budgets">
+      <thead>
+        <tr>
+          <th scope="col">BudgetNumber</th>
+          <th scope="col">BudgetName</th>
+          <th scope="col">Total Price</th>
+          <th scope="col">BudgetStatus</th>
+          <th scope="col">Change Status</th>
+          <th scope="col">Customer Name</th>
+          <th scope="col">Report(pdf)</th>
+          <th scope="col">Edit/Delete</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let budget of budgets">
+        <tr>
+          <td>{{ budget.budgetId }}</td>
+          <td>{{ budget.budgetName }}</td>
+          <td>{{ budget.totalPrice }}</td>
+          <td>{{ budget.budgetStatus }}</td>
+          <td>
+            <button
+              [class]="
+                budget.budgetStatus == 'Accepted'
+                  ? 'btn-success btn btn-sm'
+                  : 'btn-primary btn btn-sm'
+              "
+              (click)="generateNewOrder(budget.budgetId, budget)"
+              [disabled]="
+                budget.budgetStatus == 'Accepted' || processingNetworkRequest
+              "
+            >
+              {{ budget.budgetStatus == "Accepted" ? "Accepted" : "Accept" }}
+            </button>
+          </td>
 
-            <td>
-              {{ budget.customer.name }}
-            </td>
-            <td>
-              <button
-                [disabled]="processingNetworkRequest"
-                class="btn btn-sm badge-secondary"
-                (click)="budgetPdfDownload(budget.budgetId, budget)"
-              >
-                Download
-              </button>
-            </td>
-            <td>
-              <fa-icon
-                [icon]="editIcon"
-                title="Edit"
-                (click)="onEditBudget(budget.budgetId, budget)"
-                [ngClass]="'edit-icon icon-button-properties mr-1'"
-                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-              ></fa-icon>
-              <fa-icon
-                [icon]="deleteIcon"
-                title="Delete"
-                (click)="onDeleteBudget(budget.budgetId, budget)"
-                [ngClass]="'delete-icon icon-button-properties'"
-                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
-              >
-              </fa-icon>
-            </td>
-          </tr>
-        </tbody>
-      </ng-container>
-    </table>
-    <ng-container *ngIf="!budgets || !budgets.length">
-      <div class="emptyBudget alert-warning text-center">
-        There are no budgets available at this moment
-      </div>
+          <td>
+            {{ budget.customer.name }}
+          </td>
+          <td>
+            <button
+              [disabled]="processingNetworkRequest"
+              class="btn btn-sm badge-secondary"
+              (click)="budgetPdfDownload(budget.budgetId, budget)"
+            >
+              Download
+            </button>
+          </td>
+          <td>
+            <fa-icon
+              [icon]="editIcon"
+              title="Edit"
+              (click)="onEditBudget(budget.budgetId, budget)"
+              [ngClass]="'edit-icon icon-button-properties mr-1'"
+              [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+            ></fa-icon>
+            <fa-icon
+              [icon]="deleteIcon"
+              title="Delete"
+              (click)="onDeleteBudget(budget.budgetId, budget)"
+              [ngClass]="'delete-icon icon-button-properties'"
+              [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+            >
+            </fa-icon>
+          </td>
+        </tr>
+      </tbody>
     </ng-container>
-  </div>
-  <router-outlet></router-outlet>
+  </table>
 </div>
-<ng-container *ngIf="showAddBudgetForm && !showEditBudgetForm">
+
+<div
+  class="emptyBudget alert-warning text-center"
+  *ngIf="!budgets || !budgets.length && !loading"
+>
+  There are no budgets available at this moment
+</div>
+<div class="flexCenter">
+
+<div *ngIf="showAddBudgetForm && !showEditBudgetForm">
   <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new budget</h1>
 
   <form
     #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); formSubmitted ? inputForm.reset() : ''"
+    (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
     class="form"
     name="budgetForm"
   >
@@ -159,7 +169,7 @@
           type="text"
           name="customerName"
           placeholder="enter customer name"
-          [(ngModel)]="newBudget.customer.name"
+          [(ngModel)]="customer.name"
           class="form-control"
         />
       </div>
@@ -272,8 +282,8 @@
       </button>
     </span>
   </form>
-</ng-container>
-<ng-container *ngIf="showEditBudgetForm && !showAddBudgetForm">
+</div>
+<div *ngIf="showEditBudgetForm && !showAddBudgetForm">
   <h1 style="color: greenyellow" class="mb-3">Editing a budget</h1>
 
   <hr />
@@ -324,7 +334,7 @@
         [(ngModel)]="updatedBudget.budgetStatus"
       >
         <option ngValue="Accepted">Accepted</option>
-        <option ngValue="pendingAcceptance">PendingAcceptance</option>
+        <option ngValue="PendingAcceptance">PendingAcceptance</option>
         <option ngValue="Canceled">Canceled</option>
       </select>
     </div>
@@ -395,4 +405,5 @@
       </button>
     </span>
   </form>
-</ng-container>
+</div>
+</div>

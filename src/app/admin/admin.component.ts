@@ -43,6 +43,7 @@ export class AdminComponent implements OnInit {
     console.log('Toggling sidebar,', this.displaySideBar);
     this.displaySideBar = !this.displaySideBar;
     return this.displaySideBar;
+    console.log('Toggled sidebar,', this.displaySideBar);
   }
 
   navigationInterceptor(event: RouterEvent): void {
