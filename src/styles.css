@@ -108,6 +108,10 @@ table.table tr {
   margin-top: 50px;
 }
 
+
+
+
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .alert-warning {
@@ -116,6 +120,14 @@ table.table tr {
     padding: 0 10px;
     margin: 0 auto;
     text-align: center;
+  }
+
+  .flexCenter {
+  
+    display:block;
+    width: 75vw;
+    margin: auto;
+
   }
 
   div.form-container-div {
