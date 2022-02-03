@@ -67,12 +67,10 @@ export class WorklogComponent implements OnInit {
 
   ngOnInit(): void {
     this.auth.user$.subscribe((user) => {
-      console.log('user = ', user);
       this.user = user;
 
       this.workLogs$ = this.httpService.getWorkLog(this.user.email).pipe(
         map((response: any) => {
-          console.log('response of worklogs: ', response);
           if (response.data && response.status === 200) {
             this.worklogs = response.data;
             this.loading = false;
@@ -92,7 +90,6 @@ export class WorklogComponent implements OnInit {
 
       this.orders$ = this.httpService.getOrder().pipe(
         map((response: any) => {
-          console.log('response of orders: ', response);
           if (response.data && response.status === 200) {
             this.orders = response.data;
           } else {
@@ -117,7 +114,6 @@ export class WorklogComponent implements OnInit {
         .addWorkLog(createWorkLog.value, this.user.email)
         .pipe(
           map((response: any) => {
-            console.log('response after saving log: ', response.response);
             if (response.data && response.status === 200) {
               this.worklogs = response.data;
             } else {
@@ -143,17 +139,12 @@ export class WorklogComponent implements OnInit {
 
     this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
       map((response: any) => {
-        console.log(
-          'resoinse status : ',
-          response.status,
-          'type = ',
-          typeof response
-        );
+     
         if (response.status == 200) {
           this.worklogs = this.worklogs.filter(
             (data) => data.workLogId != log.workLogId
           );
-          this.processingNetworkRequest = true;
+          this.processingNetworkRequest = false;
         } else {
           this.showApiErrorResponse(response.message);
         }
@@ -168,7 +159,6 @@ export class WorklogComponent implements OnInit {
 
   editLog(log: WorkLog) {
     this.updatedWorklog = log;
-    console.log('updateWorkLog: ', log);
     this.showEditWorklogForm = !this.showEditWorklogForm;
   }
 
@@ -182,7 +172,6 @@ export class WorklogComponent implements OnInit {
       this.workLogs$ = this.httpService.updateWorkLog(this.updatedWorklog).pipe(
         map((response: any) => {
           if (response.data && response.status === 200) {
-            console.log('response inside response = ', response);
 
             var i = this.worklogs.findIndex(
               (log) => log.workLogId === response.data.workLogId
@@ -210,7 +199,6 @@ export class WorklogComponent implements OnInit {
   }
 
   showApiErrorResponse(message?: any) {
-    console.log('message in shoAPiWrrorResponse: ', message);
     if (message) {
       this.apiRequestError.message = message;
     } else {

@@ -192,36 +192,38 @@ export class BudgetsComponent implements OnInit {
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
+    } else if (
+      (this.showNewCustomerForm && !this.customer.name) ||
+      (!this.newBudget.customer.name && !this.showNewCustomerForm)
+    ) {
+      this.errorMessage =
+        'Please enter correct fields , All fields are necessary';
     } else {
-      this.newBudget.customer = { ...this.customer };
-      if (!this.newBudget.customer.name) {
-        this.errorMessage =
-          'Please enter correct fields , All fields are necessary';
-      } else {
-        let budgetToSave = { ...this.newBudget };
-        this.processingNetworkRequest = true;
-        budgetToSave.budgetStatus = budgetStatus.pendingAcceptance;
-        console.log('final budget is ...', budgetToSave);
-        this.budgetService.addBudget(budgetToSave).subscribe({
-          next: (response: Response) => {
-            if (response.status === 200) {
-              console.log(response);
-              console.log(budgetToSave);
-              budgetToSave.budgetId = response.data.budgetId;
-              budgetToSave.totalPrice = response.data.totalPrice;
-              this.budgets.push({ ...budgetToSave });
-              this.formSubmitted = true;
-              this.showApiSuccessResponse(response.message);
-              console.log('form status', this.formSubmitted);
-              console.log(this.newBudget);
-              console.log(budgetToSave);
-            } else this.showApiErrorResponse(response.message.trim().slice(0,100));
-          },
-          error: () => {
-            this.showApiErrorResponse();
-          },
-        });
+      console.log(this.newBudget.customer, this.customer);
+      if (this.showNewCustomerForm) {
+        this.newBudget.customer = { ...this.customer };
       }
+      let budgetToSave = { ...this.newBudget };
+      this.processingNetworkRequest = true;
+      budgetToSave.budgetStatus = budgetStatus.pendingAcceptance;
+      console.log('final budget is ...', budgetToSave);
+      this.budgetService.addBudget(budgetToSave).subscribe({
+        next: (response: Response) => {
+          if (response.status === 200) {
+            console.log(response);
+            console.log(budgetToSave);
+            budgetToSave.budgetId = response.data.budgetId;
+            budgetToSave.totalPrice = response.data.totalPrice;
+            this.budgets.push({ ...budgetToSave });
+            this.showApiSuccessResponse(response.message);
+            this.formSubmitted = true;
+          } else
+            this.showApiErrorResponse(response.message.trim().slice(0, 100));
+        },
+        error: () => {
+          this.showApiErrorResponse();
+        },
+      });
     }
   }
 
@@ -341,7 +343,7 @@ export class BudgetsComponent implements OnInit {
 
     console.log(services);
 
-    if (newArr.length > 0) {
+    if (newArr && newArr.length > 0) {
       if (newArr?.includes('installation')) {
         this.showProducts = true;
       } else {
