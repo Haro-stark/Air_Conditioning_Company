@@ -11,7 +11,7 @@ import {
   NgbModalConfig,
   NgbModalRef,
 } from '@ng-bootstrap/ng-bootstrap';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { Order } from '../models/Order';
 import { Response } from '../models/Response';
 import { WorkLog } from '../models/WorkLog';
@@ -80,6 +80,7 @@ export class WorklogComponent implements OnInit {
           }
           return this.worklogs;
         }),
+
         catchError((error: any) => {
           this.showApiErrorResponse('Network Request Error');
           this.loading = false;
@@ -121,6 +122,7 @@ export class WorklogComponent implements OnInit {
             }
             return this.worklogs;
           }),
+          startWith(this.worklogs),
           catchError((error: any) => {
             this.showApiErrorResponse('Network Request Failed');
             return of(null);
@@ -139,7 +141,6 @@ export class WorklogComponent implements OnInit {
 
     this.workLogs$ = this.httpService.deleteWorkLog(log.workLogId).pipe(
       map((response: any) => {
-     
         if (response.status == 200) {
           this.worklogs = this.worklogs.filter(
             (data) => data.workLogId != log.workLogId
@@ -150,6 +151,7 @@ export class WorklogComponent implements OnInit {
         }
         return this.worklogs;
       }),
+      startWith(this.worklogs),
       catchError((error: any) => {
         this.showApiErrorResponse(error);
         return of(this.worklogs);
@@ -172,7 +174,6 @@ export class WorklogComponent implements OnInit {
       this.workLogs$ = this.httpService.updateWorkLog(this.updatedWorklog).pipe(
         map((response: any) => {
           if (response.data && response.status === 200) {
-
             var i = this.worklogs.findIndex(
               (log) => log.workLogId === response.data.workLogId
             );
