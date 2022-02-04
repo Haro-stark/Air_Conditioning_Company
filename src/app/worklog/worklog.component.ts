@@ -192,7 +192,10 @@ export class WorklogComponent implements OnInit {
           return of(null);
         })
       );
-    } else alert('Please provide all the fields');
+    } else {
+      this.processingNetworkRequest = !this.processingNetworkRequest;
+      alert('Please provide all the fields');
+    }
   }
 
   onClickToggleEditEmployeeForm() {
