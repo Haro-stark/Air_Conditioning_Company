@@ -12,63 +12,24 @@
       Sign out
     </button>
 
-    <nav id="myNav" class="nav">
-      <a href="#" class="logo">Fawad</a>
-
-      <ul id="nav-ul">
-        <li class="nav-item">
-          <a class="nav-link" href="#Home"> Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#About"> About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#Services"> Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#Projects"> Projects</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#ContactMe"> Contact Me </a>
-        </li>
-      </ul>
-
-      <div id="nav-hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </nav>
-
-    <div
-      id="myNav"
-      class="nav"
-      [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
-    >
-      <ul id="nav-ul">
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['employees']">Employees </a>
-        </li>
-        <li><a class="nav-link" [routerLink]="['orders']">Orders </a></li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['products']">Products </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['suppliers']">Suppliers </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['suppliersPurchasedHistory']"
-            >Suppliers Purchased History
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['budgets']">Budgets </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['workLog']">WorkLogs </a>
-        </li>
-      </ul>
-    </div>
+   <div
+    class="sidebar"
+    [ngClass]="displaySideBar ? 'showSidebar' : 'hideSidebar'"
+  >
+    <ul>
+      <li><a [routerLink]="['employees']">Employees </a></li>
+      <li><a [routerLink]="['orders']">Orders </a></li>
+      <li><a [routerLink]="['products']">Products </a></li>
+      <li><a [routerLink]="['suppliers']">Suppliers </a></li>
+      <li>
+        <a [routerLink]="['suppliersPurchasedHistory']"
+          >Suppliers Purchased History
+        </a>
+      </li>
+      <li><a [routerLink]="['budgets']">Budgets </a></li>
+      <li><a [routerLink]="['workLog']">WorkLogs </a></li>
+    </ul>
+  </div>
   </div>
 
   <div class="main">
