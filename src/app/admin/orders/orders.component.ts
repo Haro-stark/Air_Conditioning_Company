@@ -35,7 +35,7 @@ export class OrdersComponent implements OnInit {
     orderId: 0,
     orderName: '',
     productList: [],
-    customer: { customerId: 112, name: 'cus1' },
+    customer: { customerId: 0, name: '' },
     empPrice: 0,
     totalPrice: 0,
     service: [],
@@ -85,7 +85,7 @@ export class OrdersComponent implements OnInit {
   orderPdfDownload(id: number, order: Order): void {
     this.httpOrderService.getOrderPdf(id).subscribe({
       next: (data: any) => {
-        this.downloadPdf(data,id);
+        this.downloadPdf(data, id);
         this.showApiSuccessResponse();
       },
       error: (error: any) => {
@@ -153,6 +153,7 @@ export class OrdersComponent implements OnInit {
   }
   onEditOrder(id: number, order: Order) {
     this.updatedOrder = { ...order };
+    this.updatedOrder.customer = { ...order.customer };
     console.log(this.updatedOrder);
     setTimeout(() => {
       this.showEditOrderForm = true;

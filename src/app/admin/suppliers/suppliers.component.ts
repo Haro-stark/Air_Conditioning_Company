@@ -182,6 +182,7 @@ export class SuppliersComponent implements OnInit {
     );
 
     this.updatedSupplier = { ...supplier };
+    console.log('updatedSupplier', this.updatedSupplier);
     setTimeout(() => {
       this.showEditSupplierForm = true;
       this.cd.markForCheck();
@@ -189,7 +190,7 @@ export class SuppliersComponent implements OnInit {
   }
 
   onDeleteSupplier(id: number, supplier: Supplier) {
-    this.processingNetworkRequest= true;
+    this.processingNetworkRequest = true;
     this.httpSupplierService.deleteSupplier(id).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
@@ -197,8 +198,7 @@ export class SuppliersComponent implements OnInit {
           this.suppliers = this.suppliers.filter(
             (o) => o.supplierId != supplier.supplierId
           );
-              this.processingNetworkRequest = false;
-
+          this.processingNetworkRequest = false;
         } else {
           this.showApiErrorResponse(response.message);
         }
@@ -263,7 +263,8 @@ export class SuppliersComponent implements OnInit {
             if (response.status === 200) {
               this.showApiSuccessResponse(response.message);
             } else this.showApiErrorResponse(response.message);
-         this.processingNetworkRequest=false; },
+            this.processingNetworkRequest = false;
+          },
           error: (error: any) => {
             this.showApiErrorResponse();
           },
