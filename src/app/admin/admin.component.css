@@ -13,7 +13,7 @@
   height: 90vh;
   overflow: auto;
   z-index: 9;
-  border-right: 1px solid #555;
+  border: 1px solid #555;
 }
 
 .sidebar a {
