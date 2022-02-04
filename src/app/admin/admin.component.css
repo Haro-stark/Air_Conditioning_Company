@@ -1,3 +1,10 @@
+.header {
+  position: fixed;
+  width: 100%;
+  transform: translateY(-100px);
+  margin-top: -47px;
+}
+
 .sidebar {
   margin: 0;
   padding: 0;
@@ -81,8 +88,6 @@ div.body {
   border: none;
 }
 
-
-
 @media screen and (max-width: 400px) {
   .sidebar {
     height: auto;
@@ -104,6 +109,7 @@ div.body {
     margin-left: 0;
   }
 }
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 }
