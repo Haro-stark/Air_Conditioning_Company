@@ -42,6 +42,8 @@ export class HttpService {
   private firebaseAdmin =
     'https://hidden-bastion-05543.herokuapp.com//firebase';
 
+  private supplierProductApiUrl =
+    'https://hidden-bastion-05543.herokuapp.com/Supplier';
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -362,10 +364,44 @@ export class HttpService {
     );
   }
 
+  getSupplierProduct(): Observable<any> {
+    return this.http.get<any>(`${this.supplierProductApiUrl}/list`);
+  }
+  getSupplierProductById(id: number): Observable<SupplierProducts> {
+    return this.http.get<SupplierProducts>(`${this.supplierProductApiUrl}`, {
+      params: { Id: id },
+    });
+  }
+  addSupplierProduct(
+    SupplierProduct: SupplierProducts
+  ): Observable<SupplierProducts> {
+    return this.http.post<SupplierProducts>(
+      `${this.supplierProductApiUrl}/add`,
+      SupplierProduct
+    );
+  }
+  updateSupplierProduct(
+    SupplierProduct: SupplierProducts
+  ): Observable<SupplierProducts> {
+    return this.http.put<any>(
+      `${this.supplierProductApiUrl}/update`,
+      SupplierProduct,
+      httpOptions
+    );
+  }
+  deleteSupplierProduct(id: number): Observable<SupplierProducts> {
+    const httpOptions: Object = {
+      params: { Id: id },
+    };
+    return this.http.delete<SupplierProducts>(
+      `${this.supplierProductApiUrl}/delete`,
+      httpOptions
+    );
+  }
+
   getServices(): Observable<any> {
     return this.http.get<any>(`${this.servicesApiUrl}/list`);
   }
-
   createEmployeeInFirebase(email: string, password: string) {
     return this.http.get<any>(`${this.firebaseAdmin}/createEmployee`, {
       params: { email: email, password: password },

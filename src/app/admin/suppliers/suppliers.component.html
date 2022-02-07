@@ -16,7 +16,7 @@
     !showAddSupplierForm &&
     !showEditSupplierForm &&
     !showSupplierProducts &&
-    !showAddProductForm
+    !showAddSupplierProductForm
   "
 >
   <button
@@ -41,7 +41,8 @@
     !showAddSupplierForm &&
     !showEditSupplierForm &&
     !loading &&
-    !showAddProductForm
+    !showAddSupplierProductForm &&
+    !showEditSupplierProductForm
   "
 >
   <ng-container *ngIf="processingNetworkRequest">
@@ -85,7 +86,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="toggleSupplierProductsList(supplier)"
-                [disabled]="processingNetworkRequest "
+                [disabled]="processingNetworkRequest"
               >
                 view all products
               </button>
@@ -108,7 +109,7 @@
     <p><span class=""> supplierName </span>: {{ supplier.supplierName }}</p>
     <button
       class="btn btn-primary btn-sm mb-2"
-      (click)="showSupplierProductsForm(supplier.supplierId)"
+      (click)="toggleAddSupplierProductForm(supplier.supplierId)"
       [disabled]="processingNetworkRequest"
     >
       Add new Product
@@ -146,7 +147,7 @@
               <fa-icon
                 [icon]="editIcon"
                 title="Edit product"
-                (click)="onEditSupplierProducts(supplier, product.productId)"
+                (click)="onEditSupplierProducts(supplier, product)"
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
@@ -312,72 +313,6 @@
           class="form-control"
         />
       </div>
-
-      <p class="text-center m-3">supplierProducts</p>
-      <hr />
-
-      <div class="form-group">
-        <label for="productName" class="form-label">Product Name</label>
-        <input
-          required
-          id="productName"
-          type="text"
-          name="productName"
-          placeholder="enter product name"
-          [(ngModel)]="updatedSupplier.supplierProducts[productIndex].name"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="basePrice" class="form-label">Base Price </label>
-        <input
-          required
-          id="basePrice"
-          type="text"
-          name="basePrice"
-          placeholder="enter base price"
-          [(ngModel)]="updatedSupplier.supplierProducts[productIndex].basePrice"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="tax" class="form-label">Tax </label>
-        <input
-          required
-          id="tax"
-          type="text"
-          name="tax"
-          placeholder="enter tax"
-          [(ngModel)]="updatedSupplier.supplierProducts[productIndex].tax"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="characteristics" class="form-label">characteristics</label>
-        <input
-          required
-          id="characteristics"
-          type="text"
-          name="characteristics"
-          placeholder="enter characteristics"
-          [(ngModel)]="
-            updatedSupplier.supplierProducts[productIndex].characteristics
-          "
-          class="form-control"
-        />
-      </div>
-      <span class="d-flex">
-        <button class="btn btn-outline-success" type="submit">Save</button>
-
-        <button
-          class="btn btn-danger ml-auto"
-          type="button"
-          [disabled]="processingNetworkRequest"
-          (click)="onClickToggleEditSupplierForm()"
-        >
-          Cancel
-        </button>
-      </span>
     </form>
   </div>
 
@@ -480,121 +415,240 @@
 </ng-container>  -->
 
   <div
-    *ngIf="!showAddSupplierForm && !showEditSupplierForm && showAddProductForm"
+    *ngIf="
+      !showAddSupplierForm &&
+      !showEditSupplierForm &&
+      !showEditSupplierProductForm &&
+      showAddSupplierProductForm
+    "
   >
-    <div>
-      <h1 style="color: rgb(184, 15, 199)" class="mb-3 mt-3">
-        Add a new product to the supplier
-      </h1>
-
+    <h1 style="color: rgb(184, 15, 199)" class="mb-3 mt-3">
+      Add a new product to the supplier
+    </h1>
+    <hr />
+    <form
+      #addProductForm="ngForm"
+      (ngSubmit)="
+        addSupplierProducts(); formSubmitted ? addProductForm.reset() : ''
+      "
+      class="form"
+    >
+      <div class="form-group">
+        <label for="supplierId" class="form-label">Supplier Id</label>
+        <input
+          required
+          id="supplierId"
+          type="text"
+          name="supplierId"
+          placeholder="enter supplier Id"
+          [(ngModel)]="supplierId"
+          disabled
+          class="form-control"
+        />
+      </div>
       <hr />
-      <form
-        #addProductForm="ngForm"
-        (ngSubmit)="
-          addSupplierProducts(); formSubmitted ? addProductForm.reset() : ''
-        "
-        class="form"
-      >
-        <div class="form-group">
-          <label for="supplierId" class="form-label">Supplier Id</label>
-          <input
-            required
-            id="supplierId"
-            type="text"
-            name="supplierId"
-            placeholder="enter supplier Id"
-            [(ngModel)]="supplierId"
-            disabled
-            class="form-control"
-          />
-        </div>
-        <hr />
 
-        <p class="text-center m-3">Supplier Products</p>
-        <hr />
+      <p class="text-center m-3">Supplier Products</p>
+      <hr />
 
-        <div class="form-group">
-          <label for="productName" class="form-label">Product Name</label>
-          <input
-            required
-            id="productName"
-            type="text"
-            name="productName"
-            placeholder="enter product name"
-            [(ngModel)]="addSupplierProduct.name"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="basePrice" class="form-label">Base Price </label>
-          <input
-            required
-            id="basePrice"
-            type="text"
-            name="basePrice"
-            placeholder="enter product base price"
-            [(ngModel)]="addSupplierProduct.basePrice"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="tax" class="form-label">Tax </label>
-          <input
-            required
-            id="tax"
-            type="text"
-            name="tax"
-            placeholder="enter product tax"
-            [(ngModel)]="addSupplierProduct.tax"
-            class="form-control"
-          />
-        </div>
-        <div class="form-group">
-          <label for="characteristics" class="form-label"
-            >characteristics</label
-          >
-          <input
-            required
-            id="characteristics"
-            type="text"
-            name="characteristics"
-            placeholder="enter product characteristics"
-            [(ngModel)]="addSupplierProduct.characteristics"
-            class="form-control"
-          />
-        </div>
-        <span class="d-flex">
-          <button
-            *ngIf="!processingNetworkRequest"
-            class="btn btn-outline-success"
-            type="submit"
-          >
-            Save
-          </button>
-          <button
-            *ngIf="processingNetworkRequest"
-            class="btn btn-primary"
-            type="button"
-            disabled
-          >
-            <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            <span class="visually-hidden">Saving...</span>
-          </button>
-          <button
-            class="btn btn-danger ml-auto"
-            type="button"
-            [disabled]="processingNetworkRequest"
-            (click)="showAddProductForm = false; addProductForm.reset()"
-          >
-            Cancel
-          </button>
-        </span>
-      </form>
-    </div>
+      <div class="form-group">
+        <label for="productName" class="form-label">Product Name</label>
+        <input
+          required
+          id="productName"
+          type="text"
+          name="productName"
+          placeholder="enter product name"
+          [(ngModel)]="addSupplierProduct.name"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="basePrice" class="form-label">Base Price </label>
+        <input
+          required
+          id="basePrice"
+          type="text"
+          name="basePrice"
+          placeholder="enter product base price"
+          [(ngModel)]="addSupplierProduct.basePrice"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="tax" class="form-label">Tax </label>
+        <input
+          required
+          id="tax"
+          type="text"
+          name="tax"
+          placeholder="enter product tax"
+          [(ngModel)]="addSupplierProduct.tax"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="characteristics" class="form-label">characteristics</label>
+        <input
+          required
+          id="characteristics"
+          type="text"
+          name="characteristics"
+          placeholder="enter product characteristics"
+          [(ngModel)]="addSupplierProduct.characteristics"
+          class="form-control"
+        />
+      </div>
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          [disabled]="processingNetworkRequest"
+          (click)="toggleAddSupplierProductForm(); addProductForm.reset()"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
+  </div>
+
+  <div
+    *ngIf="
+      !showAddSupplierForm &&
+      !showEditSupplierForm &&
+      !showAddSupplierProductForm &&
+      showEditSupplierProductForm
+    "
+  >
+    <h1 style="color: rgb(184, 15, 199)" class="mb-3 mt-3">
+      Add a new product to the supplier
+    </h1>
+    <hr />
+    <form
+      #addSupplierProductForm="ngForm"
+      (ngSubmit)="
+        updateSupplierProducts();
+        formSubmitted ? addSupplierProductForm.reset() : ''
+      "
+      class="form"
+    >
+      <div class="form-group">
+        <label for="supplierId" class="form-label">Supplier Id</label>
+        <input
+          required
+          id="supplierId"
+          type="text"
+          name="supplierId"
+          placeholder="enter supplier Id"
+          [(ngModel)]="supplierId"
+          disabled
+          class="form-control"
+        />
+      </div>
+      <hr />
+
+      <p class="text-center m-3">Supplier Products</p>
+      <hr />
+
+      <div class="form-group">
+        <label for="productName" class="form-label">Product Name</label>
+        <input
+          required
+          id="productName"
+          type="text"
+          name="productName"
+          placeholder="enter product name"
+          [(ngModel)]="updatedSupplierProduct.name"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="basePrice" class="form-label">Base Price </label>
+        <input
+          required
+          id="basePrice"
+          type="text"
+          name="basePrice"
+          placeholder="enter product base price"
+          [(ngModel)]="updatedSupplierProduct.basePrice"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="tax" class="form-label">Tax </label>
+        <input
+          required
+          id="tax"
+          type="text"
+          name="tax"
+          placeholder="enter product tax"
+          [(ngModel)]="updatedSupplierProduct.tax"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="characteristics" class="form-label">characteristics</label>
+        <input
+          required
+          id="characteristics"
+          type="text"
+          name="characteristics"
+          placeholder="enter product characteristics"
+          [(ngModel)]="updatedSupplierProduct.characteristics"
+          class="form-control"
+        />
+      </div>
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          [disabled]="processingNetworkRequest"
+          (click)="showEditSupplierProductForm = false"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
   </div>
 </div>
 <router-outlet></router-outlet>

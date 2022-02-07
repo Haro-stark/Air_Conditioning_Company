@@ -78,7 +78,7 @@ export class SuppliersComponent implements OnInit {
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
   errorMessage!: string;
-  showAddProductForm = false;
+  showAddSupplierProductForm = false;
   showEditSupplierForm: Boolean = false;
   formSubmitted = false;
   showErrorAlert = false;
@@ -103,6 +103,7 @@ export class SuppliersComponent implements OnInit {
     tax: 0,
     productCount: 0,
   };
+  updatedSupplierProduct!: SupplierProducts;
   supplierId!: number;
   processingNetworkRequest = false;
 
@@ -192,78 +193,6 @@ export class SuppliersComponent implements OnInit {
     }, 250);
   }
 
-  onEditSupplierProducts(supplier: Supplier, productid: any) {
-    this.productIndex = supplier.supplierProducts.findIndex(
-      (product: SupplierProducts) => product.productId === productid
-    );
-
-    this.updatedSupplier = { ...supplier };
-    console.log('updatedSupplier', this.updatedSupplier);
-    setTimeout(() => {
-      this.showEditSupplierProductForm = true;
-      this.cd.markForCheck();
-    }, 250);
-  }
-
-  onDeleteSupplier(id: number, supplier: Supplier) {
-    this.processingNetworkRequest = true;
-    this.httpSupplierService.deleteSupplier(id).subscribe({
-      next: (response: any) => {
-        if (response.status === 200) {
-          this.showApiSuccessResponse(response.message);
-          this.suppliers = this.suppliers.filter(
-            (o) => o.supplierId != supplier.supplierId
-          );
-          this.processingNetworkRequest = false;
-        } else {
-          this.showApiErrorResponse(response.message);
-        }
-      },
-      error: (error: any) => {
-        this.showApiErrorResponse();
-      },
-    });
-  }
-
-  onDeleteSupplierProduct(productId?: number) {
-    console.log(this.supplier, productId);
-    //this.processingNetworkRequest = true;
-    this.supplier.supplierProducts = this.supplier.supplierProducts.filter(
-      (product) => product.productId != productId
-    );
-    this.suppliers = this.suppliers.map((supplier: Supplier) => {
-      if (supplier.supplierId === this.supplier.supplierId)
-        supplier = this.supplier;
-      return supplier;
-    });
-    console.log(this.supplier);
-
-    console.log(this.suppliers);
-    /*  
-
-     this.httpSupplierService.deleteSupplier(productId).subscribe({
-      next: (response: any) => {
-        if (response.status === 200) {
-          this.showApiSuccessResponse(response.message);
-          this.suppliers = this.suppliers.filter((supplier: Supplier) =>
-            supplier.supplierProducts.filter(
-              (product: SupplierProducts) => product.productId != productId
-            )
-          );
-          this.processingNetworkRequest = false;
-        } else {
-          this.showApiErrorResponse(response.message);
-        }
-      },
-      error: (error: any) => {
-        this.showApiErrorResponse();
-      },
-    }); 
-    
-    */
-    alert('coming soon');
-  } 
-
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
     console.log(
@@ -302,6 +231,26 @@ export class SuppliersComponent implements OnInit {
     return this.errorMessage;
   }
 
+  onDeleteSupplier(id: number, supplier: Supplier) {
+    this.processingNetworkRequest = true;
+    this.httpSupplierService.deleteSupplier(id).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.suppliers = this.suppliers.filter(
+            (o) => o.supplierId != supplier.supplierId
+          );
+          this.processingNetworkRequest = false;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
+    });
+  }
+
   buyProduct(productId: any) {
     let quantityToBuy: any = prompt('Enter a Value');
     let quantity!: number;
@@ -333,6 +282,20 @@ export class SuppliersComponent implements OnInit {
     }
   }
 
+  onEditSupplierProducts(supplier: Supplier, editProduct: SupplierProducts) {
+    this.productIndex = supplier.supplierProducts.findIndex(
+      (product: SupplierProducts) => product.productId === editProduct.productId
+    );
+
+    this.updatedSupplierProduct = { ...editProduct };
+    console.log('updatedSupplier', this.updatedSupplier);
+    setTimeout(() => {
+      this.showEditSupplierProductForm = true;
+      this.cd.markForCheck();
+    }, 250);
+
+    this.supplierId = supplier.supplierId;
+  }
   addSupplierProducts() {
     this.processingNetworkRequest = true;
     this.httpSupplierService
@@ -346,7 +309,7 @@ export class SuppliersComponent implements OnInit {
                 value.supplierProducts.push(this.addSupplierProduct);
             });
             this.formSubmitted = true;
-            this.showAddProductForm = false;
+            this.showAddSupplierProductForm = false;
           } else {
             this.showApiErrorResponse(response.message);
           }
@@ -356,11 +319,88 @@ export class SuppliersComponent implements OnInit {
         },
       });
   }
+  updateSupplierProducts() {
+    this.errorMessage = '';
+    console.log(
+      this.updatedSupplierProduct.name,
+      this.updatedSupplierProduct.characteristics
+    );
 
-  showSupplierProductsForm(id: number) {
+    if (
+      !this.updatedSupplierProduct.name ||
+      this.updatedSupplierProduct.name.trim().length === 0 ||
+      !this.updatedSupplierProduct.characteristics
+    ) {
+      this.errorMessage =
+        'Please enter correct fields , All fields are necessary';
+      return this.errorMessage;
+    } else {
+      this.processingNetworkRequest = true;
+      this.httpSupplierService
+        .updateSupplierProduct(this.updatedSupplierProduct)
+        .subscribe({
+          next: (response: any) => {
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+            } else {
+              this.showApiErrorResponse(response.message);
+            }
+          },
+          error: (error: any) => {
+            this.showApiErrorResponse();
+          },
+          complete: () => {
+            this.showEditSupplierForm = false;
+            this.formSubmitted = true;
+            this.processingNetworkRequest = false;
+          },
+        });
+    }
+    return this.errorMessage;
+  }
+  onDeleteSupplierProduct(productId?: number) {
+    console.log(this.supplier, productId);
+    //this.processingNetworkRequest = true;
+    this.supplier.supplierProducts = this.supplier.supplierProducts.filter(
+      (product) => product.productId != productId
+    );
+    this.suppliers = this.suppliers.map((supplier: Supplier) => {
+      if (supplier.supplierId === this.supplier.supplierId)
+        supplier = this.supplier;
+      return supplier;
+    });
+    console.log(this.supplier);
+
+    console.log(this.suppliers);
+    /*  
+
+     this.httpSupplierService.deleteSupplier(productId).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.suppliers = this.suppliers.filter((supplier: Supplier) =>
+            supplier.supplierProducts.filter(
+              (product: SupplierProducts) => product.productId != productId
+            )
+          );
+          this.processingNetworkRequest = false;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
+    }); 
+    
+    */
+    alert('coming soon');
+  }
+
+  toggleAddSupplierProductForm(id?: number) {
     console.log(id);
-    this.showAddProductForm = true;
-    this.supplierId = id;
+    this.showAddSupplierProductForm = !this.showAddSupplierProductForm;
+    if (id) this.supplierId = id;
   }
 
   toggleSupplierProductsList(supplier?: Supplier) {
