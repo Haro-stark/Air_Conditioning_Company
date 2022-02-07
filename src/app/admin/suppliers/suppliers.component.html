@@ -12,7 +12,12 @@
 </div>
 <div
   class="text-center m-3"
-  *ngIf="!showAddSupplierForm && !showEditSupplierForm"
+  *ngIf="
+    !showAddSupplierForm &&
+    !showEditSupplierForm &&
+    !showSupplierProducts &&
+    !showAddProductForm
+  "
 >
   <button
     class="btn badge-success"
@@ -32,14 +37,18 @@
 </ng-container>
 
 <div
-  class="table-responsive"
-  *ngIf="!showAddSupplierForm && !showEditSupplierForm && !loading"
+  *ngIf="
+    !showAddSupplierForm &&
+    !showEditSupplierForm &&
+    !loading &&
+    !showAddProductForm
+  "
 >
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <div class="table-responsive">
-    <table class="table table-hover align-middle mx-auto w-auto">
+  <div *ngIf="!showSupplierProducts" class="table-responsive">
+    <table class="table table-hover align-middle mx-auto w-auto table-sm">
       <ng-container *ngIf="suppliers && suppliers.length > 0">
         <thead>
           <tr>
@@ -52,6 +61,7 @@
             <th scope="col">Buy</th>
             <th scope="col">Add Product</th>
             <th scope="col">Edit/Delete</th>
+            <th>Buy/View Products</th>
           </tr>
         </thead>
         <tbody *ngFor="let supplier of suppliers">
@@ -103,6 +113,15 @@
               >
               </fa-icon>
             </td>
+
+            <td>
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="toggleSupplierProductsList(supplier)"
+              >
+                view all products
+              </button>
+            </td>
           </tr>
         </tbody>
       </ng-container>
@@ -112,6 +131,89 @@
         There are no suppliers currently available ...
       </div>
     </ng-container>
+  </div>
+
+  <div *ngIf="showSupplierProducts" class="table-responsive text-center">
+    <button
+      class="btn btn-primary btn-sm mb-2"
+      (click)="showSupplierProductsForm(supplier.supplierId)"
+      [disabled]="processingNetworkRequest"
+    >
+      Add new Product
+    </button>
+    <ng-container
+      *ngIf="supplier.supplierProducts && supplier.supplierProducts.length"
+    >
+      <table class="table table-hover align-middle mx-auto w-auto table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Product name</th>
+            <th scope="col">BasePrice</th>
+            <th scope="col">Tax</th>
+            <th scope="col">characteristics</th>
+            <th scope="col">Buy</th>
+            <th scope="col">Edit/Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of supplier.supplierProducts">
+            <td>{{ product.name }}</td>
+            <td>{{ product.basePrice }}</td>
+            <td>{{ product.tax }}</td>
+            <td>{{ product.characteristics }}</td>
+            <td>
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="buyProduct(product.productId)"
+                [disabled]="processingNetworkRequest"
+              >
+                Buy
+              </button>
+            </td>
+            <td></td>
+            <td>
+              <fa-icon
+                [icon]="editIcon"
+                title="Edit"
+                (click)="
+                  onEditSupplier(
+                    supplier.supplierId,
+                    supplier,
+                    product.productId
+                  )
+                "
+                [ngClass]="'edit-icon icon-button-properties mr-1'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+              ></fa-icon>
+              <fa-icon
+                [icon]="deleteIcon"
+                title="Delete"
+                (click)="onDeleteSupplier(supplier.supplierId, supplier)"
+                [ngClass]="'delete-icon icon-button-properties'"
+                [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
+              >
+              </fa-icon>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container
+      *ngIf="!supplier.supplierProducts || !supplier.supplierProducts.length"
+    >
+      <div class="emptySupplier text-center alert-warning">
+        There are no products for {{ supplier.supplierName }} currently
+        available ...
+      </div>
+    </ng-container>
+
+    <button
+      class="btn btn-secondary mt-3"
+      (click)="toggleSupplierProductsList()"
+      [disabled]="processingNetworkRequest"
+    >
+      Go Back
+    </button>
   </div>
 </div>
 <div class="flexCenter">
@@ -306,7 +408,7 @@
           class="btn btn-danger ml-auto"
           type="button"
           [disabled]="processingNetworkRequest"
-          (click)="onClickToggleEditSupplierForm(); "
+          (click)="onClickToggleEditSupplierForm()"
         >
           Cancel
         </button>
@@ -415,18 +517,18 @@
   <div
     *ngIf="!showAddSupplierForm && !showEditSupplierForm && showAddProductForm"
   >
-    <div style="margin-top: 30px; width: 70vw; margin: 0 auto">
+    <div>
       <h1 style="color: rgb(184, 15, 199)" class="mb-3 mt-3">
         Add a new product to the supplier
       </h1>
 
+      <hr />
       <form
         #addProductForm="ngForm"
         (ngSubmit)="
           addSupplierProducts(); formSubmitted ? addProductForm.reset() : ''
         "
         class="form"
-        name="supplierForm"
       >
         <div class="form-group">
           <label for="supplierId" class="form-label">Supplier Id</label>

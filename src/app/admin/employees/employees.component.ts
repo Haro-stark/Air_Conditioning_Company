@@ -243,7 +243,7 @@ export class EmployeesComponent implements OnInit {
             .finally(() => {
               this.showApiSuccessResponse(response.message);
               this.employees = this.employees.filter(
-                (e) => e.username !== employee.username
+                (e) => e.employeeId !== employee.employeeId
               );
             })
             .catch((errorMsg: string) => {
@@ -325,6 +325,7 @@ export class EmployeesComponent implements OnInit {
 
     setTimeout(() => {
       this.showErrorAlert = false;
+      this.loading = false;
     }, 3500);
   }
 

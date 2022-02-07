@@ -112,8 +112,8 @@ table.table tr {
 
 
 
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+/* Extra small devices (phones, 700px and down) */
+@media only screen and (max-width: 700px) {
   .alert-warning {
     width: max-content;
     min-width: 300px;

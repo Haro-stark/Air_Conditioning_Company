@@ -72,6 +72,8 @@ export class SuppliersComponent implements OnInit {
       ],
     }, */
   ];
+  supplier!: Supplier;
+  showSupplierProducts: Boolean = false;
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
   errorMessage!: string;
@@ -302,8 +304,17 @@ export class SuppliersComponent implements OnInit {
   }
 
   showSupplierProductsForm(id: number) {
+     console.log(id);
     this.showAddProductForm = true;
     this.supplierId = id;
+   
+  }
+
+  toggleSupplierProductsList(supplier?: Supplier) {
+    if (supplier) {
+      this.supplier = { ...supplier };
+    }
+    this.showSupplierProducts = !this.showSupplierProducts;
   }
 
   showApiErrorResponse(message?: any) {
