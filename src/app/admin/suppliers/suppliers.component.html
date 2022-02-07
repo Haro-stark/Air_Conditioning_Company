@@ -22,7 +22,7 @@
   <button
     class="btn badge-success"
     (click)="onClickToggleAddSupplierForm()"
-    [disabled]="loading"
+    [disabled]="loading || processingNetworkRequest"
   >
     Create New Supplier
   </button>
@@ -48,65 +48,32 @@
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
   <div *ngIf="!showSupplierProducts" class="table-responsive">
-    <table class="table table-hover align-middle mx-auto w-auto table-sm">
+    <table class="table table-hover align-middle mx-auto w-auto">
       <ng-container *ngIf="suppliers && suppliers.length > 0">
         <thead>
           <tr>
             <th scope="col">SupplierID</th>
             <th scope="col">SupplierName</th>
-            <th scope="col">Product name</th>
-            <th scope="col">BasePrice</th>
-            <th scope="col">Tax</th>
-            <th scope="col">characteristics</th>
-            <th scope="col">Buy</th>
-            <th scope="col">Add Product</th>
             <th scope="col">Edit/Delete</th>
             <th>Buy/View Products</th>
           </tr>
         </thead>
         <tbody *ngFor="let supplier of suppliers">
-          <tr *ngFor="let product of supplier.supplierProducts">
+          <tr>
             <td>{{ supplier.supplierId }}</td>
             <td>{{ supplier.supplierName }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.basePrice }}</td>
-            <td>{{ product.tax }}</td>
-            <td>{{ product.characteristics }}</td>
-            <td>
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="buyProduct(product.productId)"
-                [disabled]="processingNetworkRequest"
-              >
-                Buy
-              </button>
-            </td>
-            <td>
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="showSupplierProductsForm(supplier.supplierId)"
-                [disabled]="processingNetworkRequest"
-              >
-                Add Product
-              </button>
-            </td>
+
             <td>
               <fa-icon
                 [icon]="editIcon"
-                title="Edit"
-                (click)="
-                  onEditSupplier(
-                    supplier.supplierId,
-                    supplier,
-                    product.productId
-                  )
-                "
+                title="Edit supplier"
+                (click)="onEditSupplier(supplier)"
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
-                title="Delete"
+                title="Delete supplier"
                 (click)="onDeleteSupplier(supplier.supplierId, supplier)"
                 [ngClass]="'delete-icon icon-button-properties'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
@@ -118,6 +85,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="toggleSupplierProductsList(supplier)"
+                [disabled]="processingNetworkRequest "
               >
                 view all products
               </button>
@@ -134,6 +102,10 @@
   </div>
 
   <div *ngIf="showSupplierProducts" class="table-responsive text-center">
+    <!--     <p>
+      <span class="alert-info"> supplierId </span>: {{ supplier.supplierId }}
+    </p> -->
+    <p><span class=""> supplierName </span>: {{ supplier.supplierName }}</p>
     <button
       class="btn btn-primary btn-sm mb-2"
       (click)="showSupplierProductsForm(supplier.supplierId)"
@@ -170,25 +142,18 @@
                 Buy
               </button>
             </td>
-            <td></td>
             <td>
               <fa-icon
                 [icon]="editIcon"
-                title="Edit"
-                (click)="
-                  onEditSupplier(
-                    supplier.supplierId,
-                    supplier,
-                    product.productId
-                  )
-                "
+                title="Edit product"
+                (click)="onEditSupplierProducts(supplier, product.productId)"
                 [ngClass]="'edit-icon icon-button-properties mr-1'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               ></fa-icon>
               <fa-icon
                 [icon]="deleteIcon"
-                title="Delete"
-                (click)="onDeleteSupplier(supplier.supplierId, supplier)"
+                title="Delete product"
+                (click)="onDeleteSupplierProduct(product.productId)"
                 [ngClass]="'delete-icon icon-button-properties'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >

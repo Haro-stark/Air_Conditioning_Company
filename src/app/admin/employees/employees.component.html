@@ -22,7 +22,7 @@
   <button
     class="btn badge-success"
     (click)="onClickToggleAddEmployeeForm()"
-    [disabled]="loading"
+    [disabled]="loading || processingNetworkRequest"
   >
     Create New Employee
   </button>

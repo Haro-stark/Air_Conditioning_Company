@@ -74,6 +74,7 @@ export class SuppliersComponent implements OnInit {
   ];
   supplier!: Supplier;
   showSupplierProducts: Boolean = false;
+  showEditSupplierProductForm: Boolean = false;
   updatedSupplier!: Supplier;
   showAddSupplierForm: Boolean = false;
   errorMessage!: string;
@@ -138,18 +139,22 @@ export class SuppliersComponent implements OnInit {
 
     if (
       !this.newSupplier.supplierName ||
-      this.newSupplier.supplierName.trim().length === 0
+      this.newSupplier.supplierName.trim().length === 0 ||
+      !this.newSupplier.supplierProducts[0].name ||
+      this.newSupplier.supplierProducts[0].name.trim().length === 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
     } else {
+      this.errorMessage = '';
       this.processingNetworkRequest = true;
-      this.httpSupplierService.addSupplier(this.newSupplier).subscribe({
+      let addNewSupplier = JSON.parse(JSON.stringify(this.newSupplier));
+      this.httpSupplierService.addSupplier(addNewSupplier).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
-            this.newSupplier.supplierId = response.data.supplierId;
-            this.suppliers.push(this.newSupplier);
-            console.log(response, this.newSupplier);
+            addNewSupplier.supplierId = response.data.supplierId;
+            this.suppliers.push(addNewSupplier);
+            console.log(response, addNewSupplier);
             this.showApiSuccessResponse(response.message);
             this.showAddSupplierForm = false;
             this.formSubmitted = true;
@@ -178,7 +183,16 @@ export class SuppliersComponent implements OnInit {
       this.cd.markForCheck();
     }, 200);
   }
-  onEditSupplier(id: number, supplier: Supplier, productid: any) {
+  onEditSupplier(supplier: Supplier) {
+    this.updatedSupplier = { ...supplier };
+    console.log('updatedSupplier', this.updatedSupplier);
+    setTimeout(() => {
+      this.showEditSupplierForm = true;
+      this.cd.markForCheck();
+    }, 250);
+  }
+
+  onEditSupplierProducts(supplier: Supplier, productid: any) {
     this.productIndex = supplier.supplierProducts.findIndex(
       (product: SupplierProducts) => product.productId === productid
     );
@@ -186,7 +200,7 @@ export class SuppliersComponent implements OnInit {
     this.updatedSupplier = { ...supplier };
     console.log('updatedSupplier', this.updatedSupplier);
     setTimeout(() => {
-      this.showEditSupplierForm = true;
+      this.showEditSupplierProductForm = true;
       this.cd.markForCheck();
     }, 250);
   }
@@ -210,6 +224,46 @@ export class SuppliersComponent implements OnInit {
       },
     });
   }
+
+  onDeleteSupplierProduct(productId?: number) {
+    console.log(this.supplier, productId);
+    //this.processingNetworkRequest = true;
+    this.supplier.supplierProducts = this.supplier.supplierProducts.filter(
+      (product) => product.productId != productId
+    );
+    this.suppliers = this.suppliers.map((supplier: Supplier) => {
+      if (supplier.supplierId === this.supplier.supplierId)
+        supplier = this.supplier;
+      return supplier;
+    });
+    console.log(this.supplier);
+
+    console.log(this.suppliers);
+    /*  
+
+     this.httpSupplierService.deleteSupplier(productId).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.showApiSuccessResponse(response.message);
+          this.suppliers = this.suppliers.filter((supplier: Supplier) =>
+            supplier.supplierProducts.filter(
+              (product: SupplierProducts) => product.productId != productId
+            )
+          );
+          this.processingNetworkRequest = false;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
+    }); 
+    
+    */
+    alert('coming soon');
+  } 
+
   onUpdateSupplier(updatedSupplier: Supplier) {
     this.errorMessage = '';
     console.log(
@@ -304,10 +358,9 @@ export class SuppliersComponent implements OnInit {
   }
 
   showSupplierProductsForm(id: number) {
-     console.log(id);
+    console.log(id);
     this.showAddProductForm = true;
     this.supplierId = id;
-   
   }
 
   toggleSupplierProductsList(supplier?: Supplier) {
@@ -336,6 +389,7 @@ export class SuppliersComponent implements OnInit {
     this.apiSuccessResponse = message;
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
+    this.formSubmitted = true;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
