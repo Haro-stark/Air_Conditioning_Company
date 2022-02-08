@@ -202,13 +202,13 @@ export class SuppliersComponent implements OnInit {
 
     if (
       !this.updatedSupplier.supplierName ||
-      this.updatedSupplier.supplierName.trim().length === 0 ||
-      !this.updatedSupplier.supplierProducts
+      this.updatedSupplier.supplierName.trim().length === 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
+      console.log(updatedSupplier);
       this.processingNetworkRequest = true;
       this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
         next: (response: any) => {

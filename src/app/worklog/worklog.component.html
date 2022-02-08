@@ -26,7 +26,7 @@
     class="table-responsive"
     *ngIf="!showEditWorklogForm && !loading && worklogs"
   >
-    <table class="table table-hover align-middle mx-auto w-auto  table-sm">
+    <table class="table table-hover align-middle mx-auto w-auto table-sm">
       <ng-container *ngIf="!showEditWorklogForm">
         <thead>
           <tr>
@@ -92,88 +92,89 @@
 </ng-container>
 
 <ng-container *ngIf="showEditWorklogForm">
-  <h1 style="color: greenyellow" class="mb-3">Editing WorkLog</h1>
+  <div class="flexCenter">
+    <h1 style="color: greenyellow" class="mb-3">Editing WorkLog</h1>
+    <hr />
+    <form
+      #inputForm="ngForm"
+      (ngSubmit)="onUpdateLog(inputForm)"
+      class="form"
+      name="employeeForm"
+    >
+      <div class="form-group">
+        <label for="text" class="form-label">Date</label>
+        <input
+          required
+          id="date"
+          type="text"
+          name="date"
+          value="updatedWorklog.date"
+          class="form-control"
+          disabled
+        />
+      </div>
+      <div class="form-group">
+        <label for="email" class="form-label">Number Of Hours</label>
+        <input
+          required
+          id="numberOfHours"
+          type="text"
+          name="numberOfHours"
+          placeholder="enter number Of Hours"
+          [(ngModel)]="updatedWorklog.numberOfHours"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label>Order</label>
+        <select
+          name="Order"
+          ngModel=""
+          class="form-control"
+          name="order"
+          required
+        >
+          <ng-container *ngIf="orders$ | async as currentOrders">
+            <option *ngFor="let order of currentOrders" [ngValue]="order">
+              {{ order.orderId }} - {{ order.orderName }}
+            </option>
+          </ng-container>
+        </select>
+      </div>
 
-  <hr />
-  <form
-    #inputForm="ngForm"
-    (ngSubmit)="onUpdateLog(inputForm)"
-    class="form"
-    name="employeeForm"
-  >
-    <div class="form-group">
-      <label for="text" class="form-label">Date</label>
-      <input
-        required
-        id="date"
-        type="text"
-        name="date"
-        value="updatedWorklog.date"
-        class="form-control"
-        disabled
-      />
-    </div>
-    <div class="form-group">
-      <label for="email" class="form-label">Number Of Hours</label>
-      <input
-        required
-        id="numberOfHours"
-        type="text"
-        name="numberOfHours"
-        placeholder="enter number Of Hours"
-        [(ngModel)]="updatedWorklog.numberOfHours"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label>Order</label>
-      <select
-        name="Order"
-        ngModel=""
-        class="form-control"
-        name="order"
-        required
-      >
-        <ng-container *ngIf="orders$ | async as currentOrders">
-          <option *ngFor="let order of currentOrders" [ngValue]="order">
-            {{ order.orderId }} - {{ order.orderName }}
-          </option>
-        </ng-container>
-      </select>
-    </div>
-
-    <span class="d-flex">
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-outline-success"
-        type="submit"
-      >
-        Save
-      </button>
-      <button
-        *ngIf="processingNetworkRequest"
-        class="btn btn-primary"
-        type="button"
-        disabled
-      >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="visually-hidden">Saving...</span>
-      </button>
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-danger ml-auto"
-        [disabled]="processingNetworkRequest"
-        type="button"
-        (click)="onClickToggleEditEmployeeForm()"
-      >
-        Cancel
-      </button>
-    </span>
-  </form>
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-danger ml-auto"
+          [disabled]="processingNetworkRequest"
+          type="button"
+          (click)="onClickToggleEditEmployeeForm()"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
+  </div>
 </ng-container>
 
 <ng-template #content let-c="close" let-d="dismiss">

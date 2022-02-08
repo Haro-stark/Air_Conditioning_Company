@@ -43,7 +43,7 @@ export class HttpService {
     'https://hidden-bastion-05543.herokuapp.com//firebase';
 
   private supplierProductApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com/Supplier';
+    'https://hidden-bastion-05543.herokuapp.com/SupplierProduct';
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
