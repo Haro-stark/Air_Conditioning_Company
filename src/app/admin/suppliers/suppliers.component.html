@@ -154,7 +154,7 @@
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete product"
-                (click)="onDeleteSupplierProduct(product.productId)"
+                (click)="onDeleteSupplierProduct(product.productId , supplier.supplierId)"
                 [ngClass]="'delete-icon icon-button-properties'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >

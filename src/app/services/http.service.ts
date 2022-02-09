@@ -389,9 +389,12 @@ export class HttpService {
       httpOptions
     );
   }
-  deleteSupplierProduct(id: number): Observable<SupplierProducts> {
+  deleteSupplierProduct(
+    productId: number,
+    supplierId: number
+  ): Observable<SupplierProducts> {
     const httpOptions: Object = {
-      params: { Id: id },
+      params: { productId, supplierId },
     };
     return this.http.delete<SupplierProducts>(
       `${this.supplierProductApiUrl}/delete`,

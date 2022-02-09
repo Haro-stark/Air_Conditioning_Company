@@ -286,6 +286,7 @@ export class BudgetsComponent implements OnInit {
     }, 200);
   }
   onEditBudget(id: number, budget: Budget) {
+    console.log('budget to be edited', budget);
     this.updatedBudget = { ...budget };
     if (budget.budgetStatus.trim().toLowerCase() !== 'accepted') {
       this.generateOrder = true;
@@ -486,20 +487,18 @@ export class BudgetsComponent implements OnInit {
   onChange(index: number, product: Product, event: any) {
     console.log('cheked', !!event.target.checked);
 
-    if (product.productQuantity && product.productQuantity > 0) {
-      if (event.target.checked) {
-        console.log('checked', index, product);
-        product.addedToBudgetCart = true;
-        this.budgetProducts.push(product);
-      } else {
-        console.log('unchecked', index, product.productQuantity, event.value);
-        this.budgetProducts = this.budgetProducts.filter(
-          (p: Product) => p.productId != product.productId
-        );
-      }
-    } else if (event.target.checked) {
-      alert('product quantity must be greater than 0');
-      product.addedToBudgetCart = false;
+    if (event.target.checked) {
+      console.log('checked', index, product);
+      product.productQuantity === 0
+        ? (product.productQuantity += 1)
+        : product.productQuantity;
+      product.addedToBudgetCart = true;
+      this.budgetProducts.push(product);
+    } else {
+      console.log('unchecked', index, product.productQuantity, event.value);
+      this.budgetProducts = this.budgetProducts.filter(
+        (p: Product) => p.productId != product.productId
+      );
     }
 
     console.log('budget products', this.budgetProducts);

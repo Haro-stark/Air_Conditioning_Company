@@ -358,13 +358,13 @@ export class SuppliersComponent implements OnInit {
     }
     return this.errorMessage;
   }
-  onDeleteSupplierProduct(productId: any) {
+  onDeleteSupplierProduct(productId: any ,supplierId: any) {
     console.log(this.supplier, productId);
     //this.processingNetworkRequest = true;
 
     console.log(this.suppliers);
     this.processingNetworkRequest = true;
-    this.httpSupplierService.deleteSupplierProduct(productId).subscribe({
+    this.httpSupplierService.deleteSupplierProduct(productId ,supplierId ).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
           this.showApiSuccessResponse(response.message);

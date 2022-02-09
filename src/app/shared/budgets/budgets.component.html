@@ -214,82 +214,102 @@
           Show Product Cart
         </button>
       </ng-container>
-
-      <ng-template #content let-c="close" let-d="dismiss">
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Create Work Log</h4>
-          <button
-            type="button"
-            class="close"
-            aria-label="Close"
-            (click)="d('Cross click')"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="card">
-            <div class="card-header">Products Cart</div>
-            <ul class="list-group list-group-flush">
-              <li
-                class="list-group-item d-flex"
-                *ngFor="let product of products; let i = index"
+      <div class="modal-container">
+        <ng-template #content let-c="close" let-d="dismiss">
+          <div class="modal-custom">
+            <div class="modal-header">
+              <h4 class="modal-title" id="modal-basic-title">
+                Add budgets products
+              </h4>
+              <button
+                type="button"
+                class="close"
+                aria-label="Close"
+                (click)="d('Cross click')"
               >
-                <span class="mr-2">
-                  <input
-                    type="checkbox"
-                    class="checkbox"
-                    [value]="product"
-                    
-                    min="1"
-                    [checked]="product.addedToBudgetCart"
-                    (change)="onChange(i, product, $event)"
-                  />
-                </span>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-header">Products Cart</div>
 
-                <span class="bold mr-2"> {{ product.productId }}. </span>
-                <span class="mr-2"> {{ product.name }} </span>
-                <span class="mr-2"> quantity:</span>
-                <!--   <span class="ml-1">
-                  <input
-                    required
-                    id="productQuantity"
-                    type="number"
-                    name="productQuantity"
-                    [(ngModel)]="newBudget.productList[i].productQuantity"
-                    class="form-control"
-                    style="width: 60px"
-                /></span> -->
+              <table
+                class="table table-hover align-middle mx-auto w-auto table-sm"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Select Product</th>
+                    <th scope="col">Product Id</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Price</th>
+                    <th scope="col">Quantity In Stock</th>
+                    <th scope="col">Buy Quantity</th>
+                    <th scope="col">Total price</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr *ngFor="let product of products; let i = index">
+                    <td>
+                      <span class="mr-2">
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="product.addedToBudgetCart"
+                          (change)="onChange(i, product, $event)"
+                        />
+                      </span>
+                    </td>
+                    <td>{{ product.productId }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>
+                      {{ product.quantityInStock }}
+                    </td>
+                    <td class="extra_wide_td">
+                      <button
+                        class="btn btn-sm btn-dark"
+                        (click)="changeProductQuanity(product, 'sub')"
+                        [disabled]="product.productQuantity < 1"
+                      >
+                        -
+                      </button>
 
-                <button
-                  class="btn btn-sm btn-dark"
-                  (click)="changeProductQuanity(product, 'sub')"
-                >
-                  -
-                </button>
+                      <span class="ml-2 mr-2">
+                        {{ product.productQuantity }}</span
+                      >
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="changeProductQuanity(product, 'add')"
+                        [disabled]="
+                          product.productQuantity >= product.quantityInStock
+                        "
+                      >
+                        +
+                      </button>
+                    </td>
+                    <td>{{ product.productQuantity * product.price }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+              <span>
+                <span class="badge badge-info"> products in Cart </span> =
+                {{ this.budgetProducts.length }}</span
+              >
 
-                <span class="ml-2 mr-2"> {{ product.productQuantity}}</span>
-                <button
-                  class="btn btn-sm btn-success"
-                  (click)="changeProductQuanity(product, 'add')"
-                >
-                  +
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            class="btn btn-outline-dark"
-            id="closeModal"
-            data-dismiss="modal"
-            (click)="this.createNewProductModal.close()"
-          >
-            Save
-          </button>
-        </div>
-        <!--       <span class="d-flex">
+              <button
+                class="btn btn-outline-dark"
+                id="closeModal"
+                data-dismiss="modal"
+                (click)="this.createNewProductModal.close()"
+              >
+                Save
+              </button>
+            </div>
+            <!--       <span class="d-flex">
         <button
           *ngIf="!processingNetworkRequest"
           class="btn btn-outline-success"
@@ -319,7 +339,7 @@
           Cancel
         </button>
       </span> -->
-        <!--  <ng-container *ngIf="showProducts">
+            <!--  <ng-container *ngIf="showProducts">
       <ng-container >
         <div class="form-group" *ngFor="let product of products; let i = index" >
           <label for="services">{{product.name}}</label>
@@ -335,7 +355,9 @@
         </div>
       </ng-container>
     </ng-container> -->
-      </ng-template>
+          </div>
+        </ng-template>
+      </div>
       <ng-container *ngIf="showHoursInput">
         <div class="form-group">
           <span>
