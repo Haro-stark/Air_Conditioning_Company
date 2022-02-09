@@ -210,6 +210,7 @@
         <button
           class="btn btn-primary mb-3 mt-3"
           (click)="showProductsCart = true; openCreateAddProductModal(content)"
+          type="button"
         >
           Show Product Cart
         </button>
@@ -304,6 +305,7 @@
                 class="btn btn-outline-dark"
                 id="closeModal"
                 data-dismiss="modal"
+                type="button"
                 (click)="this.createNewProductModal.close()"
               >
                 Save
