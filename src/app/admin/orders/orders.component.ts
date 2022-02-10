@@ -288,11 +288,16 @@ export class OrdersComponent implements OnInit {
 
       return this.errorMessage;
     } else {
+      this.updatedOrder.productList = this.updatedOrderProducts;
+
+      this.modalService.dismissAll();
+
       this.processingNetworkRequest = true;
       this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
             this.showApiSuccessResponse(response.message);
+            
           } else {
             this.showApiErrorResponse(response.message);
           }
