@@ -388,14 +388,9 @@ export class BudgetsComponent implements OnInit {
           },
         });
     } else {
-      if (
-        this.updatedBudgetProducts.length > 0 &&
-        this.updatedBudgetProducts &&
-        this.showProductsButton
-      ) {
-        console.log('added products to budget');
-        this.updatedBudget.productList = this.updatedBudgetProducts;
-      }
+      console.log('added products to budget');
+      this.updatedBudget.productList = this.updatedBudgetProducts;
+
       this.modalService.dismissAll();
 
       this.processingNetworkRequest = true;
@@ -509,11 +504,11 @@ export class BudgetsComponent implements OnInit {
     console.log(this.newBudget.productList, product);
   }
 
-  generateNewOrder(id: any, acceptedBudget: Budget) {
+  generateNewOrder(budgetId: any, acceptedBudget: Budget) {
     this.processingNetworkRequest = true;
     console.log('generating order');
-    if (id)
-      this.budgetService.budgetToOrder(id).subscribe({
+    if (budgetId)
+      this.budgetService.budgetToOrder(budgetId).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
             this.budgets = this.budgets.map((budget: Budget) => {
@@ -562,9 +557,8 @@ export class BudgetsComponent implements OnInit {
     product: Product,
     event: any
   ) {
-    console.log('cheked', !!event.target.checked);
 
-    if (event.target.checked) {
+    if (event &&  event.target.checked) {
       console.log('checked', index, product);
       product.productQuantity === 0
         ? (product.productQuantity += 1)
@@ -579,6 +573,9 @@ export class BudgetsComponent implements OnInit {
       this.updatedBudgetProducts = this.updatedBudgetProducts.filter(
         (p: Product) => p.productId != product.productId
       );
+       this.productsId = this.productsId.filter(
+         (id: any) => id != product.productId
+       );
     }
 
     console.log('budget products', this.updatedBudgetProducts);
@@ -596,7 +593,13 @@ export class BudgetsComponent implements OnInit {
       product.productQuantity += 1;
     } else {
       product.productQuantity -= 1;
+      console.log('qauant',product.productQuantity);
+      if (product.productQuantity < 1) {
+        console.log('less than 1')
+        this.onBudgetUpdationProductCartChanged(0,product,0);
+      }
     }
+  
     this.updatedBudgetProducts = this.updatedBudgetProducts.map(
       (p: Product) => {
         if (p.productId === product.productId) {
@@ -605,6 +608,7 @@ export class BudgetsComponent implements OnInit {
         return p;
       }
     );
+    
     console.log(this.updatedBudgetProducts);
   }
   resetBudgetProducts() {

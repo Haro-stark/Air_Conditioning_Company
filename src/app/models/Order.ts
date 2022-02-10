@@ -8,7 +8,7 @@ export interface Order {
   orderName: string;
   empPrice: number;
   totalPrice: number;
-  productList?: Product[];
+  productList: Product[];
   customer: Customer;
   service: Services[];
 }

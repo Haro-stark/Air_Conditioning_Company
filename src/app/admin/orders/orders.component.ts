@@ -1,11 +1,20 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   faEdit,
   faTrashAlt,
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  NgbModalConfig,
+  NgbModal,
+  NgbModalRef,
+} from '@ng-bootstrap/ng-bootstrap';
 import { Customer } from 'src/app/models/Customer';
+import { Product } from 'src/app/models/Product';
+import { Response } from 'src/app/models/Response';
+import { Services } from 'src/app/models/Services';
 import { HttpService } from 'src/app/services/http.service';
 import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
 import { Order } from '../../models/Order';
@@ -41,9 +50,12 @@ export class OrdersComponent implements OnInit {
     totalPrice: 0,
     service: [],
   };
+  products: Product[] = [];
+  productsId!: any[];
+  customers: Customer[] = [];
+  services: Services[] = [];
   showAddOrderForm: Boolean = false;
   errorMessage!: string;
-  customers: Customer[] = [];
   updatedOrder!: Order;
   showEditOrderForm: Boolean = false;
   formSubmitted = false;
@@ -53,12 +65,30 @@ export class OrdersComponent implements OnInit {
   apiSuccessResponse = '';
   processingNetworkRequest = false;
   loading = false;
+  updatedOrderProducts: Product[] = [];
+  showProductsButton = false;
+  showProductsCart = false;
+  showHoursInput = false;
+  otherServicesSelected = false;
+  showNewCustomerForm: boolean = false;
+  isSelected: boolean = false;
+  customer: Customer = {
+    customerId: 0,
+    name: '',
+  };
+  public createNewProductModal!: NgbModalRef;
+
   constructor(
     private cd: ChangeDetectorRef,
     private shareOrderDataService: ShareDatabetweenComponentsService,
-    private httpOrderService: HttpService
+    private httpOrderService: HttpService,
+    private router: Router,
+    config: NgbModalConfig,
+    private modalService: NgbModal
   ) {
     this.loading = true;
+    config.backdrop = 'static';
+    config.keyboard = false;
   }
 
   ngOnInit(): void {
@@ -92,8 +122,31 @@ export class OrdersComponent implements OnInit {
         }
       },
     });
-  }
 
+    this.httpOrderService.getProduct().subscribe({
+      next: (response: Response) => {
+        if (response.status === 200) {
+          this.products = response.data.map((product: Product) => {
+            product.productQuantity = 0;
+            product.addedToBudgetCart = false;
+            return product;
+          });
+        }
+      },
+    });
+
+    this.httpOrderService.getServices().subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          this.services = response.data;
+        }
+      },
+    });
+  }
+  openCreateAddProductModal(content: any) {
+    console.log(this.products);
+    this.createNewProductModal = this.modalService.open(content);
+  }
   orderPdfDownload(id: number, order: Order): void {
     this.httpOrderService.getOrderPdf(id).subscribe({
       next: (data: any) => {
@@ -166,6 +219,35 @@ export class OrdersComponent implements OnInit {
   onEditOrder(id: number, order: Order) {
     this.updatedOrder = { ...order };
     this.updatedOrder.customer = { ...order.customer };
+    this.updatedOrder.productList = [...order.productList];
+    this.updatedOrder.productList.map(
+      (product: Product) => (product.addedToBudgetCart = true)
+    );
+    console.log('products maaps', this.updatedOrder.productList);
+
+    this.updatedOrder.productList.sort((a, b) => a.productId - b.productId);
+    this.productsId = this.updatedOrder.productList.map(
+      (p: Product) => p.productId
+    );
+    console.log('productss', this.products);
+    this.products.forEach((element, index) => {
+      console.log(
+        'index',
+        index,
+        'bp',
+        this.updatedOrder.productList[index]?.productId,
+        'compare ',
+        element.productId
+      );
+      if (this.productsId.indexOf(element.productId) === -1) {
+        this.updatedOrder.productList.push({ ...element });
+        this.productsId.push(element.productId);
+      }
+    });
+
+    this.updatedOrderProducts = [...this.updatedOrder.productList];
+    console.log('products lps', this.updatedOrder.productList);
+    console.log('products to be edited', this.updatedOrderProducts);
     console.log(this.updatedOrder);
     setTimeout(() => {
       this.showEditOrderForm = true;
@@ -206,6 +288,7 @@ export class OrdersComponent implements OnInit {
 
       return this.errorMessage;
     } else {
+      this.processingNetworkRequest = true;
       this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
@@ -255,6 +338,7 @@ export class OrdersComponent implements OnInit {
     if (message) this.apiSuccessResponse = message;
     else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
+    this.processingNetworkRequest = false;
 
     setTimeout(() => {
       this.showSuccessAlert = false;
@@ -270,5 +354,61 @@ export class OrdersComponent implements OnInit {
     link.download = `orderId_${id}.pdf`;
 
     link.click();
+  }
+
+  onOrderUpdationProductCartChanged(
+    index: number,
+    product: Product,
+    event: any
+  ) {
+
+    if (event &&  event.target.checked) {
+          console.log('cheked', !!event.target.checked);
+
+      console.log('checked', index, product);
+      product.productQuantity === 0
+        ? (product.productQuantity += 1)
+        : product.productQuantity;
+      product.addedToBudgetCart = true;
+      console.log(this.productsId);
+      if (this.productsId.indexOf(product.productId) === -1) {
+        this.updatedOrderProducts.push(product);
+      }
+    } else {
+      console.log('unchecked', index, product.productQuantity, event.checked);
+      this.updatedOrderProducts = this.updatedOrderProducts.filter(
+        (p: Product) => p.productId != product.productId
+      );
+      this.productsId = this.productsId.filter(
+        (id: any) => id != product.productId
+      );
+    }
+
+    console.log('budget products', this.updatedOrderProducts);
+  }
+
+  onOrderUpdationChangeProductQuanity(product: any, operation: String) {
+    console.log(product.productQuantity);
+    if (operation === 'add') {
+      product.productQuantity += 1;
+    } else {
+      product.productQuantity -= 1;
+       console.log('qauant', product.productQuantity);
+       if (product.productQuantity < 1) {
+         console.log('less than 1');
+         this.onOrderUpdationProductCartChanged(0, product, 0);
+       }
+    }
+    this.updatedOrderProducts = this.updatedOrderProducts.map((p: Product) => {
+      if (p.productId === product.productId) {
+        p.productQuantity = product.productQuantity;
+      }
+      return p;
+    });
+    console.log(this.updatedOrderProducts);
+  }
+
+  fixDigitsAfterDecimal(value: number) {
+    return parseFloat(value.toFixed(2));
   }
 }

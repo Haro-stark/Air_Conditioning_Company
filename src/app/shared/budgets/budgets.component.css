@@ -7,7 +7,7 @@
 .modal-custom {
   width: max-content;
   margin-left: -10vw;
-  background: inherit;
+  background: white;
   overflow: auto;
 }
 

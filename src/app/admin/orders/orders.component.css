@@ -1,0 +1,34 @@
+.modal-dialog,
+.modal-container {
+  width: max-content !important;
+}
+
+.modal-content,
+.modal-custom {
+  width: max-content;
+  margin-left: -10vw;
+  background: white;
+  overflow: auto;
+}
+
+.extra_wide_td {
+  display: flex;
+}
+
+td:last-of-type , th:last-of-type{
+padding-right: 20px;
+}
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 768px) {
+  .modal-content,
+  div.modal-custom {
+    width: inherit !important;
+    margin-left: 5vw;
+    overflow-x: scroll;
+  }
+
+  .extra_wide_td {
+    padding: inherit 25px;
+    display: flex;
+  }
+}
