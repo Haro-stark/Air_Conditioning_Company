@@ -333,7 +333,7 @@
                           onOrderUpdationChangeProductQuanity(product, 'add')
                         "
                         [disabled]="
-                          product.productQuantity >= product.quantityInStock
+                          product.quantityInStock<=0
                         "
                       >
                         +

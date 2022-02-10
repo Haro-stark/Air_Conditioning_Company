@@ -396,8 +396,15 @@ export class OrdersComponent implements OnInit {
     console.log(product.productQuantity);
     if (operation === 'add') {
       product.productQuantity += 1;
+       product.quantityInStock -= 1;
+       if (product.productQuantity < 0) {
+         product.quantityInStock = 0;
+       }
     } else {
       product.productQuantity -= 1;
+            product.quantityInStock = +1;
+
+      
        console.log('qauant', product.productQuantity);
        if (product.productQuantity < 1) {
          console.log('less than 1');
