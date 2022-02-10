@@ -589,7 +589,7 @@ export class BudgetsComponent implements OnInit {
       product.productQuantity += 1;
     } else product.productQuantity -= 1;
   }
-9
+
   onBudgetUpdationchangeProductQuanity(product: any, operation: String) {
     console.log(product.productQuantity);
     if (operation === 'add') {
