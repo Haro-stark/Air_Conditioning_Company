@@ -69,7 +69,8 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="showEditWorklogForm">
+<div class="flexCenter">
+<div *ngIf="showEditWorklogForm">
   <h1 style="color: greenyellow" class="mb-3">Editing WorkLog</h1>
 
   <hr />
@@ -109,8 +110,8 @@
       </button>
     </span>
   </form>
-</ng-container>
-
+</div>
+</div>
 <ng-template #content let-c="close" let-d="dismiss">
   <form #serverForm="ngForm" (ngSubmit)="saveServer(serverForm)">
     <div class="modal-header">

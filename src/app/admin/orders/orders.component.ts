@@ -5,6 +5,7 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
+import { Customer } from 'src/app/models/Customer';
 import { HttpService } from 'src/app/services/http.service';
 import { ShareDatabetweenComponentsService } from 'src/app/services/share-databetween-components.service';
 import { Order } from '../../models/Order';
@@ -42,6 +43,7 @@ export class OrdersComponent implements OnInit {
   };
   showAddOrderForm: Boolean = false;
   errorMessage!: string;
+  customers: Customer[] = [];
   updatedOrder!: Order;
   showEditOrderForm: Boolean = false;
   formSubmitted = false;
@@ -79,6 +81,16 @@ export class OrdersComponent implements OnInit {
         this.newOrder = value;
         this.onSubmit();
       } else console.log(value, 'no value');
+    });
+
+    this.httpOrderService.getCustomer().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          this.customers = response.data.filter(
+            (customer: Customer) => customer.name
+          );
+        }
+      },
     });
   }
 

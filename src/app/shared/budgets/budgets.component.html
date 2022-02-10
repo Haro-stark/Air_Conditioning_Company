@@ -153,7 +153,7 @@
           [(ngModel)]="newBudget.customer"
           (ngModelChange)="isNewCustomerSelected(newBudget.customer)"
         >
-          <option ngValue="newCustomer">New customer</option>
+          <option selected ngValue="newCustomer">New customer</option>
           <option
             *ngFor="let customer of customers | filterCustomer"
             [ngValue]="customer"
@@ -248,7 +248,7 @@
                     <th scope="col">Total price</th>
                   </tr>
                 </thead>
-                <tbody >
+                <tbody>
                   <tr *ngFor="let product of products; let i = index">
                     <td>
                       <span class="mr-2">
@@ -258,7 +258,13 @@
                           [value]="product"
                           min="1"
                           [checked]="product.addedToBudgetCart"
-                          (change)="onChange(i, product, $event)"
+                          (change)="
+                            onBudgetCreationProductCartChange(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
                         />
                       </span>
                     </td>
@@ -290,7 +296,9 @@
                         +
                       </button>
                     </td>
-                    <td>{{ product.productQuantity * product.price }}</td>
+                    <td>{{ fixDigitsAfterDecimal(
+                          product.productQuantity * product.price
+                        ) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -298,7 +306,7 @@
             <div class="modal-footer d-flex justify-content-around">
               <span>
                 <span class="badge badge-info"> products in Cart </span> =
-                {{ this.budgetProducts.length }}</span
+                {{ this.newBudgetProducts.length }}</span
               >
 
               <button
@@ -453,11 +461,15 @@
           id="customer"
           [(ngModel)]="updatedBudget.customer"
         >
+          <option disabled selected [ngValue]="updatedBudget.customer">
+            {{ updatedBudget.customer?.customerId }} -
+            {{ updatedBudget.customer?.name }}
+          </option>
           <option
             *ngFor="let customer of customers | filterCustomer"
             [ngValue]="customer"
           >
-            {{ customer.customerId }}- {{ customer.name }}
+            {{ customer.customerId }} : {{ customer.name }}
           </option>
         </select>
       </div>
@@ -470,11 +482,160 @@
           id="budgetStatus"
           [(ngModel)]="updatedBudget.budgetStatus"
         >
+          <option disabled selected [ngValue]="updatedBudget.budgetStatus">
+            {{ updatedBudget.budgetStatus }}
+          </option>
+
           <option ngValue="Accepted">Accepted</option>
           <option ngValue="PendingAcceptance">PendingAcceptance</option>
           <option ngValue="Canceled">Canceled</option>
         </select>
       </div>
+
+      <ng-container *ngIf="showNewCustomerForm">
+        <div class="form-group">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input
+            required
+            id="customerName"
+            type="text"
+            name="customerName"
+            placeholder="enter customer name"
+            [(ngModel)]="customer.name"
+            class="form-control"
+          />
+        </div>
+      </ng-container>
+
+      <button
+        class="btn btn-primary mb-3 mt-3"
+        (click)="showProductsCart = true; openCreateAddProductModal(content)"
+        type="button"
+        [disabled]="processingNetworkRequest"
+      >
+        Show Product Cart
+      </button>
+      <div class="modal-container">
+        <ng-template #content let-c="close" let-d="dismiss">
+          <div class="modal-custom">
+            <div class="modal-header">
+              <h4 class="modal-title" id="modal-basic-title">
+                Add budgets products
+              </h4>
+              <button
+                type="button"
+                class="close"
+                aria-label="Close"
+                (click)="d('Cross click')"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-header">Products Cart</div>
+
+              <table
+                class="table table-hover align-middle mx-auto w-auto table-sm"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Select Product</th>
+                    <th scope="col">Product Id</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Price</th>
+                    <th scope="col">Quantity In Stock</th>
+                    <th scope="col">Buy Quantity</th>
+                    <th scope="col">Total price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let product of updatedBudget.productList;
+                      let i = index
+                    "
+                  >
+                    <td>
+                      <span class="mr-2">
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="product.addedToBudgetCart"
+                          (change)="
+                            onBudgetUpdationProductCartChanged(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                        />
+                      </span>
+                    </td>
+                    <td>{{ product.productId }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>
+                      {{ product.quantityInStock }}
+                    </td>
+                    <td class="extra_wide_td">
+                      <button
+                        class="btn btn-sm btn-dark"
+                        (click)="
+                          onBudgetUpdationchangeProductQuanity(product, 'sub')
+                        "
+                        [disabled]="product.productQuantity < 1"
+                      >
+                        -
+                      </button>
+
+                      <span class="ml-2 mr-2">
+                        {{ product.productQuantity }}</span
+                      >
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="
+                          onBudgetUpdationchangeProductQuanity(product, 'add')
+                        "
+                        [disabled]="
+                          product.productQuantity >= product.quantityInStock
+                        "
+                      >
+                        +
+                      </button>
+                    </td>
+                    <td>
+                      {{
+                        fixDigitsAfterDecimal(
+                          product.productQuantity * product.price
+                        )
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+              <span>
+                <span class="badge badge-info"> products in Cart </span> =
+                {{ this.updatedBudgetProducts.length }}</span
+              >
+
+              <button
+                class="btn btn-outline-dark"
+                id="closeModal"
+                data-dismiss="modal"
+                type="button"
+                (click)="this.createNewProductModal.close()"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
       <div class="form-group">
         <label for="officerHours" class="form-label">Officer Hours</label>
         <input
@@ -516,6 +677,7 @@
           *ngIf="!processingNetworkRequest"
           class="btn btn-outline-success"
           type="submit"
+          (click)="this.createNewProductModal.close()"
         >
           Save
         </button>
@@ -535,7 +697,12 @@
         <button
           class="btn btn-danger ml-auto"
           type="button"
-          (click)="onClickToggleEditBudgetForm(); editForm.reset()"
+          (click)="
+            onClickToggleEditBudgetForm();
+            this.updatedBudgetProducts = [];
+            editForm.reset();
+            this.createNewProductModal.close()
+          "
           [disabled]="processingNetworkRequest"
         >
           Cancel
