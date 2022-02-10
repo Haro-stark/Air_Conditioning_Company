@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import {
   faEdit,
   faTrashAlt,
@@ -13,7 +13,6 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { Order } from '../models/Order';
-import { Response } from '../models/Response';
 import { WorkLog } from '../models/WorkLog';
 import { AuthenticationService } from '../services/authentication.service';
 import { HttpService } from '../services/http.service';
@@ -44,9 +43,8 @@ export class WorklogComponent implements OnInit {
   loading: Boolean = false;
   user: any;
 
-  workLogEditForm!: FormGroup;
   selectedOrderNameOnEditForm = '--select--';
-
+  isSelected:boolean = true;
   apiRequestError = {
     error: { text: '' },
     name: '',
@@ -60,16 +58,12 @@ export class WorklogComponent implements OnInit {
     config: NgbModalConfig,
     private modalService: NgbModal,
     public auth: AuthenticationService,
-    private httpService: HttpService,
-    private fb: FormBuilder
+    private httpService: HttpService
   ) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
     this.loading = true;
-    this.workLogEditForm = this.fb.group({
-      worklogEditControl: null
-    });
   }
 
   ngOnInit(): void {
@@ -101,12 +95,6 @@ export class WorklogComponent implements OnInit {
         map((response: any) => {
           if (response.data && response.status === 200) {
             this.orders = response.data;
-
-            console.log("finding order:", this.orders.find(o => o.orderId === this.updatedWorklog.order.orderId))
-            this.workLogEditForm = this.fb.group({
-              worklogEditControl: this.orders.find(o => o.orderId === this.updatedWorklog.order.orderId)
-              // worklogEditControl: this.updatedWorklog.order
-            });
           } else {
             this.showApiErrorResponse(response.message);
           }
@@ -178,13 +166,9 @@ export class WorklogComponent implements OnInit {
     this.updatedWorklog = log;
     console.log(this.updatedWorklog);
 
-    this.workLogEditForm = this.fb.group({
-      worklogEditControl: this.updatedWorklog.order
-    });
-    // this.workLogEditForm.patchValue(this.updatedWorklog.order)
   }
 
-  onUpdateLog(editFormWorklog: { value: { order: Order; numberOfHours: number; }; }) {
+  onUpdateLog(editFormWorklog: NgForm) {
     this.processingNetworkRequest = !this.processingNetworkRequest;
     console.log("editFormWorklog.value.order = ", editFormWorklog.value.order)
     if (editFormWorklog.value.order && editFormWorklog.value.numberOfHours) {

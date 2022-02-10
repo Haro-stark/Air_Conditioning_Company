@@ -84,19 +84,16 @@
         [(ngModel)]="updatedWorklog.numberOfHours" class="form-control" />
     </div>
     <div class="form-group">
-       
       <ng-container *ngIf="orders$ | async as currentOrders">
-      <label>Order</label>
-      <form [formGroup]="workLogEditForm">
-      <select formControlName="worklogEditControl" name="order" class="form-control" required>
+        <label>Order</label>
+        <select name="order" id="order" [(ngModel)]="updatedWorklog.order" class="form-control" required>
+          <option [selected]="isSelected" [ngValue]="updatedWorklog.order" disabled>{{ updatedWorklog.order.orderId }} - {{ updatedWorklog.order.orderName }}</option>
           <option *ngFor="let order of currentOrders" [ngValue]="order">
             {{ order.orderId }} - {{ order.orderName }}
           </option>
-      </select>
-
-      </form>
-</ng-container>  
-  </div>
+        </select>
+      </ng-container>
+    </div>
 
     <span class="d-flex">
       <button *ngIf="!processingNetworkRequest" class="btn btn-outline-success" type="submit">
@@ -148,8 +145,8 @@
 
 <div class="alert-warning alert apiResponse" *ngIf="showErrorAlert">
   {{
-    apiRequestError.error.text
-      ? apiRequestError.error.text
-      : apiRequestError.message
+  apiRequestError.error.text
+  ? apiRequestError.error.text
+  : apiRequestError.message
   }}
 </div>
