@@ -1,5 +1,3 @@
-import * as Long from "long";
-
 export interface Product {
   productId: any;
   name: string;
@@ -7,4 +5,6 @@ export interface Product {
   price: number;
   tax: number;
   quantityInStock: number;
+  productQuantity: number;
+  addedToBudgetCart: boolean;
 }

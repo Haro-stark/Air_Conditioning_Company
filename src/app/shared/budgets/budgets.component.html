@@ -41,7 +41,7 @@
   <ng-container *ngIf="processingNetworkRequest">
     <app-loading-spinner></app-loading-spinner>
   </ng-container>
-  <table class="table table-hover align-middle mx-auto w-auto  table-sm">
+  <table class="table table-hover align-middle mx-auto w-auto table-sm">
     <ng-container *ngIf="budgets">
       <thead>
         <tr>
@@ -89,6 +89,7 @@
               Download
             </button>
           </td>
+
           <td>
             <fa-icon
               [icon]="editIcon"
@@ -114,83 +115,85 @@
 
 <div
   class="emptyBudget alert-warning text-center"
-  *ngIf="!budgets || !budgets.length && !loading"
+  *ngIf="
+    !budgets ||
+    (!budgets.length && !loading && !errorMessage && !showAddBudgetForm)
+  "
 >
   There are no budgets available at this moment
 </div>
 <div class="flexCenter">
+  <div *ngIf="showAddBudgetForm && !showEditBudgetForm">
+    <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new budget</h1>
 
-<div *ngIf="showAddBudgetForm && !showEditBudgetForm">
-  <h1 style="color: rgb(184, 15, 199)" class="mb-3">Add a new budget</h1>
-
-  <form
-    #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
-    class="form"
-    name="budgetForm"
-  >
-    <div class="form-group">
-      <label for="text" class="form-label">Budget Name</label>
-      <input
-        required
-        id="budgetName"
-        type="text"
-        name="budgetName"
-        placeholder="enter budget name"
-        [(ngModel)]="newBudget.budgetName"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="customer">Customer</label>
-      <select
-        class="form-select form-control"
-        name="customer"
-        id="customer"
-        [(ngModel)]="newBudget.customer"
-        (ngModelChange)="isNewCustomerSelected(newBudget.customer)"
-      >
-        <option ngValue="newCustomer">New customer</option>
-        <option
-          *ngFor="let customer of customers | filterCustomer"
-          [ngValue]="customer"
-        >
-          {{ customer.customerId }}- {{ customer.name }}
-        </option>
-      </select>
-    </div>
-
-    <ng-container *ngIf="showNewCustomerForm">
+    <form
+      #inputForm="ngForm"
+      (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+      class="form"
+      name="budgetForm"
+    >
       <div class="form-group">
-        <label for="customerName" class="form-label">Customer Name</label>
+        <label for="text" class="form-label">Budget Name</label>
         <input
           required
-          id="customerName"
+          id="budgetName"
           type="text"
-          name="customerName"
-          placeholder="enter customer name"
-          [(ngModel)]="customer.name"
+          name="budgetName"
+          placeholder="enter budget name"
+          [(ngModel)]="newBudget.budgetName"
           class="form-control"
         />
       </div>
-    </ng-container>
-    <div class="form-group">
-      <label for="services">Services</label>
-      <select
-        class="form-select form-control"
-        name="services"
-        id="services"
-        [(ngModel)]="newBudget.service"
-        [multiple]="true"
-        (ngModelChange)="isInstallationSelected(newBudget.service)"
-      >
-        <option *ngFor="let service of services" [ngValue]="service">
-          {{ service.type }}
-        </option>
-      </select>
-    </div>
-    <ng-container *ngIf="showProducts">
       <div class="form-group">
+        <label for="customer">Customer</label>
+        <select
+          class="form-select form-control"
+          name="customer"
+          id="customer"
+          [(ngModel)]="newBudget.customer"
+          (ngModelChange)="isNewCustomerSelected(newBudget.customer)"
+        >
+          <option ngValue="newCustomer">New customer</option>
+          <option
+            *ngFor="let customer of customers | filterCustomer"
+            [ngValue]="customer"
+          >
+            {{ customer.customerId }}- {{ customer.name }}
+          </option>
+        </select>
+      </div>
+
+      <ng-container *ngIf="showNewCustomerForm">
+        <div class="form-group">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input
+            required
+            id="customerName"
+            type="text"
+            name="customerName"
+            placeholder="enter customer name"
+            [(ngModel)]="customer.name"
+            class="form-control"
+          />
+        </div>
+      </ng-container>
+      <div class="form-group">
+        <label for="services">Services</label>
+        <select
+          class="form-select form-control"
+          name="services"
+          id="services"
+          [(ngModel)]="newBudget.service"
+          [multiple]="true"
+          (ngModelChange)="isInstallationSelected(newBudget.service)"
+        >
+          <option *ngFor="let service of services" [ngValue]="service">
+            {{ service.type }}
+          </option>
+        </select>
+      </div>
+      <ng-container *ngIf="showProductsButton">
+        <!--   <div class="form-group">
         <label for="services">products</label>
         <select
           class="form-select form-control"
@@ -203,10 +206,142 @@
             {{ product.name }}
           </option>
         </select>
-      </div>
-    </ng-container>
+      </div>  -->
+        <button
+          class="btn btn-primary mb-3 mt-3"
+          (click)="showProductsCart = true; openCreateAddProductModal(content)"
+          type="button"
+        >
+          Show Product Cart
+        </button>
+      </ng-container>
+      <div class="modal-container">
+        <ng-template #content let-c="close" let-d="dismiss">
+          <div class="modal-custom">
+            <div class="modal-header">
+              <h4 class="modal-title" id="modal-basic-title">
+                Add budgets products
+              </h4>
+              <button
+                type="button"
+                class="close"
+                aria-label="Close"
+                (click)="d('Cross click')"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-header">Products Cart</div>
 
-    <!--  <ng-container *ngIf="showProducts">
+              <table
+                class="table table-hover align-middle mx-auto w-auto table-sm"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Select Product</th>
+                    <th scope="col">Product Id</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Price</th>
+                    <th scope="col">Quantity In Stock</th>
+                    <th scope="col">Buy Quantity</th>
+                    <th scope="col">Total price</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr *ngFor="let product of products; let i = index">
+                    <td>
+                      <span class="mr-2">
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="product.addedToBudgetCart"
+                          (change)="onChange(i, product, $event)"
+                        />
+                      </span>
+                    </td>
+                    <td>{{ product.productId }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>
+                      {{ product.quantityInStock }}
+                    </td>
+                    <td class="extra_wide_td">
+                      <button
+                        class="btn btn-sm btn-dark"
+                        (click)="changeProductQuanity(product, 'sub')"
+                        [disabled]="product.productQuantity < 1"
+                      >
+                        -
+                      </button>
+
+                      <span class="ml-2 mr-2">
+                        {{ product.productQuantity }}</span
+                      >
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="changeProductQuanity(product, 'add')"
+                        [disabled]="
+                          product.productQuantity >= product.quantityInStock
+                        "
+                      >
+                        +
+                      </button>
+                    </td>
+                    <td>{{ product.productQuantity * product.price }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+              <span>
+                <span class="badge badge-info"> products in Cart </span> =
+                {{ this.budgetProducts.length }}</span
+              >
+
+              <button
+                class="btn btn-outline-dark"
+                id="closeModal"
+                data-dismiss="modal"
+                type="button"
+                (click)="this.createNewProductModal.close()"
+              >
+                Save
+              </button>
+            </div>
+            <!--       <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="button"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          (click)="showProductsCart = false"
+          [disabled]="processingNetworkRequest"
+        >
+          Cancel
+        </button>
+      </span> -->
+            <!--  <ng-container *ngIf="showProducts">
       <ng-container >
         <div class="form-group" *ngFor="let product of products; let i = index" >
           <label for="services">{{product.name}}</label>
@@ -222,20 +357,134 @@
         </div>
       </ng-container>
     </ng-container> -->
+          </div>
+        </ng-template>
+      </div>
+      <ng-container *ngIf="showHoursInput">
+        <div class="form-group">
+          <span>
+            <label for="officerHours" class="form-label">Officer Hours</label>
+            <input
+              required
+              id="officerHours"
+              type="number"
+              name="officerHours"
+              [(ngModel)]="newBudget.officerHours"
+              class="form-control"
+            />
+          </span>
+        </div>
 
-    <ng-container *ngIf="showHoursInput">
-      <div class="form-group">
-        <span>
-          <label for="officerHours" class="form-label">Officer Hours</label>
+        <div class="form-group">
+          <label for="assistantHours" class="form-label">Assistant Hours</label>
           <input
             required
-            id="officerHours"
+            id="assistantHours"
             type="number"
-            name="officerHours"
-            [(ngModel)]="newBudget.officerHours"
+            name="assistantHours"
+            [(ngModel)]="newBudget.assistantHours"
             class="form-control"
           />
-        </span>
+        </div>
+      </ng-container>
+
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          (click)="onClickToggleAddBudgetForm(); inputForm.reset()"
+          [disabled]="processingNetworkRequest"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
+  </div>
+  <div *ngIf="showEditBudgetForm && !showAddBudgetForm">
+    <h1 style="color: greenyellow" class="mb-3">Editing a budget</h1>
+
+    <hr />
+    <form
+      #editForm="ngForm"
+      (ngSubmit)="
+        onUpdateBudget(updatedBudget); formSubmitted ? editForm.reset() : ''
+      "
+      class="form"
+      name="budgetForm"
+    >
+      <div class="form-group">
+        <label for="text" class="form-label">Budget Name</label>
+        <input
+          required
+          id="budgetName"
+          type="text"
+          name="budgetName"
+          placeholder="enter budget name"
+          [(ngModel)]="updatedBudget.budgetName"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="customer">Customer</label>
+        <select
+          class="form-select form-control"
+          name="customer"
+          id="customer"
+          [(ngModel)]="updatedBudget.customer"
+        >
+          <option
+            *ngFor="let customer of customers | filterCustomer"
+            [ngValue]="customer"
+          >
+            {{ customer.customerId }}- {{ customer.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="budgetStatus">Budget Status</label>
+        <select
+          class="form-select form-control"
+          name="budgetStatus"
+          id="budgetStatus"
+          [(ngModel)]="updatedBudget.budgetStatus"
+        >
+          <option ngValue="Accepted">Accepted</option>
+          <option ngValue="PendingAcceptance">PendingAcceptance</option>
+          <option ngValue="Canceled">Canceled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="officerHours" class="form-label">Officer Hours</label>
+        <input
+          required
+          id="officerHours"
+          type="number"
+          name="officerHours"
+          [(ngModel)]="updatedBudget.officerHours"
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
@@ -245,165 +494,53 @@
           id="assistantHours"
           type="number"
           name="assistantHours"
-          [(ngModel)]="newBudget.assistantHours"
+          [(ngModel)]="updatedBudget.assistantHours"
           class="form-control"
         />
       </div>
-    </ng-container>
+      <div class="form-group">
+        <label for="text" class="form-label">Total Price</label>
+        <input
+          required
+          id="totalPrice"
+          type="text"
+          name="totalPrice"
+          placeholder="enter budget price"
+          [(ngModel)]="updatedBudget.totalPrice"
+          class="form-control"
+        />
+      </div>
 
-    <span class="d-flex">
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-outline-success"
-        type="submit"
-      >
-        Save
-      </button>
-      <button
-        *ngIf="processingNetworkRequest"
-        class="btn btn-primary"
-        type="button"
-        disabled
-      >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="visually-hidden">Saving...</span>
-      </button>
-      <button
-        class="btn btn-danger ml-auto"
-        type="button"
-        (click)="onClickToggleAddBudgetForm(); inputForm.reset()"
-        [disabled]="processingNetworkRequest"
-      >
-        Cancel
-      </button>
-    </span>
-  </form>
-</div>
-<div *ngIf="showEditBudgetForm && !showAddBudgetForm">
-  <h1 style="color: greenyellow" class="mb-3">Editing a budget</h1>
-
-  <hr />
-  <form
-    #editForm="ngForm"
-    (ngSubmit)="
-      onUpdateBudget(updatedBudget); formSubmitted ? editForm.reset() : ''
-    "
-    class="form"
-    name="budgetForm"
-  >
-    <div class="form-group">
-      <label for="text" class="form-label">Budget Name</label>
-      <input
-        required
-        id="budgetName"
-        type="text"
-        name="budgetName"
-        placeholder="enter budget name"
-        [(ngModel)]="updatedBudget.budgetName"
-        class="form-control"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="customer">Customer</label>
-      <select
-        class="form-select form-control"
-        name="customer"
-        id="customer"
-        [(ngModel)]="updatedBudget.customer"
-      >
-        <option
-          *ngFor="let customer of customers | filterCustomer"
-          [ngValue]="customer"
+      <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
         >
-          {{ customer.customerId }}- {{ customer.name }}
-        </option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="budgetStatus">Budget Status</label>
-      <select
-        class="form-select form-control"
-        name="budgetStatus"
-        id="budgetStatus"
-        [(ngModel)]="updatedBudget.budgetStatus"
-      >
-        <option ngValue="Accepted">Accepted</option>
-        <option ngValue="PendingAcceptance">PendingAcceptance</option>
-        <option ngValue="Canceled">Canceled</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="officerHours" class="form-label">Officer Hours</label>
-      <input
-        required
-        id="officerHours"
-        type="number"
-        name="officerHours"
-        [(ngModel)]="updatedBudget.officerHours"
-        class="form-control"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="assistantHours" class="form-label">Assistant Hours</label>
-      <input
-        required
-        id="assistantHours"
-        type="number"
-        name="assistantHours"
-        [(ngModel)]="updatedBudget.assistantHours"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="text" class="form-label">Total Price</label>
-      <input
-        required
-        id="totalPrice"
-        type="text"
-        name="totalPrice"
-        placeholder="enter budget price"
-        [(ngModel)]="updatedBudget.totalPrice"
-        class="form-control"
-      />
-    </div>
-
-    <span class="d-flex">
-      <button
-        *ngIf="!processingNetworkRequest"
-        class="btn btn-outline-success"
-        type="submit"
-      >
-        Save
-      </button>
-      <button
-        *ngIf="processingNetworkRequest"
-        class="btn btn-primary"
-        type="button"
-        disabled
-      >
-        <span
-          class="spinner-border spinner-border-sm"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        <span class="visually-hidden">Saving...</span>
-      </button>
-      <button
-        class="btn btn-danger ml-auto"
-        type="button"
-        (click)="onClickToggleEditBudgetForm(); editForm.reset()"
-        [disabled]="processingNetworkRequest"
-      >
-        Cancel
-      </button>
-    </span>
-  </form>
-</div>
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          (click)="onClickToggleEditBudgetForm(); editForm.reset()"
+          [disabled]="processingNetworkRequest"
+        >
+          Cancel
+        </button>
+      </span>
+    </form>
+  </div>
 </div>

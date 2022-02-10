@@ -154,7 +154,7 @@
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete product"
-                (click)="onDeleteSupplierProduct(product.productId)"
+                (click)="onDeleteSupplierProduct(product.productId , supplier.supplierId)"
                 [ngClass]="'delete-icon icon-button-properties'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >
@@ -313,6 +313,37 @@
           class="form-control"
         />
       </div>
+
+       <span class="d-flex">
+        <button
+          *ngIf="!processingNetworkRequest"
+          class="btn btn-outline-success"
+          type="submit"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="processingNetworkRequest"
+          class="btn btn-primary"
+          type="button"
+          disabled
+        >
+          <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Saving...</span>
+        </button>
+        <button
+          class="btn btn-danger ml-auto"
+          type="button"
+          [disabled]="processingNetworkRequest"
+          (click)="onClickToggleEditSupplierForm();"
+        >
+          Cancel
+        </button>
+      </span>
     </form>
   </div>
 

@@ -43,7 +43,7 @@ export class HttpService {
     'https://hidden-bastion-05543.herokuapp.com//firebase';
 
   private supplierProductApiUrl =
-    'https://hidden-bastion-05543.herokuapp.com/Supplier';
+    'https://hidden-bastion-05543.herokuapp.com/SupplierProduct';
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -389,9 +389,12 @@ export class HttpService {
       httpOptions
     );
   }
-  deleteSupplierProduct(id: number): Observable<SupplierProducts> {
+  deleteSupplierProduct(
+    productId: number,
+    supplierId: number
+  ): Observable<SupplierProducts> {
     const httpOptions: Object = {
-      params: { Id: id },
+      params: { productId, supplierId },
     };
     return this.http.delete<SupplierProducts>(
       `${this.supplierProductApiUrl}/delete`,

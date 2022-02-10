@@ -202,13 +202,13 @@ export class SuppliersComponent implements OnInit {
 
     if (
       !this.updatedSupplier.supplierName ||
-      this.updatedSupplier.supplierName.trim().length === 0 ||
-      !this.updatedSupplier.supplierProducts
+      this.updatedSupplier.supplierName.trim().length === 0
     ) {
       this.errorMessage =
         'Please enter correct fields , All fields are necessary';
       return this.errorMessage;
     } else {
+      console.log(updatedSupplier);
       this.processingNetworkRequest = true;
       this.httpSupplierService.updateSupplier(updatedSupplier).subscribe({
         next: (response: any) => {
@@ -358,31 +358,26 @@ export class SuppliersComponent implements OnInit {
     }
     return this.errorMessage;
   }
-  onDeleteSupplierProduct(productId?: number) {
+  onDeleteSupplierProduct(productId: any ,supplierId: any) {
     console.log(this.supplier, productId);
     //this.processingNetworkRequest = true;
-    this.supplier.supplierProducts = this.supplier.supplierProducts.filter(
-      (product) => product.productId != productId
-    );
-    this.suppliers = this.suppliers.map((supplier: Supplier) => {
-      if (supplier.supplierId === this.supplier.supplierId)
-        supplier = this.supplier;
-      return supplier;
-    });
-    console.log(this.supplier);
 
     console.log(this.suppliers);
-    /*  
-
-     this.httpSupplierService.deleteSupplier(productId).subscribe({
+    this.processingNetworkRequest = true;
+    this.httpSupplierService.deleteSupplierProduct(productId ,supplierId ).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
           this.showApiSuccessResponse(response.message);
-          this.suppliers = this.suppliers.filter((supplier: Supplier) =>
-            supplier.supplierProducts.filter(
-              (product: SupplierProducts) => product.productId != productId
-            )
-          );
+          this.supplier.supplierProducts =
+            this.supplier.supplierProducts.filter(
+              (product) => product.productId != productId
+            );
+          this.suppliers = this.suppliers.map((supplier: Supplier) => {
+            if (supplier.supplierId === this.supplier.supplierId)
+              supplier = this.supplier;
+            return supplier;
+          });
+
           this.processingNetworkRequest = false;
         } else {
           this.showApiErrorResponse(response.message);
@@ -391,10 +386,7 @@ export class SuppliersComponent implements OnInit {
       error: (error: any) => {
         this.showApiErrorResponse();
       },
-    }); 
-    
-    */
-    alert('coming soon');
+    });
   }
 
   toggleAddSupplierProductForm(id?: number) {

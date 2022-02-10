@@ -14,6 +14,11 @@ import { Services } from 'src/app/models/Services';
 import { Router } from '@angular/router';
 import { budgetStatus } from 'src/app/enums/budgetStatus';
 import { Response } from 'src/app/models/Response';
+import {
+  NgbModal,
+  NgbModalConfig,
+  NgbModalRef,
+} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-budgets',
@@ -30,9 +35,12 @@ export class BudgetsComponent implements OnInit {
   showAddBudgetForm: boolean = false;
   errorMessage!: string;
   showEditBudgetForm: boolean = false;
+  showBudgetProducts: Boolean = false;
+  showEditBudgetProductForm: Boolean = false;
   formSubmitted = false;
   generateOrder = false;
-  showProducts = false;
+  showProductsButton = false;
+  showProductsCart = false;
   showHoursInput = false;
   otherServicesSelected = false;
   loading = false;
@@ -49,10 +57,10 @@ export class BudgetsComponent implements OnInit {
     budgetStatus: '',
     assistantHours: 0,
     officerHours: 0,
-    productList: [],
     service: [],
     customer: { customerId: 0, name: '' },
     budgetId: 0,
+    productList: [],
   };
   budgets: Budget[] = [
     /*  
@@ -94,6 +102,7 @@ export class BudgetsComponent implements OnInit {
       tax: 0,
     }, */
   ];
+  budgetProducts: Product[] = [];
   customers: Customer[] = [];
   services: Services[] = [];
   showErrorAlert = false;
@@ -108,15 +117,20 @@ export class BudgetsComponent implements OnInit {
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
   processingNetworkRequest = false;
+  public createNewProductModal!: NgbModalRef;
 
   private subscriptions = new Subscription();
 
   constructor(
     private cd: ChangeDetectorRef,
     private budgetService: HttpService,
-    private router: Router
+    private router: Router,
+    config: NgbModalConfig,
+    private modalService: NgbModal
   ) {
     this.loading = true;
+    config.backdrop = 'static';
+    config.keyboard = false;
   }
 
   ngOnInit(): void {
@@ -147,10 +161,15 @@ export class BudgetsComponent implements OnInit {
     });
 
     this.budgetService.getProduct().subscribe({
-      next: (response: any) => {
+      next: (response: Response) => {
         if (response.status === 200) {
-          this.products = response.data;
+          this.products = response.data.map((product: Product) => {
+            product.productQuantity = 0;
+            product.addedToBudgetCart = false;
+            return product;
+          });
         }
+        console.log(this.products);
       },
     });
 
@@ -197,11 +216,22 @@ export class BudgetsComponent implements OnInit {
       (!this.newBudget.customer.name && !this.showNewCustomerForm)
     ) {
       this.errorMessage =
-        'Please enter correct fields , All fields are necessary';
+        'Please enter new customer name  , All fields are necessary';
+    } else if (this.budgetProducts.length === 0 && this.showProductsButton) {
+      this.errorMessage =
+        'please select products correctly or unselect installation';
     } else {
-      console.log(this.newBudget.customer, this.customer);
+      console.log('saving budget ', this.newBudget.customer, this.customer);
       if (this.showNewCustomerForm) {
         this.newBudget.customer = { ...this.customer };
+      }
+      if (
+        this.budgetProducts.length > 0 &&
+        this.budgetProducts &&
+        this.showProductsButton
+      ) {
+        console.log('added products to budget');
+        this.newBudget.productList = [...this.budgetProducts];
       }
       let budgetToSave = { ...this.newBudget };
       this.processingNetworkRequest = true;
@@ -227,11 +257,21 @@ export class BudgetsComponent implements OnInit {
     }
   }
 
+  openCreateAddProductModal(content: any) {
+    console.log(this.products);
+    this.createNewProductModal = this.modalService.open(content);
+  }
+
   onClickToggleAddBudgetForm() {
     setTimeout(() => {
       this.errorMessage = '';
       this.showAddBudgetForm = !this.showAddBudgetForm;
+      this.resetBudgetProducts();
+      this.showProductsButton = false;
+      this.showProductsCart = false;
+      this.showHoursInput = false;
 
+      this.budgetProducts = [];
       this.cd.markForCheck();
     }, 200);
 
@@ -246,6 +286,7 @@ export class BudgetsComponent implements OnInit {
     }, 200);
   }
   onEditBudget(id: number, budget: Budget) {
+    console.log('budget to be edited', budget);
     this.updatedBudget = { ...budget };
     if (budget.budgetStatus.trim().toLowerCase() !== 'accepted') {
       this.generateOrder = true;
@@ -341,17 +382,20 @@ export class BudgetsComponent implements OnInit {
       service.type.trim().toLowerCase()
     );
 
-    console.log(services);
+    console.log(services, newArr);
 
     if (newArr && newArr.length > 0) {
       if (newArr?.includes('installation')) {
-        this.showProducts = true;
+        this.showProductsButton = true;
       } else {
-        this.showProducts = false;
+        this.showProductsButton = false;
         this.newBudget.productList = [];
       }
+      const isLaborOrMaintenanceSelected =
+        newArr.includes('Labo') || newArr.includes('maintenance');
 
-      if (newArr?.includes('maintenance') || newArr.includes('laborwork')) {
+      console.log(newArr);
+      if (isLaborOrMaintenanceSelected) {
         this.showHoursInput = true;
       } else {
         this.showHoursInput = false;
@@ -382,7 +426,9 @@ export class BudgetsComponent implements OnInit {
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
     this.showAddBudgetForm = false;
-
+    this.showProductsButton = false;
+    this.showProductsCart = false;
+    this.showHoursInput = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
       this.formSubmitted = true;
@@ -436,5 +482,40 @@ export class BudgetsComponent implements OnInit {
           this.showApiErrorResponse();
         },
       });
+  }
+
+  onChange(index: number, product: Product, event: any) {
+    console.log('cheked', !!event.target.checked);
+
+    if (event.target.checked) {
+      console.log('checked', index, product);
+      product.productQuantity === 0
+        ? (product.productQuantity += 1)
+        : product.productQuantity;
+      product.addedToBudgetCart = true;
+      this.budgetProducts.push(product);
+    } else {
+      console.log('unchecked', index, product.productQuantity, event.value);
+      this.budgetProducts = this.budgetProducts.filter(
+        (p: Product) => p.productId != product.productId
+      );
+    }
+
+    console.log('budget products', this.budgetProducts);
+  }
+
+  changeProductQuanity(product: any, operation: String) {
+    console.log(product.productQuantity);
+    if (operation === 'add') {
+      product.productQuantity += 1;
+    } else product.productQuantity -= 1;
+  }
+
+  resetBudgetProducts() {
+    this.products = this.products.map((product: Product) => {
+      product.productQuantity = 0;
+      product.addedToBudgetCart = false;
+      return product;
+    });
   }
 }

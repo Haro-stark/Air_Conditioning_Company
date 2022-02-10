@@ -27,6 +27,8 @@ export class ProductsComponent implements OnInit {
     price: 0,
     quantityInStock: 0,
     tax: 0,
+    productQuantity: 0,
+    addedToBudgetCart: false
   };
 
   products: Product[] = [
