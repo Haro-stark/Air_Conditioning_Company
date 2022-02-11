@@ -537,7 +537,7 @@ export class BudgetsComponent implements OnInit {
     event?: any,
     newBudgetProducts?: Boolean
   ) {
-    if (newBudgetProducts) {
+    if (newBudgetProducts && product.productQuantity==0) {
       console.log('newproduct');
 
       product.productQuantity += 1;
@@ -553,7 +553,7 @@ export class BudgetsComponent implements OnInit {
       this.newBudgetProducts.push(product);
     } else {
       console.log('unchecked', index, product.productQuantity, event.value);
-      this.updatedBudgetProducts = this.updatedBudgetProducts.filter(
+      this.newBudgetProducts = this.newBudgetProducts.filter(
         (p: Product) => p.productId != product.productId
       );
     }
@@ -589,20 +589,22 @@ export class BudgetsComponent implements OnInit {
     console.log('budget products', this.updatedBudgetProducts);
   }
   changeProductQuanity(product: any, operation: String) {
-    console.log(product.productQuantity, 'cahnge quantity', operation);
+    console.log(product.productQuantity, 'change quantity', operation);
     if (operation === 'add') {
       if (product.productQuantity === 0) {
         this.onBudgetCreationProductCartChange(0, product, null, true);
       }
-      product.productQuantity += 1;
-      product.quantityInStock -= 1;
-      if (product.quantityInStock < 0) {
-        product.quantityInStock = 0;
+      else {
+        product.productQuantity += 1;
+        product.quantityInStock -= 1;
+        if (product.quantityInStock < 0) {
+          product.quantityInStock = 0;
+        }
       }
     } else {
       product.productQuantity -= 1;
       product.quantityInStock += 1;
-      console.log('qauant', product.productQuantity);
+      console.log('quant', product.productQuantity);
       if (product.productQuantity <= 0) {
         console.log('less than 1');
         this.onBudgetCreationProductCartChange(0, product, 0);
