@@ -294,7 +294,9 @@ export class BudgetsComponent implements OnInit {
     console.log('products to be edited', budget.productList);
 
     this.updatedBudget = { ...budget };
-    this.updatedBudget.productList = [...budget.productList];
+    this.updatedBudget.productList = [
+      ...budget.productList.filter((product) => product.productQuantity > 0),
+    ];
     this.updatedBudget.productList.map(
       (product: Product) => (product.addedToBudgetCart = true)
     );
@@ -304,6 +306,8 @@ export class BudgetsComponent implements OnInit {
     this.productsId = this.updatedBudget.productList.map(
       (p: Product) => p.productId
     );
+    this.updatedBudgetProducts = [...this.updatedBudget.productList];
+
     console.log('productss', this.products);
     this.products.forEach((element, index) => {
       console.log(
@@ -320,7 +324,6 @@ export class BudgetsComponent implements OnInit {
       }
     });
 
-    this.updatedBudgetProducts = [...this.updatedBudget.productList];
     console.log('products lps', this.updatedBudget.productList);
     console.log('products to be edited', this.updatedBudgetProducts);
 
@@ -531,11 +534,17 @@ export class BudgetsComponent implements OnInit {
   onBudgetCreationProductCartChange(
     index: number,
     product: Product,
-    event: any
+    event?: any,
+    newBudgetProducts?: Boolean
   ) {
-    console.log('cheked', !!event.target.checked);
+    if (newBudgetProducts) {
+      console.log('newproduct');
 
-    if (event.target.checked) {
+      product.productQuantity += 1;
+
+      product.addedToBudgetCart = true;
+      this.newBudgetProducts.push(product);
+    } else if (event && event.target.checked) {
       console.log('checked', index, product);
       product.productQuantity === 0
         ? (product.productQuantity += 1)
@@ -546,9 +555,6 @@ export class BudgetsComponent implements OnInit {
       console.log('unchecked', index, product.productQuantity, event.value);
       this.updatedBudgetProducts = this.updatedBudgetProducts.filter(
         (p: Product) => p.productId != product.productId
-      );
-      this.productsId = this.productsId.filter(
-        (id: any) => id != product.productId
       );
     }
 
@@ -583,13 +589,21 @@ export class BudgetsComponent implements OnInit {
     console.log('budget products', this.updatedBudgetProducts);
   }
   changeProductQuanity(product: any, operation: String) {
-    console.log(product.productQuantity);
+    console.log(product.productQuantity, 'cahnge quantity', operation);
     if (operation === 'add') {
+      if (product.productQuantity === 0) {
+        this.onBudgetCreationProductCartChange(0, product, null, true);
+      }
       product.productQuantity += 1;
+      product.quantityInStock -= 1;
+      if (product.quantityInStock < 0) {
+        product.quantityInStock = 0;
+      }
     } else {
       product.productQuantity -= 1;
+      product.quantityInStock += 1;
       console.log('qauant', product.productQuantity);
-      if (product.productQuantity < 1) {
+      if (product.productQuantity <= 0) {
         console.log('less than 1');
         this.onBudgetCreationProductCartChange(0, product, 0);
       }
@@ -601,14 +615,14 @@ export class BudgetsComponent implements OnInit {
     if (operation === 'add') {
       product.productQuantity += 1;
       product.quantityInStock -= 1;
-      if (product.productQuantity < 0) {
+      if (product.quantityInStock < 0) {
         product.quantityInStock = 0;
       }
     } else {
       product.productQuantity -= 1;
       product.quantityInStock = +1;
       console.log('qauant', product.productQuantity);
-      if (product.productQuantity < 1) {
+      if (product.productQuantity <= 0) {
         console.log('less than 1');
         this.onBudgetUpdationProductCartChanged(0, product, 0);
       }

@@ -219,17 +219,21 @@ export class OrdersComponent implements OnInit {
   onEditOrder(id: number, order: Order) {
     this.updatedOrder = { ...order };
     this.updatedOrder.customer = { ...order.customer };
-    this.updatedOrder.productList = [...order.productList];
+    this.updatedOrder.productList = [
+      ...order.productList.filter((product) => product.productQuantity > 0),
+    ];
     this.updatedOrder.productList.map(
       (product: Product) => (product.addedToBudgetCart = true)
     );
-    console.log('products maaps', this.updatedOrder.productList);
+    console.log('products  cart', this.updatedOrder.productList);
 
     this.updatedOrder.productList.sort((a, b) => a.productId - b.productId);
     this.productsId = this.updatedOrder.productList.map(
       (p: Product) => p.productId
     );
     console.log('productss', this.products);
+              this.updatedOrderProducts = [...this.updatedOrder.productList];
+
     this.products.forEach((element, index) => {
       console.log(
         'index',
@@ -239,13 +243,13 @@ export class OrdersComponent implements OnInit {
         'compare ',
         element.productId
       );
+
       if (this.productsId.indexOf(element.productId) === -1) {
         this.updatedOrder.productList.push({ ...element });
         this.productsId.push(element.productId);
       }
     });
 
-    this.updatedOrderProducts = [...this.updatedOrder.productList];
     console.log('products lps', this.updatedOrder.productList);
     console.log('products to be edited', this.updatedOrderProducts);
     console.log(this.updatedOrder);
@@ -297,7 +301,6 @@ export class OrdersComponent implements OnInit {
         next: (response: any) => {
           if (response.data && response.status === 200) {
             this.showApiSuccessResponse(response.message);
-            
           } else {
             this.showApiErrorResponse(response.message);
           }
@@ -366,9 +369,8 @@ export class OrdersComponent implements OnInit {
     product: Product,
     event: any
   ) {
-
-    if (event &&  event.target.checked) {
-          console.log('cheked', !!event.target.checked);
+    if (event && event.target.checked) {
+      console.log('cheked', !!event.target.checked);
 
       console.log('checked', index, product);
       product.productQuantity === 0
@@ -378,6 +380,7 @@ export class OrdersComponent implements OnInit {
       console.log(this.productsId);
       if (this.productsId.indexOf(product.productId) === -1) {
         this.updatedOrderProducts.push(product);
+        this.productsId.push(product.productId);
       }
     } else {
       console.log('unchecked', index, product.productQuantity, event.checked);
@@ -396,20 +399,18 @@ export class OrdersComponent implements OnInit {
     console.log(product.productQuantity);
     if (operation === 'add') {
       product.productQuantity += 1;
-       product.quantityInStock -= 1;
-       if (product.productQuantity < 0) {
-         product.quantityInStock = 0;
-       }
+      product.quantityInStock -= 1;
+      if (product.quantityInStock < 0) {
+        product.quantityInStock = 0;
+      }
     } else {
       product.productQuantity -= 1;
-            product.quantityInStock = +1;
-
-      
-       console.log('qauant', product.productQuantity);
-       if (product.productQuantity < 1) {
-         console.log('less than 1');
-         this.onOrderUpdationProductCartChanged(0, product, 0);
-       }
+      product.quantityInStock = +1;
+      console.log('qauant', product.productQuantity);
+      if (product.productQuantity <= 0) {
+        console.log('less than 1');
+        this.onOrderUpdationProductCartChanged(0, product, 0);
+      }
     }
     this.updatedOrderProducts = this.updatedOrderProducts.map((p: Product) => {
       if (p.productId === product.productId) {
