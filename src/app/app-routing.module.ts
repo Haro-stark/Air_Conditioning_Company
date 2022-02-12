@@ -18,6 +18,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
 import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { WageHoursPriceComponent } from './wage-hours-price/wage-hours-price.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -42,6 +43,8 @@ const routes: Routes = [
 
       { path: 'budgets', component: BudgetsComponent },
       { path: 'workLog', component: WorklogComponent },
+      { path: 'wages', component: WageHoursPriceComponent },
+
       { path: '', redirectTo: 'employees', pathMatch: 'full' },
     ],
   },

@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   faEdit,
@@ -34,44 +35,7 @@ export class SuppliersComponent implements OnInit {
       },
     ],
   };
-  suppliers: Supplier[] = [
-    /*    {
-      supplierId: 0,
-      supplierName: 'supply 1',
-      supplierProducts: [
-        {
-          productId: 0,
-          name: 'prod1',
-          characteristics: 'asdfs',
-          basePrice: 0,
-          tax: 0,
-          productCount: 5,
-        },
-        {
-          productId: 0,
-          name: 'prod2',
-          characteristics: 'xzcv',
-          basePrice: 0,
-          tax: 0,
-          productCount: 2,
-        },
-      ],
-    },
-    {
-      supplierId: 1,
-      supplierName: 'supply 2',
-      supplierProducts: [
-        {
-          productId: 0,
-          name: 'v,m',
-          characteristics: 'rtyk',
-          basePrice: 20,
-          tax: 0,
-          productCount: 10,
-        },
-      ],
-    }, */
-  ];
+  suppliers: Supplier[] = [];
   supplier!: Supplier;
   showSupplierProducts: Boolean = false;
   showEditSupplierProductForm: Boolean = false;
@@ -95,7 +59,6 @@ export class SuppliersComponent implements OnInit {
   apiSuccessResponse = '';
   apiErrorResponse: string = '';
   numberOfProducts!: number;
-  productArray: Product[] = new Array<Product>();
   addSupplierProduct: SupplierProducts = {
     name: '',
     characteristics: '',
@@ -132,12 +95,12 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(event: any, form: NgForm) {
     console.log(
       this.newSupplier.supplierName,
       this.newSupplier.supplierProducts?.map((product) => product)
     );
-
+    event.preventDefault();
     if (
       !this.newSupplier.supplierName ||
       this.newSupplier.supplierName.trim().length === 0 ||
@@ -159,6 +122,7 @@ export class SuppliersComponent implements OnInit {
             this.showApiSuccessResponse(response.message);
             this.showAddSupplierForm = false;
             this.formSubmitted = true;
+            form.resetForm();
           } else this.showApiErrorResponse(response.message);
         },
         error: () => {
@@ -193,7 +157,8 @@ export class SuppliersComponent implements OnInit {
     }, 250);
   }
 
-  onUpdateSupplier(updatedSupplier: Supplier) {
+  onUpdateSupplier(updatedSupplier: Supplier, event: any) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log(
       this.updatedSupplier.supplierId,
@@ -296,30 +261,42 @@ export class SuppliersComponent implements OnInit {
 
     this.supplierId = supplier.supplierId;
   }
-  addSupplierProducts() {
-    this.processingNetworkRequest = true;
-    this.httpSupplierService
-      .addSupplierProducts(this.addSupplierProduct, this.supplierId)
-      .subscribe({
-        next: (response: any) => {
-          if (response.status === 200) {
-            this.showApiSuccessResponse(response.message);
-            this.suppliers.map((value) => {
-              if (value.supplierId === this.supplierId)
-                value.supplierProducts.push(this.addSupplierProduct);
-            });
-            this.formSubmitted = true;
-            this.showAddSupplierProductForm = false;
-          } else {
-            this.showApiErrorResponse(response.message);
-          }
-        },
-        error: (error: any) => {
-          this.showApiErrorResponse();
-        },
-      });
+  addSupplierProducts(event: any, form: NgForm) {
+    event.preventDefault();
+
+    if (
+      !this.addSupplierProduct.name ||
+      !this.addSupplierProduct.characteristics
+    )
+      this.errorMessage = 'Some fields are required or might be incorrect';
+    else {
+      this.processingNetworkRequest = true;
+
+      this.httpSupplierService
+        .addSupplierProducts(this.addSupplierProduct, this.supplierId)
+        .subscribe({
+          next: (response: any) => {
+            if (response.status === 200) {
+              this.showApiSuccessResponse(response.message);
+              this.suppliers.map((value) => {
+                if (value.supplierId === this.supplierId)
+                  value.supplierProducts.push({ ...this.addSupplierProduct });
+              });
+              this.formSubmitted = true;
+              this.showAddSupplierProductForm = false;
+              form.resetForm();
+            } else {
+              this.showApiErrorResponse(response.message);
+            }
+          },
+          error: (error: any) => {
+            this.showApiErrorResponse();
+          },
+        });
+    }
   }
-  updateSupplierProducts() {
+  updateSupplierProducts(event: any) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log(
       this.updatedSupplierProduct.name,
@@ -358,35 +335,37 @@ export class SuppliersComponent implements OnInit {
     }
     return this.errorMessage;
   }
-  onDeleteSupplierProduct(productId: any ,supplierId: any) {
+  onDeleteSupplierProduct(productId: any, supplierId: any) {
     console.log(this.supplier, productId);
     //this.processingNetworkRequest = true;
 
     console.log(this.suppliers);
     this.processingNetworkRequest = true;
-    this.httpSupplierService.deleteSupplierProduct(productId ,supplierId ).subscribe({
-      next: (response: any) => {
-        if (response.status === 200) {
-          this.showApiSuccessResponse(response.message);
-          this.supplier.supplierProducts =
-            this.supplier.supplierProducts.filter(
-              (product) => product.productId != productId
-            );
-          this.suppliers = this.suppliers.map((supplier: Supplier) => {
-            if (supplier.supplierId === this.supplier.supplierId)
-              supplier = this.supplier;
-            return supplier;
-          });
+    this.httpSupplierService
+      .deleteSupplierProduct(productId, supplierId)
+      .subscribe({
+        next: (response: any) => {
+          if (response.status === 200) {
+            this.showApiSuccessResponse(response.message);
+            this.supplier.supplierProducts =
+              this.supplier.supplierProducts.filter(
+                (product) => product.productId != productId
+              );
+            this.suppliers = this.suppliers.map((supplier: Supplier) => {
+              if (supplier.supplierId === this.supplier.supplierId)
+                supplier = this.supplier;
+              return supplier;
+            });
 
-          this.processingNetworkRequest = false;
-        } else {
-          this.showApiErrorResponse(response.message);
-        }
-      },
-      error: (error: any) => {
-        this.showApiErrorResponse();
-      },
-    });
+            this.processingNetworkRequest = false;
+          } else {
+            this.showApiErrorResponse(response.message);
+          }
+        },
+        error: (error: any) => {
+          this.showApiErrorResponse();
+        },
+      });
   }
 
   toggleAddSupplierProductForm(id?: number) {

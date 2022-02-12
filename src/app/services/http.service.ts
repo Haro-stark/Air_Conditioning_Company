@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SupplierPurchasedHistory } from '../models/SupplierPurchasedHistory';
 import { SupplierProducts } from '../models/SupplierProducts';
 import { Response } from '../models/Response';
+import { WageHoursPrice } from '../models/WageHoursPrice';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-type': 'application/json',
@@ -44,6 +45,10 @@ export class HttpService {
 
   private supplierProductApiUrl =
     'https://hidden-bastion-05543.herokuapp.com/SupplierProduct';
+
+  private wageHoursPriceApiUrl =
+    ' https://hidden-bastion-05543.herokuapp.com/WageHoursPrice';
+
   constructor(private http: HttpClient) {}
 
   getBudget(): Observable<Budget[]> {
@@ -419,5 +424,18 @@ export class HttpService {
     return this.http.get<any>(`${this.firebaseAdmin}/getUserUid`, {
       params: { email: email },
     });
+  }
+
+  getWageHoursPrice(): Observable<WageHoursPrice> {
+    return this.http.get<WageHoursPrice>(`${this.wageHoursPriceApiUrl}/list`);
+  }
+
+  addWageHoursPrice(
+    WageHoursPrice: WageHoursPrice
+  ): Observable<WageHoursPrice> {
+    return this.http.post<WageHoursPrice>(
+      `${this.wageHoursPriceApiUrl}/add`,
+      WageHoursPrice
+    );
   }
 }

@@ -19,6 +19,7 @@ import {
   NgbModalConfig,
   NgbModalRef,
 } from '@ng-bootstrap/ng-bootstrap';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-budgets',
@@ -198,7 +199,8 @@ export class BudgetsComponent implements OnInit {
     console.log('budget to download with id ', id, 'object ', budget);
   }
 
-  onSubmit() {
+  onSubmit(event: any, form: NgForm) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log('inside submit', this.newBudget, this.services);
     console.log(
@@ -249,6 +251,7 @@ export class BudgetsComponent implements OnInit {
             this.budgets.push({ ...budgetToSave });
             this.showApiSuccessResponse(response.message);
             this.formSubmitted = true;
+            form.resetForm();
           } else
             this.showApiErrorResponse(response.message.trim().slice(0, 100));
         },
@@ -285,7 +288,7 @@ export class BudgetsComponent implements OnInit {
       this.showProductsButton = false;
       this.showProductsCart = false;
       this.showEditBudgetForm = !this.showEditBudgetForm;
-
+      this.updatedBudgetProducts = [];
       this.cd.markForCheck();
     }, 200);
   }
@@ -300,15 +303,11 @@ export class BudgetsComponent implements OnInit {
     this.updatedBudget.productList.map(
       (product: Product) => (product.addedToBudgetCart = true)
     );
-    console.log('products maaps', this.updatedBudget.productList);
-
-    this.updatedBudget.productList.sort((a, b) => a.productId - b.productId);
-    this.productsId = this.updatedBudget.productList.map(
-      (p: Product) => p.productId
-    );
     this.updatedBudgetProducts = [...this.updatedBudget.productList];
-
-    console.log('productss', this.products);
+    this.productsId = [
+      ...this.updatedBudgetProducts.map((p: Product) => p.productId),
+    ];
+    console.log('product in stock ids', this.productsId);
     this.products.forEach((element, index) => {
       console.log(
         'index',
@@ -320,12 +319,11 @@ export class BudgetsComponent implements OnInit {
       );
       if (this.productsId.indexOf(element.productId) === -1) {
         this.updatedBudget.productList.push({ ...element });
-        this.productsId.push(element.productId);
       }
     });
 
-    console.log('products lps', this.updatedBudget.productList);
-    console.log('products to be edited', this.updatedBudgetProducts);
+    console.log('all products ', this.updatedBudget.productList);
+    console.log('products in stock', this.updatedBudgetProducts);
 
     if (budget.budgetStatus.trim().toLowerCase() !== 'accepted') {
       this.generateOrder = true;
@@ -358,7 +356,8 @@ export class BudgetsComponent implements OnInit {
     });
   }
 
-  onUpdateBudget(updatedBudget: Budget) {
+  onUpdateBudget(updatedBudget: Budget, event: any) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log('update', updatedBudget);
     if (
@@ -391,8 +390,11 @@ export class BudgetsComponent implements OnInit {
           },
         });
     } else {
+      if (this.showNewCustomerForm) {
+        this.updatedBudget.customer = { ...this.customer };
+      }
       console.log('added products to budget');
-      this.updatedBudget.productList = this.updatedBudgetProducts;
+      this.updatedBudget.productList = [...this.updatedBudgetProducts];
 
       this.modalService.dismissAll();
 
@@ -478,7 +480,6 @@ export class BudgetsComponent implements OnInit {
     this.showHoursInput = false;
     setTimeout(() => {
       this.showSuccessAlert = false;
-      this.formSubmitted = true;
     }, 3500);
   }
 
@@ -537,22 +538,32 @@ export class BudgetsComponent implements OnInit {
     event?: any,
     newBudgetProducts?: Boolean
   ) {
-    if (newBudgetProducts && product.productQuantity==0) {
+    console.log(this.productsId);
+
+    if (newBudgetProducts && product.productQuantity == 0) {
       console.log('newproduct');
 
       product.productQuantity += 1;
+      product.quantityInStock -= 1;
 
       product.addedToBudgetCart = true;
       this.newBudgetProducts.push(product);
     } else if (event && event.target.checked) {
       console.log('checked', index, product);
-      product.productQuantity === 0
-        ? (product.productQuantity += 1)
-        : product.productQuantity;
-      product.addedToBudgetCart = true;
-      this.newBudgetProducts.push(product);
+      if (product.quantityInStock != 0) {
+        product.productQuantity === 0
+          ? ((product.productQuantity += 1), (product.quantityInStock -= 1))
+          : product.productQuantity;
+        product.addedToBudgetCart = true;
+        this.newBudgetProducts.push(product);
+      } else {
+        product.addedToBudgetCart = false;
+        alert(' quantity in stock is less than zero');
+      }
     } else {
       console.log('unchecked', index, product.productQuantity, event.value);
+      product.quantityInStock += product.productQuantity;
+      product.productQuantity = 0;
       this.newBudgetProducts = this.newBudgetProducts.filter(
         (p: Product) => p.productId != product.productId
       );
@@ -564,20 +575,49 @@ export class BudgetsComponent implements OnInit {
   onBudgetUpdationProductCartChanged(
     index: number,
     product: Product,
-    event: any
+    event: any,
+    newproduct: Boolean = true
   ) {
-    if (event && event.target.checked) {
-      console.log('checked', index, product);
-      product.productQuantity === 0
-        ? (product.productQuantity += 1)
-        : product.productQuantity;
+    console.log(event ? event : 'not event');
+    console.log(this.productsId);
+
+    if (
+      this.updatedBudgetProducts &&
+      product.productQuantity == 0 &&
+      newproduct &&
+      !event
+    ) {
+      console.log('newproduct', product);
+      product.productQuantity += 1;
+      product.quantityInStock -= 1;
       product.addedToBudgetCart = true;
-      console.log(this.productsId);
-      if (this.productsId.indexOf(product.productId) === -1) {
-        this.updatedBudgetProducts.push(product);
+      this.updatedBudgetProducts.push(product);
+      this.productsId.push(product.productId);
+      console.log('newproduct pushed', product);
+    } else if (event && event.target.checked) {
+      console.log('checked', index, product);
+      if (product.quantityInStock != 0) {
+        console.log('in 1');
+        product.productQuantity === 0
+          ? ((product.productQuantity += 1), (product.quantityInStock -= 1))
+          : product.productQuantity;
+        product.addedToBudgetCart = true;
+        console.log(this.productsId);
+        console.log(this.productsId.indexOf(product.productId) === -1);
+        if (this.productsId.indexOf(product.productId) === -1) {
+          console.log('true');
+          this.updatedBudgetProducts.push(product);
+          this.productsId.push(product.productId);
+        }
+      } else {
+        product.addedToBudgetCart = false;
+        console.log(product);
+        alert(' quantity in stock is less than zero');
       }
     } else {
       console.log('unchecked', index, product.productQuantity, event.value);
+      product.quantityInStock += product.productQuantity;
+      product.productQuantity = 0;
       this.updatedBudgetProducts = this.updatedBudgetProducts.filter(
         (p: Product) => p.productId != product.productId
       );
@@ -588,13 +628,13 @@ export class BudgetsComponent implements OnInit {
 
     console.log('budget products', this.updatedBudgetProducts);
   }
-  changeProductQuanity(product: any, operation: String) {
+
+  onBudgetCreationChangeProductQuanity(product: any, operation: String) {
     console.log(product.productQuantity, 'change quantity', operation);
     if (operation === 'add') {
       if (product.productQuantity === 0) {
         this.onBudgetCreationProductCartChange(0, product, null, true);
-      }
-      else {
+      } else {
         product.productQuantity += 1;
         product.quantityInStock -= 1;
         if (product.quantityInStock < 0) {
@@ -607,27 +647,29 @@ export class BudgetsComponent implements OnInit {
       console.log('quant', product.productQuantity);
       if (product.productQuantity <= 0) {
         console.log('less than 1');
-        this.onBudgetCreationProductCartChange(0, product, 0);
+        this.onBudgetCreationProductCartChange(0, product, 0, false);
       }
     }
   }
-
-  onBudgetUpdationchangeProductQuanity(product: any, operation: String) {
+  onBudgetUpdationChangeProductQuanity(product: any, operation: String) {
     console.log(product.productQuantity);
     if (operation === 'add') {
-      product.productQuantity += 1;
-      product.quantityInStock -= 1;
-      if (product.quantityInStock < 0) {
-        product.quantityInStock = 0;
+      if (product.productQuantity === 0) {
+        this.onBudgetUpdationProductCartChanged(0, product, null, true);
+      } else {
+        product.productQuantity += 1;
+        product.quantityInStock -= 1;
+        if (product.quantityInStock < 0) {
+          product.quantityInStock = 0;
+        }
       }
     } else {
       product.productQuantity -= 1;
-      product.quantityInStock = +1;
-      console.log('qauant', product.productQuantity);
-      if (product.productQuantity <= 0) {
-        console.log('less than 1');
-        this.onBudgetUpdationProductCartChanged(0, product, 0);
+      product.quantityInStock += 1;
+      if (product.productQuantity == 0) {
+        this.onBudgetUpdationProductCartChanged(0, product, false, false);
       }
+      console.log('qauant', product.productQuantity);
     }
 
     this.updatedBudgetProducts = this.updatedBudgetProducts.map(
@@ -643,13 +685,21 @@ export class BudgetsComponent implements OnInit {
   }
   resetBudgetProducts() {
     this.products = this.products.map((product: Product) => {
+      product.quantityInStock += product.productQuantity;
       product.productQuantity = 0;
       product.addedToBudgetCart = false;
       return product;
     });
   }
 
-  fixDigitsAfterDecimal(value: number) {
-    return parseFloat(value.toFixed(2));
+  fixDigitsAfterDecimal(value: any) {
+    return parseFloat(value?.toFixed(2));
+  }
+
+  onClickPreventDefaultEvent(event: any) {
+    if (event) {
+      event.preventDefault();
+      console.log('prevent', event);
+    }
   }
 }

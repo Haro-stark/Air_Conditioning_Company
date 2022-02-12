@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import {
   faEdit,
   faTrashAlt,
@@ -146,7 +147,8 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(event: any, form: NgForm) {
+    event.preventDefault();
     console.log('employee is ', this.newEmployee);
     if (
       !this.newEmployee.username ||
@@ -178,6 +180,8 @@ export class EmployeesComponent implements OnInit {
                       this.errorMessage = '';
                       this.showAddEmployeeForm = false;
                       this.formSubmitted = true;
+                      form.resetForm();
+
                       this.processingNetworkRequest = false;
                     },
                     (error: any) => {
@@ -260,7 +264,8 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
-  onUpdateEmployee(updatedEmployee: Employee) {
+  onUpdateEmployee(updatedEmployee: Employee, event: any) {
+    event.preventDefault();
     let updateEmployee = { ...updatedEmployee };
     this.processingNetworkRequest = true;
 

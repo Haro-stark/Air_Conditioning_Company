@@ -218,7 +218,7 @@
   <form
     #editForm="ngForm"
     (ngSubmit)="
-      onUpdateSupplierPurchasedHistory(updatedSupplierPurchasedHistory);
+      onUpdateSupplierPurchasedHistory(updatedSupplierPurchasedHistory,$event);
       formSubmitted ? editForm.reset() : ''
     "
     class="form"

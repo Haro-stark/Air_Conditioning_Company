@@ -1,5 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import {
   faEdit,
   faTrashAlt,
@@ -28,7 +29,7 @@ export class ProductsComponent implements OnInit {
     quantityInStock: 0,
     tax: 0,
     productQuantity: 0,
-    addedToBudgetCart: false
+    addedToBudgetCart: false,
   };
 
   products: Product[] = [
@@ -84,7 +85,8 @@ export class ProductsComponent implements OnInit {
       },
     });
   }
-  onSubmit() {
+  onSubmit(event: any, form: NgForm) {
+    event.preventDefault();
     if (
       !this.newProduct.name ||
       this.newProduct.name.trim().length === 0 ||
@@ -99,6 +101,7 @@ export class ProductsComponent implements OnInit {
           if (response.status === 200) {
             this.products.push(this.newProduct);
             this.showApiSuccessResponse(response.message);
+            form.resetForm();
           } else {
             this.showApiErrorResponse(response.message);
           }
@@ -166,7 +169,8 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  onUpdateProduct(updatedProduct: Product) {
+  onUpdateProduct(updatedProduct: Product, event: any) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log('update', updatedProduct);
     console.log('customer is ', updatedProduct.name);

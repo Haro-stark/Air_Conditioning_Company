@@ -96,7 +96,7 @@
 
     <form
       #inputForm="ngForm"
-      (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+      (ngSubmit)="onSubmit($event,inputForm)"
       class="form"
       name="orderForm"
     >
@@ -162,7 +162,7 @@
     <hr />
     <form
       #editForm="ngForm"
-      (ngSubmit)="onUpdateOrder(updatedOrder)"
+      (ngSubmit)="onUpdateOrder(updatedOrder,$event)"
       class="form"
       name="orderForm"
     >
@@ -290,14 +290,52 @@
                     "
                   >
                     <td>
-                      <span class="mr-2">
+                       <span
+                        class="mr-2"
+                        *ngIf="
+                          product.productQuantity > 0 &&
+                          product.addedToBudgetCart
+                        "
+                      >
                         <input
                           type="checkbox"
                           class="checkbox"
                           [value]="product"
                           min="1"
-                          [checked]="product.addedToBudgetCart && product.productQuantity>0"
+                          [checked]="true"
                           (change)="
+                            onOrderUpdationProductCartChanged(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                        />
+                      </span>
+
+                      <span
+                        class="mr-2 unchecked"
+                        *ngIf="
+                          !(
+                            product.productQuantity > 0 &&
+                            product.addedToBudgetCart
+                          )
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="false"
+                          (change)="
+                            onOrderUpdationProductCartChanged(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                          (click)="
                             onOrderUpdationProductCartChanged(
                               i,
                               product,

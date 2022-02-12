@@ -1,0 +1,104 @@
+<div class="d-flex justify-content-around">
+  <span>
+    Officer Hour price :
+    <span style="padding: 2px 5px; border: 2px solid #000"
+      >${{
+        wageHoursPrice?.officerHours ? wageHoursPrice.officerHours : "20"
+      }}</span
+    >
+  </span>
+  <span>
+    Assistant Hour price :
+    <span style="padding: 2px 5px; border: 2px solid #000"
+      >${{
+        wageHoursPrice?.assistantHours ? wageHoursPrice.assistantHours : "15"
+      }}</span
+    >
+  </span>
+</div>
+
+<div
+  class="alert-warning alert apiResponse"
+  *ngIf="showErrorAlert && !showSuccessAlert"
+>
+  {{ apiErrorResponse }}
+</div>
+<div
+  class="alert-success alert apiResponse"
+  *ngIf="!showErrorAlert && showSuccessAlert"
+>
+  {{ apiSuccessResponse }}
+</div>
+
+<ng-container *ngIf="loading || processingNetworkRequest">
+  <app-loading-spinner> loading... </app-loading-spinner>
+</ng-container>
+<div class="flexCenter">
+  <form
+    #editForm="ngForm"
+    (ngSubmit)="onSave(newWageHoursPrice)"
+    class="form"
+    name="wageForm"
+  >
+    <div class="form-group">
+      <label for="text" class="form-label">Officer hours wage</label>
+      <input
+        required
+        id="OfficerWage"
+        type="number"
+        name="OfficerWage"
+        placeholder="enter OfficerWage"
+        min="0"
+        [(ngModel)]="newWageHoursPrice.officerHours"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="text" class="form-label">Assistant hours wage</label>
+      <input
+        required
+        id="AssistantWage"
+        type="number"
+        name="AssistantWage"
+        min="0"
+        placeholder="enter Assistant Wage"
+        [(ngModel)]="newWageHoursPrice.assistantHours"
+        class="form-control"
+      />
+    </div>
+
+    <span class="d-flex">
+      <button
+        *ngIf="!processingNetworkRequest"
+        class="btn btn-outline-success"
+        type="submit"
+        [disabled]="loading"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="processingNetworkRequest"
+        class="btn btn-primary"
+        type="button"
+        disabled
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="visually-hidden">Saving...</span>
+      </button>
+      <!--    <button
+          class="btn btn-danger ml-auto"
+          type="button"
+      
+        
+          [disabled]="processingNetworkRequest"
+        >
+          Cancel
+        </button> -->
+    </span>
+  </form>
+</div>

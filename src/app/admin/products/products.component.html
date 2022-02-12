@@ -95,7 +95,7 @@
 
   <form
     #inputForm="ngForm"
-    (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+    (ngSubmit)="onSubmit($event,inputForm); "
     class="form"
     name="productForm"
   >
@@ -186,7 +186,7 @@
   <hr />
   <form
     #editForm="ngForm"
-    (ngSubmit)="onUpdateProduct(updatedProduct)"
+    (ngSubmit)="onUpdateProduct(updatedProduct,$event)"
     class="form"
     name="productForm"
   >

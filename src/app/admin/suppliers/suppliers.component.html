@@ -154,7 +154,12 @@
               <fa-icon
                 [icon]="deleteIcon"
                 title="Delete product"
-                (click)="onDeleteSupplierProduct(product.productId , supplier.supplierId)"
+                (click)="
+                  onDeleteSupplierProduct(
+                    product.productId,
+                    supplier.supplierId
+                  )
+                "
                 [ngClass]="'delete-icon icon-button-properties'"
                 [style]="processingNetworkRequest ? 'pointer-events:none' : ''"
               >
@@ -188,7 +193,7 @@
 
     <form
       #inputForm="ngForm"
-      (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+      (ngSubmit)="onSubmit($event,inputForm); !!formSubmitted ? inputForm.reset() : ''"
       class="form"
       name="supplierForm"
     >
@@ -296,7 +301,8 @@
     <form
       #editForm="ngForm"
       (ngSubmit)="
-        onUpdateSupplier(updatedSupplier); formSubmitted ? editForm.reset() : ''
+        onUpdateSupplier(updatedSupplier, $event);
+        formSubmitted ? editForm.reset() : ''
       "
       class="form"
       name="supplierForm"
@@ -314,7 +320,7 @@
         />
       </div>
 
-       <span class="d-flex">
+      <span class="d-flex">
         <button
           *ngIf="!processingNetworkRequest"
           class="btn btn-outline-success"
@@ -339,7 +345,7 @@
           class="btn btn-danger ml-auto"
           type="button"
           [disabled]="processingNetworkRequest"
-          (click)="onClickToggleEditSupplierForm();"
+          (click)="onClickToggleEditSupplierForm()"
         >
           Cancel
         </button>
@@ -460,7 +466,8 @@
     <form
       #addProductForm="ngForm"
       (ngSubmit)="
-        addSupplierProducts(); formSubmitted ? addProductForm.reset() : ''
+        addSupplierProducts($event,addProductForm);
+        !!formSubmitted ? addProductForm.reset() : ''
       "
       class="form"
     >
@@ -578,7 +585,7 @@
     <form
       #addSupplierProductForm="ngForm"
       (ngSubmit)="
-        updateSupplierProducts();
+        updateSupplierProducts($event);
         formSubmitted ? addSupplierProductForm.reset() : ''
       "
       class="form"

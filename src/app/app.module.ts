@@ -29,6 +29,7 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
 import { SupplierPurchasedHistoryComponent } from './admin/supplier-purchased-history/supplier-purchased-history.component';
 import { UrlNotFoundComponent } from './url-not-found/url-not-found.component';
 import { FilterCustomerPipe } from './pipes/filter-customer.pipe';
+import { WageHoursPriceComponent } from './wage-hours-price/wage-hours-price.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { FilterCustomerPipe } from './pipes/filter-customer.pipe';
     SupplierPurchasedHistoryComponent,
     UrlNotFoundComponent,
     FilterCustomerPipe,
+    WageHoursPriceComponent,
   ],
   imports: [
     BrowserModule,

@@ -59,7 +59,7 @@
         <tr>
           <td>{{ budget.budgetId }}</td>
           <td>{{ budget.budgetName }}</td>
-          <td>{{ budget.totalPrice }}</td>
+          <td>{{ fixDigitsAfterDecimal(budget.totalPrice) }}</td>
           <td>{{ budget.budgetStatus }}</td>
           <td>
             <button
@@ -128,7 +128,7 @@
 
     <form
       #inputForm="ngForm"
-      (ngSubmit)="onSubmit(); !!formSubmitted ? inputForm.reset() : ''"
+      (ngSubmit)="onSubmit($event, inputForm)"
       class="form"
       name="budgetForm"
     >
@@ -251,16 +251,52 @@
                 <tbody>
                   <tr *ngFor="let product of products; let i = index">
                     <td>
-                      <span class="mr-2">
+                      <span
+                        class="mr-2"
+                        *ngIf="
+                          product.productQuantity > 0 &&
+                          product.addedToBudgetCart
+                        "
+                      >
                         <input
                           type="checkbox"
                           class="checkbox"
                           [value]="product"
                           min="1"
-                          [checked]="
-                            product.productQuantity > 0
-                          "
+                          [checked]="true"
                           (change)="
+                            onBudgetCreationProductCartChange(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                        />
+                      </span>
+
+                      <span
+                        class="mr-2 unchecked"
+                        *ngIf="
+                          !(
+                            product.productQuantity > 0 &&
+                            product.addedToBudgetCart
+                          )
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="false"
+                          (change)="
+                            onBudgetCreationProductCartChange(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                          (click)="
                             onBudgetCreationProductCartChange(
                               i,
                               product,
@@ -272,14 +308,14 @@
                     </td>
                     <td>{{ product.productId }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
+                    <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
                     <td>
                       {{ product.quantityInStock }}
                     </td>
                     <td class="extra_wide_td">
                       <button
                         class="btn btn-sm btn-dark"
-                        (click)="changeProductQuanity(product, 'sub')"
+                        (click)="onBudgetCreationChangeProductQuanity(product, 'sub')"
                         [disabled]="product.productQuantity < 1"
                       >
                         -
@@ -290,7 +326,7 @@
                       >
                       <button
                         class="btn btn-sm btn-success"
-                        (click)="changeProductQuanity(product, 'add')"
+                        (click)="onBudgetCreationChangeProductQuanity(product, 'add')"
                         [disabled]="product.quantityInStock <= 0"
                       >
                         +
@@ -439,7 +475,8 @@
     <form
       #editForm="ngForm"
       (ngSubmit)="
-        onUpdateBudget(updatedBudget); formSubmitted ? editForm.reset() : ''
+        onUpdateBudget(updatedBudget, $event);
+        formSubmitted ? editForm.reset() : ''
       "
       class="form"
       name="budgetForm"
@@ -464,6 +501,7 @@
           name="customer"
           id="customer"
           [(ngModel)]="updatedBudget.customer"
+          (ngModelChange)="isNewCustomerSelected(updatedBudget.customer)"
         >
           <option disabled selected [ngValue]="updatedBudget.customer">
             {{ updatedBudget.customer?.customerId }} -
@@ -477,6 +515,21 @@
           </option>
         </select>
       </div>
+
+      <ng-container *ngIf="showNewCustomerForm">
+        <div class="form-group">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input
+            required
+            id="customerName"
+            type="text"
+            name="customerName"
+            placeholder="enter customer name"
+            [(ngModel)]="customer.name"
+            class="form-control"
+          />
+        </div>
+      </ng-container>
 
       <div class="form-group">
         <label for="budgetStatus">Budget Status</label>
@@ -560,17 +613,52 @@
                     "
                   >
                     <td>
-                      <span class="mr-2">
+                      <span
+                        class="mr-2"
+                        *ngIf="
+                          product.productQuantity > 0 &&
+                          product.addedToBudgetCart
+                        "
+                      >
                         <input
                           type="checkbox"
                           class="checkbox"
                           [value]="product"
                           min="1"
-                          [checked]="
-                          
-                            product.productQuantity > 0
-                          "
+                          [checked]="true"
                           (change)="
+                            onBudgetUpdationProductCartChanged(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                        />
+                      </span>
+
+                      <span
+                        class="mr-2 unchecked"
+                        *ngIf="
+                          !(
+                            product.productQuantity > 0 &&
+                            product.addedToBudgetCart
+                          )
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          class="checkbox"
+                          [value]="product"
+                          min="1"
+                          [checked]="false"
+                          (change)="
+                            onBudgetUpdationProductCartChanged(
+                              i,
+                              product,
+                              $event
+                            )
+                          "
+                          (click)="
                             onBudgetUpdationProductCartChanged(
                               i,
                               product,
@@ -582,7 +670,7 @@
                     </td>
                     <td>{{ product.productId }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
+                    <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
                     <td>
                       {{ product.quantityInStock }}
                     </td>
@@ -590,9 +678,9 @@
                       <button
                         class="btn btn-sm btn-dark"
                         (click)="
-                          onBudgetUpdationchangeProductQuanity(product, 'sub')
+                          onBudgetUpdationChangeProductQuanity(product, 'sub')
                         "
-                        [disabled]="product.productQuantity < 1 "
+                        [disabled]="product.productQuantity < 1"
                       >
                         -
                       </button>
@@ -603,7 +691,7 @@
                       <button
                         class="btn btn-sm btn-success"
                         (click)="
-                          onBudgetUpdationchangeProductQuanity(product, 'add')
+                          onBudgetUpdationChangeProductQuanity(product, 'add')
                         "
                         [disabled]="product.quantityInStock <= 0"
                       >
@@ -670,7 +758,7 @@
           *ngIf="!processingNetworkRequest"
           class="btn btn-outline-success"
           type="submit"
-          (click)="this.createNewProductModal.close()"
+          (click)="this.createNewProductModal?.close()"
         >
           Save
         </button>
@@ -693,7 +781,6 @@
           (click)="
             onClickToggleEditBudgetForm();
             this.updatedBudgetProducts = [];
-            editForm.reset();
             this.createNewProductModal.close()
           "
           [disabled]="processingNetworkRequest"

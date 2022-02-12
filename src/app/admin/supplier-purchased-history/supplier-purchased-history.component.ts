@@ -163,8 +163,10 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
       });
   }
   onUpdateSupplierPurchasedHistory(
-    updatedSupplierPurchasedHistory: SupplierPurchasedHistory
+    updatedSupplierPurchasedHistory: SupplierPurchasedHistory,
+    event: any
   ) {
+    event.preventDefault();
     this.errorMessage = '';
     console.log('update', updatedSupplierPurchasedHistory);
     console.log(
