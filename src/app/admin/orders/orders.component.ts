@@ -288,18 +288,21 @@ export class OrdersComponent implements OnInit {
     } else {
       this.updatedOrder.productList = this.updatedOrderProducts;
 
+      if (this.showNewCustomerForm) {
+        this.updatedOrder.customer = { ...this.customer };
+      }
       this.modalService.dismissAll();
 
       this.processingNetworkRequest = true;
       this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
-               this.orders = this.orders.map((order: Order) => {
-                 if (order.orderId == updatedOrder.orderId) {
-                   order = updatedOrder;
-                 }
-                 return order;
-               });
+            this.orders = this.orders.map((order: Order) => {
+              if (order.orderId == updatedOrder.orderId) {
+                order = updatedOrder;
+              }
+              return order;
+            });
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);
@@ -319,6 +322,15 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+  isNewCustomerSelected(customer: any) {
+    console.log('isNewCustomer', customer);
+
+    if (customer == 'newCustomer') {
+      this.showNewCustomerForm = true;
+    } else this.showNewCustomerForm = false;
+
+    return customer;
+  }
   pushOrder(order: Order) {
     this.orders = [...this.orders, order];
     console.log('orderes ', this.orders);

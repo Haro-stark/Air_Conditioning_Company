@@ -200,11 +200,14 @@
           name="customer"
           id="customer"
           [(ngModel)]="updatedOrder.customer"
+          (ngModelChange)="isNewCustomerSelected(updatedOrder.customer)"
         >
           <option disabled selected [ngValue]="updatedOrder.customer">
             {{ updatedOrder.customer?.customerId }} -
             {{ updatedOrder.customer?.name }}
           </option>
+          <option selected ngValue="newCustomer">New customer</option>
+
           <option
             *ngFor="let customer of customers | filterCustomer"
             [ngValue]="customer"
@@ -213,21 +216,8 @@
           </option>
         </select>
       </div>
-      <div class="form-group">
-        <label for="empPrice">empPrice</label>
-        <input
-          required
-          id="empPrice"
-          type="number"
-          min="0"
-          name="empPrice"
-          placeholder="enter emp wage"
-          [(ngModel)]="updatedOrder.empPrice"
-          class="form-control"
-        />
-      </div>
 
-      <ng-container *ngIf="showNewCustomerForm">
+       <ng-container *ngIf="showNewCustomerForm">
         <div class="form-group">
           <label for="customerName" class="form-label">Customer Name</label>
           <input
@@ -243,200 +233,35 @@
       </ng-container>
 
 
-         <div class="form-group">
-        <label for="services">Services</label>
-        <select
-          class="form-select form-control"
-          name="services"
-          id="services"
-          [(ngModel)]="updatedOrder.service"
-          [multiple]="true"
-          (ngModelChange)="isInstallationSelected(updatedOrder.service)"
-        >
-          <option
-            *ngFor="let service of services; let i = index"
-            [ngValue]="service"
-             ng-selected="checkSelectedServices(service)"
-          >
-            {{ service.type }}
-          </option>
-        </select>
+      <div class="form-group">
+        <label for="empPrice">empPrice</label>
+        <input
+          required
+          id="empPrice"
+          type="number"
+          min="0"
+          name="empPrice"
+          placeholder="enter emp wage"
+          [(ngModel)]="updatedOrder.empPrice"
+          class="form-control"
+        />
       </div>
 
-      <div class="installation Products" *ngIf="showProductsButton">
-        <button
-          class="btn btn-primary mb-3 mt-3"
-          (click)="showProductsCart = true; openCreateAddProductModal(content)"
-          type="button"
-          [disabled]="processingNetworkRequest"
-        >
-          Show Product Cart
-        </button>
-        <div class="modal-container">
-          <ng-template #content let-c="close" let-d="dismiss">
-            <div class="modal-custom">
-              <div class="modal-header">
-                <h4 class="modal-title" id="modal-basic-title">
-                  Add Orders products
-                </h4>
-                <button
-                  type="button"
-                  class="close"
-                  aria-label="Close"
-                  (click)="d('Cross click')"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="card-header">Products Cart</div>
-
-                <table
-                  class="table table-hover align-middle mx-auto w-auto table-sm"
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">Select Product</th>
-                      <th scope="col">Product Id</th>
-                      <th scope="col">Product Name</th>
-                      <th scope="col">Product Price</th>
-                      <th scope="col">Quantity In Stock</th>
-                      <th scope="col">Buy Quantity</th>
-                      <th scope="col">Total price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      *ngFor="
-                        let product of updatedOrder.productList;
-                        let i = index
-                      "
-                    >
-                      <td>
-                        <span
-                          class="mr-2"
-                          *ngIf="
-                            product.productQuantity > 0 &&
-                            product.addedToBudgetCart
-                          "
-                        >
-                          <input
-                            type="checkbox"
-                            class="checkbox"
-                            [value]="product"
-                            min="1"
-                            [checked]="true"
-                            (change)="
-                              onOrderUpdationProductCartChanged(
-                                i,
-                                product,
-                                $event
-                              )
-                            "
-                          />
-                        </span>
-
-                        <span
-                          class="mr-2 unchecked"
-                          *ngIf="
-                            !(
-                              product.productQuantity > 0 &&
-                              product.addedToBudgetCart
-                            )
-                          "
-                        >
-                          <input
-                            type="checkbox"
-                            class="checkbox"
-                            [value]="product"
-                            min="1"
-                            [checked]="false"
-                            (change)="
-                              onOrderUpdationProductCartChanged(
-                                i,
-                                product,
-                                $event
-                              )
-                            "
-                            (click)="
-                              onOrderUpdationProductCartChanged(
-                                i,
-                                product,
-                                $event
-                              )
-                            "
-                          />
-                        </span>
-                      </td>
-                      <td>{{ product.productId }}</td>
-                      <td>{{ product.name }}</td>
-                      <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
-                      <td>
-                        {{ product.quantityInStock }}
-                      </td>
-                      <td class="extra_wide_td">
-                        <button
-                          class="btn btn-sm btn-dark"
-                          (click)="
-                            onOrderUpdationChangeProductQuanity(product, 'sub')
-                          "
-                          [disabled]="product.productQuantity < 1"
-                        >
-                          -
-                        </button>
-
-                        <span class="ml-2 mr-2">
-                          {{ product.productQuantity }}</span
-                        >
-                        <button
-                          class="btn btn-sm btn-success"
-                          (click)="
-                            onOrderUpdationChangeProductQuanity(product, 'add')
-                          "
-                          [disabled]="product.quantityInStock <= 0"
-                        >
-                          +
-                        </button>
-                      </td>
-                      <td>
-                        {{
-                          fixDigitsAfterDecimal(
-                            product.productQuantity * product.price
-                          )
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="modal-footer d-flex justify-content-around">
-                <span>
-                  <span class="badge badge-info"> products in Cart </span> =
-                  {{ this.updatedOrderProducts.length }}</span
-                >
-
-                <button
-                  class="btn btn-outline-dark"
-                  id="closeModal"
-                  data-dismiss="modal"
-                  type="button"
-                  (click)="this.createNewProductModal.close()"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </ng-template>
-        </div>
-      </div>
-
-   
+     
+      <button
+        class="btn btn-primary mb-3 mt-3"
+        (click)="showProductsCart = true; openCreateAddProductModal(content)"
+        type="button"
+        [disabled]="processingNetworkRequest"
+      >
+        Show Product Cart
+      </button>
       <div class="modal-container">
         <ng-template #content let-c="close" let-d="dismiss">
           <div class="modal-custom">
             <div class="modal-header">
               <h4 class="modal-title" id="modal-basic-title">
-                Add Order products
+                Add budgets products
               </h4>
               <button
                 type="button"
