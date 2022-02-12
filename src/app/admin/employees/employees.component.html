@@ -1,5 +1,9 @@
 <div class="d-flex justify-content-around">
-<span> Officer Hour price : <span style="padding:2px 5px; border:2px solid #000; ">$20</span> </span>  <span> Assistant Hour price : <span style="padding:2px 5px; border:2px solid #000; ">$15</span> </span>
+<span> Officer Hour price : <span style="padding:2px 5px; border:2px solid #000; ">${{
+        wageHoursPrice?.officerHours ? wageHoursPrice.officerHours : "20"
+      }}</span> </span>  <span> Assistant Hour price : <span style="padding:2px 5px; border:2px solid #000; ">${{
+        wageHoursPrice?.assistantHours ? wageHoursPrice.assistantHours : "15"
+      }}</span> </span>
 </div>
 
 <div

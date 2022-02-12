@@ -7,7 +7,6 @@ import {
   faCheck,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
-import { Product } from 'src/app/models/Product';
 import { Supplier } from 'src/app/models/Supplier';
 import { SupplierProducts } from 'src/app/models/SupplierProducts';
 import { HttpService } from 'src/app/services/http.service';
@@ -216,7 +215,7 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
-  buyProduct(productId: any) {
+  buyProduct(productId: any, supplier: Supplier) {
     let quantityToBuy: any = prompt('Enter a Value');
     let quantity!: number;
     console.log('quantity', quantityToBuy, productId);
@@ -232,6 +231,7 @@ export class SuppliersComponent implements OnInit {
           next: (response: any) => {
             if (response.status === 200) {
               this.showApiSuccessResponse(response.message);
+              supplier = response.data;
             } else this.showApiErrorResponse(response.message);
             this.processingNetworkRequest = false;
           },
@@ -276,13 +276,19 @@ export class SuppliersComponent implements OnInit {
         .addSupplierProducts(this.addSupplierProduct, this.supplierId)
         .subscribe({
           next: (response: any) => {
+            console.log('suppliers ...d', ...this.suppliers);
+
             if (response.status === 200) {
-              this.showApiSuccessResponse(response.message);
-              this.suppliers.map((value) => {
-                if (value.supplierId === this.supplierId)
-                  value.supplierProducts.push({ ...this.addSupplierProduct });
+              let index = this.suppliers.findIndex(
+                (supplier: Supplier) => this.supplierId === supplier.supplierId
+              );
+
+              this.suppliers[index].supplierProducts.push({
+                ...this.addSupplierProduct,
               });
-              this.formSubmitted = true;
+              console.log('suppliers updated', this.suppliers);
+              this.showApiSuccessResponse(response.message);
+
               this.showAddSupplierProductForm = false;
               form.resetForm();
             } else {
@@ -293,9 +299,11 @@ export class SuppliersComponent implements OnInit {
             this.showApiErrorResponse();
           },
         });
+
+      console.log();
     }
   }
-  updateSupplierProducts(event: any) {
+  updateSupplierProducts(event: any, form: NgForm) {
     event.preventDefault();
     this.errorMessage = '';
     console.log(
@@ -318,18 +326,22 @@ export class SuppliersComponent implements OnInit {
         .subscribe({
           next: (response: any) => {
             if (response.status === 200) {
+              /*      this.suppliers.map((supplier: Supplier) => {
+                if (supplier.supplierId == this.supplierId) {
+                  supplier.supplierProducts
+                }
+              }) */
+
               this.showApiSuccessResponse(response.message);
+              this.showEditSupplierForm = false;
+              this.processingNetworkRequest = false;
+              form.resetForm();
             } else {
               this.showApiErrorResponse(response.message);
             }
           },
           error: (error: any) => {
             this.showApiErrorResponse();
-          },
-          complete: () => {
-            this.showEditSupplierForm = false;
-            this.formSubmitted = true;
-            this.processingNetworkRequest = false;
           },
         });
     }
@@ -386,7 +398,7 @@ export class SuppliersComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

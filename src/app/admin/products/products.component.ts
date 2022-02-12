@@ -173,7 +173,6 @@ export class ProductsComponent implements OnInit {
     event.preventDefault();
     this.errorMessage = '';
     console.log('update', updatedProduct);
-    console.log('customer is ', updatedProduct.name);
 
     if (
       !this.updatedProduct.name ||
@@ -189,6 +188,12 @@ export class ProductsComponent implements OnInit {
       this.HttpProductService.updateProduct(updatedProduct).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
+            this.products = this.products.map((product: Product) => {
+              if (product.productId == updatedProduct.productId) {
+                product = updatedProduct;
+              }
+              return product;
+            });
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);
@@ -212,7 +217,8 @@ export class ProductsComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
+
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

@@ -137,7 +137,7 @@
             <td>
               <button
                 class="btn btn-primary btn-sm"
-                (click)="buyProduct(product.productId)"
+                (click)="buyProduct(product.productId,supplier)"
                 [disabled]="processingNetworkRequest"
               >
                 Buy
@@ -585,8 +585,8 @@
     <form
       #addSupplierProductForm="ngForm"
       (ngSubmit)="
-        updateSupplierProducts($event);
-        formSubmitted ? addSupplierProductForm.reset() : ''
+        updateSupplierProducts($event ,addSupplierProductForm);
+        
       "
       class="form"
     >

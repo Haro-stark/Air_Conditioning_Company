@@ -52,73 +52,11 @@ export class EmployeesComponent implements OnInit {
   processingNetworkRequest: Boolean = false;
   loading: boolean = false;
   employees: Employee[] = [
-    // {
-    //   employeeId: 1,
-    //   type: 'emp',
-    //   username: 'fawad',
-    //   email: '',
-    //   password: '12312',
-    //   priceTime: 69,
-    //   workLogList: [
-    //     {
-    //       workLogId: 1,
-    //       date: new Date(),
-    //       numberOfHours: 5,
-    //       order: {
-    //         orderId: 1,
-    //         type: ['abc'],
-    //         name: 'abc',
-    //         status: 'accepted',
-    //         productList: [],
-    //         customer: { customerId: 112, name: 'cus1' },
-    //       },
-    //     },
-    //     {
-    //       workLogId: 2,
-    //       date: new Date(),
-    //       numberOfHours: 3,
-    //       order: {
-    //         orderId: 3,
-    //         type: ['abc'],
-    //         name: 'abc',
-    //         status: 'accepted',
-    //         productList: [],
-    //         customer: { customerId: 112, name: 'cus1' },
-    //       },
-    //     },
-    //     {
-    //       workLogId: 3,
-    //       date: new Date(),
-    //       numberOfHours: 4,
-    //       order: {
-    //         orderId: 1,
-    //         type: ['abc'],
-    //         name: 'abc',
-    //         status: 'accepted',
-    //         customer: { customerId: 112, name: 'cus1' },
-    //       },
-    //     },
-    //   ],
-    // },
-    // {
-    //   employeeId: 1,
-    //   type: 'asd',
-    //   username: 'zxc',
-    //   email: '',
-    //   password: '2q',
-    //   priceTime: 69,
-    //   workLogList: [],
-    // },
-    // {
-    //   employeeId: 1,
-    //   type: 'asd',
-    //   username: '2wre',
-    //   email: '',
-    //   password: 'gbf',
-    //   priceTime: 69,
-    //   workLogList: [],
-    // },
+   
   ];
+  ht: any;
+  wageHoursPrice: any;
+  newWageHoursPrice: any;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -145,6 +83,21 @@ export class EmployeesComponent implements OnInit {
         this.showApiErrorResponse();
       },
     });
+       this.httpEmployeeService.getWageHoursPrice().subscribe({
+         next: (response: any) => {
+           if (response.data && response.status === 200) {
+             console.log(response);
+             this.wageHoursPrice = response.data;
+             this.newWageHoursPrice = response.data;
+           } else {
+             this.showApiErrorResponse(response.message);
+           }
+           this.loading = false;
+         },
+         error: (error: any) => {
+           this.showApiErrorResponse();
+         },
+       });
   }
 
   onSubmit(event: any, form: NgForm) {
@@ -287,6 +240,12 @@ export class EmployeesComponent implements OnInit {
       this.httpEmployeeService.updateEmployee(updateEmployee).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
+            this.employees = this.employees.map((employee: Employee) => {
+              if (employee.employeeId == updatedEmployee.employeeId) {
+                employee = updatedEmployee;
+              }
+              return employee;
+            });
             this.showApiSuccessResponse(response.message);
             this.showEditEmployeeForm = false;
             this.formSubmitted = true;
@@ -323,7 +282,7 @@ export class EmployeesComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! Server is not  please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

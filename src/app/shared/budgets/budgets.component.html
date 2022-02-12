@@ -315,7 +315,9 @@
                     <td class="extra_wide_td">
                       <button
                         class="btn btn-sm btn-dark"
-                        (click)="onBudgetCreationChangeProductQuanity(product, 'sub')"
+                        (click)="
+                          onBudgetCreationChangeProductQuanity(product, 'sub')
+                        "
                         [disabled]="product.productQuantity < 1"
                       >
                         -
@@ -326,7 +328,9 @@
                       >
                       <button
                         class="btn btn-sm btn-success"
-                        (click)="onBudgetCreationChangeProductQuanity(product, 'add')"
+                        (click)="
+                          onBudgetCreationChangeProductQuanity(product, 'add')
+                        "
                         [disabled]="product.quantityInStock <= 0"
                       >
                         +
@@ -566,197 +570,214 @@
         </div>
       </ng-container>
 
-      <button
-        class="btn btn-primary mb-3 mt-3"
-        (click)="showProductsCart = true; openCreateAddProductModal(content)"
-        type="button"
-        [disabled]="processingNetworkRequest"
-      >
-        Show Product Cart
-      </button>
-      <div class="modal-container">
-        <ng-template #content let-c="close" let-d="dismiss">
-          <div class="modal-custom">
-            <div class="modal-header">
-              <h4 class="modal-title" id="modal-basic-title">
-                Add budgets products
-              </h4>
-              <button
-                type="button"
-                class="close"
-                aria-label="Close"
-                (click)="d('Cross click')"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="card-header">Products Cart</div>
+         <div class="form-group">
+        <label for="services">Services</label>
+        <select
+          class="form-select form-control"
+          name="services"
+          id="services"
+          [(ngModel)]="updatedBudget.service"
+          [multiple]="true"
+          (ngModelChange)="isInstallationSelected(updatedBudget.service)"
+        >
+          <option *ngFor="let service of services" [ngValue]="service">
+            {{ service.type }}
+          </option>
+        </select>
+      </div>
 
-              <table
-                class="table table-hover align-middle mx-auto w-auto table-sm"
-              >
-                <thead>
-                  <tr>
-                    <th scope="col">Select Product</th>
-                    <th scope="col">Product Id</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Product Price</th>
-                    <th scope="col">Quantity In Stock</th>
-                    <th scope="col">Buy Quantity</th>
-                    <th scope="col">Total price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
-                      let product of updatedBudget.productList;
-                      let i = index
-                    "
-                  >
-                    <td>
-                      <span
-                        class="mr-2"
-                        *ngIf="
-                          product.productQuantity > 0 &&
-                          product.addedToBudgetCart
-                        "
-                      >
-                        <input
-                          type="checkbox"
-                          class="checkbox"
-                          [value]="product"
-                          min="1"
-                          [checked]="true"
-                          (change)="
-                            onBudgetUpdationProductCartChanged(
-                              i,
-                              product,
-                              $event
-                            )
-                          "
-                        />
-                      </span>
+      <div class="installation Products" *ngIf="showProductsButton">
+        <button
+          class="btn btn-primary mb-3 mt-3"
+          (click)="showProductsCart = true; openCreateAddProductModal(content)"
+          type="button"
+          [disabled]="processingNetworkRequest"
+        >
+          Show Product Cart
+        </button>
+        <div class="modal-container">
+          <ng-template #content let-c="close" let-d="dismiss">
+            <div class="modal-custom">
+              <div class="modal-header">
+                <h4 class="modal-title" id="modal-basic-title">
+                  Add budgets products
+                </h4>
+                <button
+                  type="button"
+                  class="close"
+                  aria-label="Close"
+                  (click)="d('Cross click')"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="card-header">Products Cart</div>
 
-                      <span
-                        class="mr-2 unchecked"
-                        *ngIf="
-                          !(
+                <table
+                  class="table table-hover align-middle mx-auto w-auto table-sm"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Select Product</th>
+                      <th scope="col">Product Id</th>
+                      <th scope="col">Product Name</th>
+                      <th scope="col">Product Price</th>
+                      <th scope="col">Quantity In Stock</th>
+                      <th scope="col">Buy Quantity</th>
+                      <th scope="col">Total price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="
+                        let product of updatedBudget.productList;
+                        let i = index
+                      "
+                    >
+                      <td>
+                        <span
+                          class="mr-2"
+                          *ngIf="
                             product.productQuantity > 0 &&
                             product.addedToBudgetCart
-                          )
-                        "
-                      >
-                        <input
-                          type="checkbox"
-                          class="checkbox"
-                          [value]="product"
-                          min="1"
-                          [checked]="false"
-                          (change)="
-                            onBudgetUpdationProductCartChanged(
-                              i,
-                              product,
-                              $event
+                          "
+                        >
+                          <input
+                            type="checkbox"
+                            class="checkbox"
+                            [value]="product"
+                            min="1"
+                            [checked]="true"
+                            (change)="
+                              onBudgetUpdationProductCartChanged(
+                                i,
+                                product,
+                                $event
+                              )
+                            "
+                          />
+                        </span>
+
+                        <span
+                          class="mr-2 unchecked"
+                          *ngIf="
+                            !(
+                              product.productQuantity > 0 &&
+                              product.addedToBudgetCart
                             )
                           "
+                        >
+                          <input
+                            type="checkbox"
+                            class="checkbox"
+                            [value]="product"
+                            min="1"
+                            [checked]="false"
+                            (change)="
+                              onBudgetUpdationProductCartChanged(
+                                i,
+                                product,
+                                $event
+                              )
+                            "
+                            (click)="
+                              onBudgetUpdationProductCartChanged(
+                                i,
+                                product,
+                                $event
+                              )
+                            "
+                          />
+                        </span>
+                      </td>
+                      <td>{{ product.productId }}</td>
+                      <td>{{ product.name }}</td>
+                      <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
+                      <td>
+                        {{ product.quantityInStock }}
+                      </td>
+                      <td class="extra_wide_td">
+                        <button
+                          class="btn btn-sm btn-dark"
                           (click)="
-                            onBudgetUpdationProductCartChanged(
-                              i,
-                              product,
-                              $event
-                            )
+                            onBudgetUpdationChangeProductQuanity(product, 'sub')
                           "
-                        />
-                      </span>
-                    </td>
-                    <td>{{ product.productId }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
-                    <td>
-                      {{ product.quantityInStock }}
-                    </td>
-                    <td class="extra_wide_td">
-                      <button
-                        class="btn btn-sm btn-dark"
-                        (click)="
-                          onBudgetUpdationChangeProductQuanity(product, 'sub')
-                        "
-                        [disabled]="product.productQuantity < 1"
-                      >
-                        -
-                      </button>
+                          [disabled]="product.productQuantity < 1"
+                        >
+                          -
+                        </button>
 
-                      <span class="ml-2 mr-2">
-                        {{ product.productQuantity }}</span
-                      >
-                      <button
-                        class="btn btn-sm btn-success"
-                        (click)="
-                          onBudgetUpdationChangeProductQuanity(product, 'add')
-                        "
-                        [disabled]="product.quantityInStock <= 0"
-                      >
-                        +
-                      </button>
-                    </td>
-                    <td>
-                      {{
-                        fixDigitsAfterDecimal(
-                          product.productQuantity * product.price
-                        )
-                      }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                        <span class="ml-2 mr-2">
+                          {{ product.productQuantity }}</span
+                        >
+                        <button
+                          class="btn btn-sm btn-success"
+                          (click)="
+                            onBudgetUpdationChangeProductQuanity(product, 'add')
+                          "
+                          [disabled]="product.quantityInStock <= 0"
+                        >
+                          +
+                        </button>
+                      </td>
+                      <td>
+                        {{
+                          fixDigitsAfterDecimal(
+                            product.productQuantity * product.price
+                          )
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer d-flex justify-content-around">
+                <span>
+                  <span class="badge badge-info"> products in Cart </span> =
+                  {{ this.updatedBudgetProducts.length }}</span
+                >
+
+                <button
+                  class="btn btn-outline-dark"
+                  id="closeModal"
+                  data-dismiss="modal"
+                  type="button"
+                  (click)="this.createNewProductModal.close()"
+                >
+                  Save
+                </button>
+              </div>
             </div>
-            <div class="modal-footer d-flex justify-content-around">
-              <span>
-                <span class="badge badge-info"> products in Cart </span> =
-                {{ this.updatedBudgetProducts.length }}</span
-              >
-
-              <button
-                class="btn btn-outline-dark"
-                id="closeModal"
-                data-dismiss="modal"
-                type="button"
-                (click)="this.createNewProductModal.close()"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </ng-template>
+          </ng-template>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="officerHours" class="form-label">Officer Hours</label>
-        <input
-          required
-          id="officerHours"
-          type="number"
-          min="0"
-          name="officerHours"
-          [(ngModel)]="updatedBudget.officerHours"
-          class="form-control"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="assistantHours" class="form-label">Assistant Hours</label>
-        <input
-          required
-          id="assistantHours"
-          type="number"
-          min="0"
-          name="assistantHours"
-          [(ngModel)]="updatedBudget.assistantHours"
-          class="form-control"
-        />
-      </div>
-
+      <ng-container *ngIf="showHoursInput">
+        <div class="form-group">
+          <label for="officerHours" class="form-label">Officer Hours</label>
+          <input
+            required
+            id="officerHours"
+            type="number"
+            min="0"
+            name="officerHours"
+            [(ngModel)]="updatedBudget.officerHours"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label for="assistantHours" class="form-label">Assistant Hours</label>
+          <input
+            required
+            id="assistantHours"
+            type="number"
+            min="0"
+            name="assistantHours"
+            [(ngModel)]="updatedBudget.assistantHours"
+            class="form-control"
+          />
+        </div>
+      </ng-container>
       <span class="d-flex">
         <button
           *ngIf="!processingNetworkRequest"
@@ -783,7 +804,7 @@
           class="btn btn-danger ml-auto"
           type="button"
           (click)="
-            onClickToggleEditBudgetForm();
+            onClickToggleEditBudgetForm(updatedBudget);
             this.updatedBudgetProducts = [];
             this.createNewProductModal.close()
           "

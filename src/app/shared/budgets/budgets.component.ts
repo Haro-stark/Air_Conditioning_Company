@@ -282,13 +282,16 @@ export class BudgetsComponent implements OnInit {
 
     console.log('form submit ', this.formSubmitted);
   }
-  onClickToggleEditBudgetForm() {
+  onClickToggleEditBudgetForm(updatedBudget: any) {
     setTimeout(() => {
       this.errorMessage = '';
       this.showProductsButton = false;
       this.showProductsCart = false;
+      if (this.showEditBudgetForm == true) {
+      console.log('cancel budget ',updatedBudget);
+      }
       this.showEditBudgetForm = !this.showEditBudgetForm;
-      this.updatedBudgetProducts = [];
+      console.log(this.budgets);
       this.cd.markForCheck();
     }, 200);
   }
@@ -301,7 +304,7 @@ export class BudgetsComponent implements OnInit {
       ...budget.productList.filter((product) => product.productQuantity > 0),
     ];
     this.updatedBudget.productList.map(
-      (product: Product) => (product.addedToBudgetCart = true)
+      (product: Product) => (product.addedToBudgetCart = true )
     );
     this.updatedBudgetProducts = [...this.updatedBudget.productList];
     this.productsId = [
@@ -309,14 +312,6 @@ export class BudgetsComponent implements OnInit {
     ];
     console.log('product in stock ids', this.productsId);
     this.products.forEach((element, index) => {
-      console.log(
-        'index',
-        index,
-        'bp',
-        this.updatedBudget.productList[index]?.productId,
-        'compare ',
-        element.productId
-      );
       if (this.productsId.indexOf(element.productId) === -1) {
         this.updatedBudget.productList.push({ ...element });
       }
@@ -459,7 +454,7 @@ export class BudgetsComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

@@ -23,12 +23,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     console.log(this.isUserEmailLoggedIn);
     this.authService.user$.subscribe((userData) => {
-      console.log(userData);
       if (userData) {
         this.SigningIn = false;
         this.isUserEmailLoggedIn = true;
         this.router.navigate([`/${userData.role}`]);
-        console.log('user data = ', userData);
       } else this.isUserEmailLoggedIn = false;
     });
   }
@@ -61,12 +59,10 @@ export class LoginComponent implements OnInit {
             if (userData) {
               this.SigningIn = false;
               this.isUserEmailLoggedIn = true;
-              console.log('user data = ', userData);
               if (userData.role == 'admin') {
                 this.router.navigate([`/admin/employees`]);
               } else {
                 this.router.navigate([`/${userData.role}`]);
-                console.log('user = ', userData);
               }
             }
           });

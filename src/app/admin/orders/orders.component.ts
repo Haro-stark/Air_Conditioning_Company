@@ -294,6 +294,12 @@ export class OrdersComponent implements OnInit {
       this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
+               this.orders = this.orders.map((order: Order) => {
+                 if (order.orderId == updatedOrder.orderId) {
+                   order = updatedOrder;
+                 }
+                 return order;
+               });
             this.showApiSuccessResponse(response.message);
           } else {
             this.showApiErrorResponse(response.message);
@@ -325,7 +331,7 @@ export class OrdersComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;

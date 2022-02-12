@@ -247,7 +247,7 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
       this.apiErrorResponse = message;
     } else {
       this.apiErrorResponse =
-        'Error! please check your internet connection and try again';
+        'Error! an error has occurred please try again later';
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;
