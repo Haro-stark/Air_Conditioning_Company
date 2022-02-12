@@ -78,34 +78,10 @@ export class BudgetsComponent implements OnInit {
       service: [],
     }, */
   ];
-  products: Product[] = [
-    /*   {
-      productId: 0,
-      name: 'asdsa',
-      characteristics: 'gh',
-      price: 0,
-      quantityInStock: 0,
-      tax: 0,
-    },
-    {
-      productId: 1,
-      name: 'czxfzx',
-      characteristics: 'gh',
-      price: 0,
-      quantityInStock: 0,
-      tax: 0,
-    },
-    {
-      productId: 1,
-      name: 'wqetrth',
-      characteristics: 'gh',
-      price: 0,
-      quantityInStock: 0,
-      tax: 0,
-    }, */
-  ];
+  products: Product[] = [];
   newBudgetProducts: Product[] = [];
   updatedBudgetProducts: Product[] = [];
+  resetToIntialBudgetProducts: Product[] = [];
   customers: Customer[] = [];
   services: Services[] = [];
   productsId!: any[];
@@ -283,12 +259,19 @@ export class BudgetsComponent implements OnInit {
     console.log('form submit ', this.formSubmitted);
   }
   onClickToggleEditBudgetForm(updatedBudget: any) {
+    console.log('intial ', this.resetToIntialBudgetProducts);
     setTimeout(() => {
       this.errorMessage = '';
       this.showProductsButton = false;
       this.showProductsCart = false;
       if (this.showEditBudgetForm == true) {
-      console.log('cancel budget ',updatedBudget);
+        console.log('cancel budget ', updatedBudget);
+        this.budgets = this.budgets.map((budget: Budget) => {
+          if (budget.budgetId == this.updatedBudget.budgetId) {
+            budget.productList = [...this.resetToIntialBudgetProducts];
+          }
+          return budget;
+        });
       }
       this.showEditBudgetForm = !this.showEditBudgetForm;
       console.log(this.budgets);
@@ -300,11 +283,14 @@ export class BudgetsComponent implements OnInit {
     console.log('products to be edited', budget.productList);
 
     this.updatedBudget = { ...budget };
+    this.resetToIntialBudgetProducts = JSON.parse(
+      JSON.stringify(budget.productList)
+    );
     this.updatedBudget.productList = [
       ...budget.productList.filter((product) => product.productQuantity > 0),
     ];
     this.updatedBudget.productList.map(
-      (product: Product) => (product.addedToBudgetCart = true )
+      (product: Product) => (product.addedToBudgetCart = true)
     );
     this.updatedBudgetProducts = [...this.updatedBudget.productList];
     this.productsId = [
@@ -391,13 +377,18 @@ export class BudgetsComponent implements OnInit {
       console.log('added products to budget');
       this.updatedBudget.productList = [...this.updatedBudgetProducts];
 
+      if (!this.showProductsButton) {
+        this.updatedBudget.productList = [];
+      }
+   
+
       this.modalService.dismissAll();
 
       this.processingNetworkRequest = true;
       console.log(this.processingNetworkRequest, 'network request');
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
-          if (response.data && response.status === 200) {
+          if (response.status === 200) {
             this.budgets = this.budgets.filter(
               (budget: Budget) => budget.budgetId != updatedBudget.budgetId
             );

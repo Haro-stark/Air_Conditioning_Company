@@ -111,11 +111,15 @@ export class SuppliersComponent implements OnInit {
     } else {
       this.errorMessage = '';
       this.processingNetworkRequest = true;
-      let addNewSupplier = JSON.parse(JSON.stringify(this.newSupplier));
+      let addNewSupplier: Supplier = JSON.parse(
+        JSON.stringify(this.newSupplier)
+      );
       this.httpSupplierService.addSupplier(addNewSupplier).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
             addNewSupplier.supplierId = response.data.supplierId;
+            addNewSupplier.supplierProducts[0].productId =
+              response.data.supplierProducts[0].productId;
             this.suppliers.push(addNewSupplier);
             console.log(response, addNewSupplier);
             this.showApiSuccessResponse(response.message);
@@ -283,6 +287,7 @@ export class SuppliersComponent implements OnInit {
                 (supplier: Supplier) => this.supplierId === supplier.supplierId
               );
 
+              this.addSupplierProduct.productId = response.data.productId;
               this.suppliers[index].supplierProducts.push({
                 ...this.addSupplierProduct,
               });
@@ -410,6 +415,9 @@ export class SuppliersComponent implements OnInit {
 
   showApiSuccessResponse(message: string) {
     this.apiSuccessResponse = message;
+    if (this.apiSuccessResponse.trim().length<3) {
+    this.apiSuccessResponse="!!Success!!"
+  }
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
     this.formSubmitted = true;
