@@ -416,6 +416,7 @@
               required
               id="officerHours"
               type="number"
+              min="0"
               name="officerHours"
               [(ngModel)]="newBudget.officerHours"
               class="form-control"
@@ -429,6 +430,7 @@
             required
             id="assistantHours"
             type="number"
+            min="0"
             name="assistantHours"
             [(ngModel)]="newBudget.assistantHours"
             class="form-control"
@@ -735,6 +737,7 @@
           required
           id="officerHours"
           type="number"
+          min="0"
           name="officerHours"
           [(ngModel)]="updatedBudget.officerHours"
           class="form-control"
@@ -747,6 +750,7 @@
           required
           id="assistantHours"
           type="number"
+          min="0"
           name="assistantHours"
           [(ngModel)]="updatedBudget.assistantHours"
           class="form-control"

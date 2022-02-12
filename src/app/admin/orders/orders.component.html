@@ -122,6 +122,7 @@
           placeholder="enter emp wage"
           [(ngModel)]="newOrder.empPrice"
           class="form-control"
+          min="0"
         />
       </div>
 
@@ -218,6 +219,7 @@
           required
           id="empPrice"
           type="number"
+          min="0"
           name="empPrice"
           placeholder="enter emp wage"
           [(ngModel)]="updatedOrder.empPrice"
