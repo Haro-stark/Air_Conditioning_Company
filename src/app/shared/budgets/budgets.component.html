@@ -557,21 +557,6 @@
         </select>
       </div>
 
-      <ng-container *ngIf="showNewCustomerForm">
-        <div class="form-group">
-          <label for="customerName" class="form-label">Customer Name</label>
-          <input
-            required
-            id="customerName"
-            type="text"
-            name="customerName"
-            placeholder="enter customer name"
-            [(ngModel)]="customer.name"
-            class="form-control"
-          />
-        </div>
-      </ng-container>
-
       <div class="form-group">
         <label for="services">Services</label>
         <select
@@ -582,7 +567,11 @@
           [multiple]="true"
           (ngModelChange)="isInstallationSelected(updatedBudget.service)"
         >
-          <option *ngFor="let service of services" [ngValue]="service">
+          <option
+            *ngFor="let service of services; let i = index"
+            [ngValue]="service"
+             ng-selected="checkSelectedServices(service)"
+          >
             {{ service.type }}
           </option>
         </select>
@@ -808,7 +797,7 @@
           (click)="
             onClickToggleEditBudgetForm(updatedBudget);
             this.updatedBudgetProducts = [];
-            this.createNewProductModal.close()
+            this.createNewProductModal?.close()
           "
           [disabled]="processingNetworkRequest"
         >

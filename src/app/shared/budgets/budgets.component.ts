@@ -98,6 +98,7 @@ export class BudgetsComponent implements OnInit {
   apiErrorResponse: string = '';
   processingNetworkRequest = false;
   public createNewProductModal!: NgbModalRef;
+  servicesName: string[] = [];
 
   private subscriptions = new Subscription();
 
@@ -283,6 +284,9 @@ export class BudgetsComponent implements OnInit {
     console.log('products to be edited', budget.productList);
 
     this.updatedBudget = { ...budget };
+    this.servicesName = this.updatedBudget.service?.map(
+      (service: Services) => service.type
+    );
     this.resetToIntialBudgetProducts = JSON.parse(
       JSON.stringify(budget.productList)
     );
@@ -371,6 +375,7 @@ export class BudgetsComponent implements OnInit {
           },
         });
     } else {
+
       if (this.showNewCustomerForm) {
         this.updatedBudget.customer = { ...this.customer };
       }
@@ -384,7 +389,7 @@ export class BudgetsComponent implements OnInit {
       this.modalService.dismissAll();
 
       this.processingNetworkRequest = true;
-      console.log(this.processingNetworkRequest, 'network request');
+      console.log('final budget',this.updatedBudget);
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
@@ -686,5 +691,11 @@ export class BudgetsComponent implements OnInit {
       event.preventDefault();
       console.log('prevent', event);
     }
+  }
+
+  checkSelectedServices(service: Services) {
+    console.log('checkSelectedServices', this.servicesName);
+    if (this.servicesName.includes(service.type)) return true;
+    return false;
   }
 }
