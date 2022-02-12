@@ -300,4 +300,8 @@ export class EmployeesComponent implements OnInit {
       this.showSuccessAlert = false;
     }, 3500);
   }
+  fixDigitsAfterDecimal(value: number) {
+    return parseFloat(value.toFixed(2));
+  }
+
 }

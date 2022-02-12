@@ -380,7 +380,6 @@ export class BudgetsComponent implements OnInit {
       if (!this.showProductsButton) {
         this.updatedBudget.productList = [];
       }
-   
 
       this.modalService.dismissAll();
 
@@ -392,7 +391,7 @@ export class BudgetsComponent implements OnInit {
             this.budgets = this.budgets.filter(
               (budget: Budget) => budget.budgetId != updatedBudget.budgetId
             );
-            this.budgets.push({ ...updatedBudget });
+            this.budgets.push({ ...response.data });
             this.showApiSuccessResponse(response.message);
             this.showEditBudgetForm = false;
             this.processingNetworkRequest = false;

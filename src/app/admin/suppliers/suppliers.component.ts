@@ -415,14 +415,18 @@ export class SuppliersComponent implements OnInit {
 
   showApiSuccessResponse(message: string) {
     this.apiSuccessResponse = message;
-    if (this.apiSuccessResponse.trim().length<3) {
-    this.apiSuccessResponse="!!Success!!"
-  }
+    if (this.apiSuccessResponse.trim().length < 3) {
+      this.apiSuccessResponse = '!!Success!!';
+    }
     this.showSuccessAlert = true;
     this.processingNetworkRequest = false;
     this.formSubmitted = true;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
+  }
+
+  fixDigitsAfterDecimal(value: number) {
+    return parseFloat(value.toFixed(2));
   }
 }

@@ -19,15 +19,15 @@ export class WageHoursPriceComponent implements OnInit {
   assistantHours!: number;
   errorMessage!: string;
   wageHoursPrice!: WageHoursPrice;
-  newWageHoursPrice: WageHoursPrice={
+  newWageHoursPrice: WageHoursPrice = {
     id: 1,
     assistantHours: 0,
-    officerHours: 0
+    officerHours: 0,
   };
-  constructor(private WageHoursPriceService: HttpService) { }
+  constructor(private WageHoursPriceService: HttpService) {}
 
   ngOnInit(): void {
-    this.loading= true;
+    this.loading = true;
     this.WageHoursPriceService.getWageHoursPrice().subscribe({
       next: (response: any) => {
         if (response.data && response.status === 200) {
@@ -46,11 +46,12 @@ export class WageHoursPriceComponent implements OnInit {
   }
 
   onSave(wages: WageHoursPrice) {
-    this.processingNetworkRequest=true;
+    this.processingNetworkRequest = true;
     this.WageHoursPriceService.addWageHoursPrice(wages).subscribe({
       next: (response: any) => {
-        if (response.data && response.status === 200) {
+        if (response.status === 200) {
           this.wageHoursPrice = response.data;
+          console.log(response, this.wageHoursPrice);
           this.showApiSuccessResponse(response.message);
         } else {
           this.showApiErrorResponse(response.message);
@@ -59,10 +60,8 @@ export class WageHoursPriceComponent implements OnInit {
       error: (error: any) => {
         this.showApiErrorResponse();
       },
-    }
-  );
-}
-
+    });
+  }
 
   showApiErrorResponse(message?: any) {
     if (message) {
@@ -89,5 +88,9 @@ export class WageHoursPriceComponent implements OnInit {
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
+  }
+
+  fixDigitsAfterDecimal(value: number) {
+    return parseFloat(value.toFixed(2));
   }
 }

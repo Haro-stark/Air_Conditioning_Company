@@ -50,9 +50,9 @@
         <tbody *ngFor="let purchasedHistory of supplierPurchasedHistory">
           <tr *ngFor="let product of purchasedHistory.supplierProducts">
             <td>{{ purchasedHistory.supplierOrderId }}</td>
-            <td>{{ purchasedHistory.totalPrice }}</td>
+            <td>{{fixDigitsAfterDecimal( purchasedHistory.totalPrice )}}</td>
             <td>{{ product.name }}</td>
-            <td>{{ product.basePrice }}</td>
+            <td>{{fixDigitsAfterDecimal( product.basePrice )}}</td>
             <td>{{ product.tax }}</td>
             <td>{{ product.characteristics }}</td>
 

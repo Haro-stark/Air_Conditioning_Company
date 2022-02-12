@@ -68,7 +68,7 @@
           <td>{{ employee.username }}</td>
           <td>{{ employee.email }}</td>
           <td>{{ employee.password }}</td>
-          <td>{{ employee.priceTime }}</td>
+          <td>{{fixDigitsAfterDecimal( employee.priceTime )}}</td>
           <td>
             <fa-icon
               [icon]="editIcon"

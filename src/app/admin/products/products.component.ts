@@ -218,7 +218,6 @@ export class ProductsComponent implements OnInit {
     } else {
       this.apiErrorResponse =
         'Error! an error has occurred please try again later';
-
     }
     this.showErrorAlert = true;
     this.processingNetworkRequest = false;
@@ -235,5 +234,8 @@ export class ProductsComponent implements OnInit {
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
+  }
+  fixDigitsAfterDecimal(value: number) {
+    return parseFloat(value.toFixed(2));
   }
 }

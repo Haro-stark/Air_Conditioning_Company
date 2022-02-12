@@ -57,7 +57,7 @@
           <td>{{ product.productId }}</td>
           <td>{{ product.name }}</td>
           <td>{{ product.characteristics }}</td>
-          <td>{{ product.price }}</td>
+          <td>{{fixDigitsAfterDecimal( product.price) }}</td>
           <td>{{ product.quantityInStock }}</td>
           <td>{{ product.tax }}</td>
 

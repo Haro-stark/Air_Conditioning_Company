@@ -513,6 +513,8 @@
             {{ updatedBudget.customer?.customerId }} -
             {{ updatedBudget.customer?.name }}
           </option>
+          <option selected ngValue="newCustomer">New customer</option>
+
           <option
             *ngFor="let customer of customers | filterCustomer"
             [ngValue]="customer"
@@ -570,7 +572,7 @@
         </div>
       </ng-container>
 
-         <div class="form-group">
+      <div class="form-group">
         <label for="services">Services</label>
         <select
           class="form-select form-control"
