@@ -131,13 +131,13 @@
         <tbody>
           <tr *ngFor="let product of supplier.supplierProducts">
             <td>{{ product.name }}</td>
-            <td>{{fixDigitsAfterDecimal( product.basePrice) }}</td>
+            <td>{{ fixDigitsAfterDecimal(product.basePrice) }}</td>
             <td>{{ product.tax }}</td>
             <td>{{ product.characteristics }}</td>
             <td>
               <button
                 class="btn btn-primary btn-sm"
-                (click)="buyProduct(product.productId,supplier)"
+                (click)="buyProduct(product.productId, supplier)"
                 [disabled]="processingNetworkRequest"
               >
                 Buy
@@ -193,7 +193,9 @@
 
     <form
       #inputForm="ngForm"
-      (ngSubmit)="onSubmit($event,inputForm); !!formSubmitted ? inputForm.reset() : ''"
+      (ngSubmit)="
+        onSubmit($event, inputForm); !!formSubmitted ? inputForm.reset() : ''
+      "
       class="form"
       name="supplierForm"
     >
@@ -231,7 +233,8 @@
         <input
           required
           id="basePrice"
-          type="text"
+          type="number"
+          min="0"
           name="basePrice"
           placeholder="enter product base price"
           [(ngModel)]="newSupplier.supplierProducts[0].basePrice"
@@ -465,10 +468,7 @@
     <hr />
     <form
       #addProductForm="ngForm"
-      (ngSubmit)="
-        addSupplierProducts($event,addProductForm);
-        !!formSubmitted ? addProductForm.reset() : ''
-      "
+      (ngSubmit)="addSupplierProducts($event, addProductForm)"
       class="form"
     >
       <div class="form-group">
@@ -506,7 +506,8 @@
         <input
           required
           id="basePrice"
-          type="text"
+          type="number"
+          min="0"
           name="basePrice"
           placeholder="enter product base price"
           [(ngModel)]="addSupplierProduct.basePrice"
@@ -518,7 +519,8 @@
         <input
           required
           id="tax"
-          type="text"
+          type="number"
+          min="0"
           name="tax"
           placeholder="enter product tax"
           [(ngModel)]="addSupplierProduct.tax"
@@ -584,10 +586,7 @@
     <hr />
     <form
       #addSupplierProductForm="ngForm"
-      (ngSubmit)="
-        updateSupplierProducts($event ,addSupplierProductForm);
-        
-      "
+      (ngSubmit)="updateSupplierProducts($event, addSupplierProductForm)"
       class="form"
     >
       <div class="form-group">
@@ -625,7 +624,8 @@
         <input
           required
           id="basePrice"
-          type="text"
+          type="number"
+          min="0"
           name="basePrice"
           placeholder="enter product base price"
           [(ngModel)]="updatedSupplierProduct.basePrice"

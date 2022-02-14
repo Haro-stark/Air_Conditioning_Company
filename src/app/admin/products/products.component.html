@@ -129,7 +129,8 @@
       <input
         required
         id="basePrice"
-        type="text"
+       type="number"
+          min="0"
         name="basePrice"
         placeholder="enter product base price"
         [(ngModel)]="newProduct.price"
@@ -141,7 +142,8 @@
       <input
         required
         id="tax"
-        type="text"
+      type="number"
+          min="0"
         name="tax"
         placeholder="enter product tax"
         [(ngModel)]="newProduct.tax"
@@ -219,7 +221,8 @@
       <input
         required
         id="basePrice"
-        type="text"
+      type="number"
+          min="0"
         name="basePrice"
         placeholder="enter product base price"
         [(ngModel)]="updatedProduct.price"
@@ -231,7 +234,8 @@
       <input
         required
         id="tax"
-        type="text"
+       type="number"
+          min="0"
         name="tax"
         placeholder="enter product tax"
         [(ngModel)]="updatedProduct.tax"

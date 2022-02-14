@@ -275,7 +275,7 @@ export class SuppliersComponent implements OnInit {
       this.errorMessage = 'Some fields are required or might be incorrect';
     else {
       this.processingNetworkRequest = true;
-
+      this.errorMessage = '';
       this.httpSupplierService
         .addSupplierProducts(this.addSupplierProduct, this.supplierId)
         .subscribe({
@@ -286,6 +286,7 @@ export class SuppliersComponent implements OnInit {
               let index = this.suppliers.findIndex(
                 (supplier: Supplier) => this.supplierId === supplier.supplierId
               );
+        
 
               this.addSupplierProduct.productId = response.data.productId;
               this.suppliers[index].supplierProducts.push({
@@ -427,7 +428,7 @@ export class SuppliersComponent implements OnInit {
     }, 3500);
   }
 
-  fixDigitsAfterDecimal(value: number) {
-    return parseFloat(value?.toFixed(2));
+  fixDigitsAfterDecimal(value: any) {
+    return parseFloat(value.toFixed(2));
   }
 }
