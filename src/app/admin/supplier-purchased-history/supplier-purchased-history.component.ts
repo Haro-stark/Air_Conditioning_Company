@@ -266,6 +266,6 @@ export class SupplierPurchasedHistoryComponent implements OnInit {
     }, 3500);
   }
   fixDigitsAfterDecimal(value: number) {
-    return parseFloat(value.toFixed(2));
+    return parseFloat(value?.toFixed(2));
   }
 }

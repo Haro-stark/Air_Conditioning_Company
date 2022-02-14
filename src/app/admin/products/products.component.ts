@@ -229,13 +229,14 @@ export class ProductsComponent implements OnInit {
   }
 
   showApiSuccessResponse(message: string) {
-    this.apiSuccessResponse = message;
+    if (message) this.apiSuccessResponse = message;
+    else this.apiSuccessResponse = 'Success';
     this.showSuccessAlert = true;
     setTimeout(() => {
       this.showSuccessAlert = false;
     }, 3500);
   }
   fixDigitsAfterDecimal(value: number) {
-    return parseFloat(value.toFixed(2));
+    return parseFloat(value?.toFixed(2));
   }
 }

@@ -414,7 +414,8 @@ export class SuppliersComponent implements OnInit {
   }
 
   showApiSuccessResponse(message: string) {
-    this.apiSuccessResponse = message;
+    if (message) this.apiSuccessResponse = message;
+    else this.apiSuccessResponse = 'Success';
     if (this.apiSuccessResponse.trim().length < 3) {
       this.apiSuccessResponse = '!!Success!!';
     }
@@ -427,6 +428,6 @@ export class SuppliersComponent implements OnInit {
   }
 
   fixDigitsAfterDecimal(value: number) {
-    return parseFloat(value.toFixed(2));
+    return parseFloat(value?.toFixed(2));
   }
 }
