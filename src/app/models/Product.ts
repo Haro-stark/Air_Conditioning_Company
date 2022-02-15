@@ -2,8 +2,9 @@ export interface Product {
   productId: any;
   name: string;
   characteristics: string;
-  price: number;
+  basePrice: number;
   tax: number;
+  finalPrice: number;
   quantityInStock: number;
   productQuantity: number;
   addedToBudgetCart: boolean;

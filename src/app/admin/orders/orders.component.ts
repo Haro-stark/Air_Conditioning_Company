@@ -297,9 +297,12 @@ export class OrdersComponent implements OnInit {
       this.httpOrderService.updateOrder(this.updatedOrder).subscribe({
         next: (response: any) => {
           if (response.data && response.status === 200) {
+            if (this.showNewCustomerForm) {
+              this.customers.push({ ...response.data.customer });
+            }
             this.orders = this.orders.map((order: Order) => {
               if (order.orderId == updatedOrder.orderId) {
-                order = updatedOrder;
+                order = response.data;
               }
               return order;
             });

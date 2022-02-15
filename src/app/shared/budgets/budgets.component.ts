@@ -223,8 +223,10 @@ export class BudgetsComponent implements OnInit {
           if (response.status === 200) {
             console.log(response);
             console.log(budgetToSave);
-            budgetToSave.budgetId = response.data.budgetId;
-            budgetToSave.totalPrice = response.data.totalPrice;
+            if (this.showNewCustomerForm) {
+              this.customers.push({ ...response.data.customer });
+            }
+            budgetToSave = response.data;
             this.budgets.push({ ...budgetToSave });
             this.showApiSuccessResponse(response.message);
             this.formSubmitted = true;
@@ -375,7 +377,6 @@ export class BudgetsComponent implements OnInit {
           },
         });
     } else {
-
       if (this.showNewCustomerForm) {
         this.updatedBudget.customer = { ...this.customer };
       }
@@ -389,10 +390,13 @@ export class BudgetsComponent implements OnInit {
       this.modalService.dismissAll();
 
       this.processingNetworkRequest = true;
-      console.log('final budget',this.updatedBudget);
+      console.log('final budget', this.updatedBudget);
       this.budgetService.updateBudget(updatedBudget).subscribe({
         next: (response: any) => {
           if (response.status === 200) {
+            if (this.showNewCustomerForm) {
+              this.customers.push({ ...response.data.customer });
+            }
             this.budgets = this.budgets.filter(
               (budget: Budget) => budget.budgetId != updatedBudget.budgetId
             );

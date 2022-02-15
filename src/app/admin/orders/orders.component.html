@@ -354,7 +354,7 @@
                     </td>
                     <td>{{ product.productId }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ fixDigitsAfterDecimal(product.price) }}</td>
+                    <td>{{ fixDigitsAfterDecimal(product.finalPrice) }}</td>
                     <td>
                       {{ product.quantityInStock }}
                     </td>
@@ -385,7 +385,7 @@
                     <td>
                       {{
                         fixDigitsAfterDecimal(
-                          product.productQuantity * product.price
+                          product.productQuantity * product.finalPrice
                         )
                       }}
                     </td>
