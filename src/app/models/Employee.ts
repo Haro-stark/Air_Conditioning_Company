@@ -6,6 +6,5 @@ export interface Employee {
   username: string;
   email: string;
   password: string;
-  priceTime: number;
   workLogList: WorkLog[];
 }

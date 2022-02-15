@@ -40,7 +40,6 @@ export class EmployeesComponent implements OnInit {
     email: '',
     password: '',
     type: '',
-    priceTime: 0,
     workLogList: [],
   };
   errorMessage!: string;
