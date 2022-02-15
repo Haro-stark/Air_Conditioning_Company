@@ -7,6 +7,7 @@ import {
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 import { apiRequestError } from 'src/app/models/apiRequestError';
+import { User } from 'src/app/models/User';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Employee } from '../../models/Employee';
@@ -114,32 +115,50 @@ export class EmployeesComponent implements OnInit {
       this.errorMessage = '';
       this.processingNetworkRequest = true;
       const { email, password, type, username } = this.newEmployee;
-      this.authService
-        .signUp(email, password, type, username)
-        .then(() => {
-          this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
-            next: (response: any) => {
-              if (response.status === 200) {
-                this.newEmployee.employeeId = response.data.employeeId;
-                this.employees.push({ ...this.newEmployee });
-                this.showApiSuccessResponse(response.message);
-                this.errorMessage = '';
-                this.showAddEmployeeForm = false;
-                this.formSubmitted = true;
-                form.resetForm();
+      this.httpEmployeeService
+        .createEmployeeInFirebase(email, password)
+        .subscribe({
+          next: (response: any) => {
+            console.log('user record = ', response.data);
+            if (response.data) {
+              let user: User = {
+                uid: response.data.uid,
+                role: type,
+                username: username,
+                email: email,
+                password: password,
+              };
+              this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
+                next: (response: any) => {
+                  if (response.status === 200) {
+                    this.authService.updateUserData(user);
+                    this.newEmployee.employeeId = response.data.employeeId;
+                    this.employees.push({ ...this.newEmployee });
+                    this.showApiSuccessResponse(response.message);
+                    this.errorMessage = '';
+                    this.showAddEmployeeForm = false;
+                    this.formSubmitted = true;
+                    form.resetForm();
 
-                this.processingNetworkRequest = false;
-              } else {
-                this.showApiErrorResponse(response.message);
-              }
-            },
-            error: (error: any) => {
-              this.showApiErrorResponse();
-            },
-          });
-        })
-        .catch((_error: string) => {
-          this.errorMessage = _error;
+                    this.processingNetworkRequest = false;
+                  } else {
+                    this.showApiErrorResponse(response.message);
+                  }
+                },
+                error: (error: any) => {
+                  this.showApiErrorResponse();
+                },
+              });
+            } else {
+              this.showApiErrorResponse(
+                'An Error has occured or User may already exist'
+              );
+            }
+          },
+          error: (error: any) => {
+            if (error?.message) this.showApiErrorResponse(error.message);
+            else this.showApiErrorResponse();
+          },
         });
 
       return this.errorMessage;

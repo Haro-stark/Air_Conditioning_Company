@@ -108,7 +108,7 @@ export class AuthenticationService implements OnInit {
     return this.authState;
   }
 
-  private updateUserData(user: any) {
+   updateUserData(user: any) {
     // Sets user data to firestore on login
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
