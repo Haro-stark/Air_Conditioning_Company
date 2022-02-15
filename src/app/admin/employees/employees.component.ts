@@ -50,9 +50,7 @@ export class EmployeesComponent implements OnInit {
   showEditEmployeeForm: Boolean = false;
   processingNetworkRequest: Boolean = false;
   loading: boolean = false;
-  employees: Employee[] = [
-   
-  ];
+  employees: Employee[] = [];
   ht: any;
   wageHoursPrice: any;
   newWageHoursPrice: any;
@@ -82,21 +80,21 @@ export class EmployeesComponent implements OnInit {
         this.showApiErrorResponse();
       },
     });
-       this.httpEmployeeService.getWageHoursPrice().subscribe({
-         next: (response: any) => {
-           if (response.data && response.status === 200) {
-             console.log(response);
-             this.wageHoursPrice = response.data;
-             this.newWageHoursPrice = response.data;
-           } else {
-             this.showApiErrorResponse(response.message);
-           }
-           this.loading = false;
-         },
-         error: (error: any) => {
-           this.showApiErrorResponse();
-         },
-       });
+    this.httpEmployeeService.getWageHoursPrice().subscribe({
+      next: (response: any) => {
+        if (response.data && response.status === 200) {
+          console.log(response);
+          this.wageHoursPrice = response.data;
+          this.newWageHoursPrice = response.data;
+        } else {
+          this.showApiErrorResponse(response.message);
+        }
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.showApiErrorResponse();
+      },
+    });
   }
 
   onSubmit(event: any, form: NgForm) {
@@ -122,28 +120,15 @@ export class EmployeesComponent implements OnInit {
           this.httpEmployeeService.addEmployee(this.newEmployee).subscribe({
             next: (response: any) => {
               if (response.status === 200) {
-                this.authService
-                  .signUp(email, password, type, username)
-                  .then(
-                    () => {
-                      this.newEmployee.employeeId = response.data.employeeId;
-                      this.employees.push({ ...this.newEmployee });
-                      this.showApiSuccessResponse(response.message);
-                      this.errorMessage = '';
-                      this.showAddEmployeeForm = false;
-                      this.formSubmitted = true;
-                      form.resetForm();
+                this.newEmployee.employeeId = response.data.employeeId;
+                this.employees.push({ ...this.newEmployee });
+                this.showApiSuccessResponse(response.message);
+                this.errorMessage = '';
+                this.showAddEmployeeForm = false;
+                this.formSubmitted = true;
+                form.resetForm();
 
-                      this.processingNetworkRequest = false;
-                    },
-                    (error: any) => {
-                      this.showApiErrorResponse(error);
-                    }
-                  )
-                  .catch((_error: string) => {
-                    this.errorMessage = _error;
-                    this.showApiErrorResponse(this.errorMessage);
-                  });
+                this.processingNetworkRequest = false;
               } else {
                 this.showApiErrorResponse(response.message);
               }
@@ -302,5 +287,4 @@ export class EmployeesComponent implements OnInit {
   fixDigitsAfterDecimal(value: number) {
     return parseFloat(value.toFixed(2));
   }
-
 }

@@ -100,7 +100,7 @@
 
     <form
       #inputForm="ngForm"
-      (ngSubmit)="onSubmit($event,inputForm); !!formSubmitted ? inputForm.reset() : ''"
+      (ngSubmit)="onSubmit($event,inputForm);"
       class="form"
       name="employeeForm"
     >
