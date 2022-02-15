@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   faEdit,
   faTrashAlt,
@@ -59,7 +60,8 @@ export class EmployeesComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     private httpEmployeeService: HttpService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private router: Router
   ) {
     this.loading = true;
   }
@@ -142,6 +144,7 @@ export class EmployeesComponent implements OnInit {
 
                     this.processingNetworkRequest = false;
                   } else {
+                    this.authService.deleteEmployeeInFirebase(email);
                     this.showApiErrorResponse(response.message);
                   }
                 },
@@ -205,6 +208,9 @@ export class EmployeesComponent implements OnInit {
               this.employees = this.employees.filter(
                 (e) => e.employeeId !== employee.employeeId
               );
+              if (this.employees.length === 0) {
+                this.router.navigate(['login']);
+              }
             })
             .catch((errorMsg: string) => {
               this.showApiErrorResponse(errorMsg);
