@@ -33,16 +33,22 @@ export class UrlNotFoundComponent implements OnInit {
     if (this.redirectToUrl) {
       this.router.navigate([this.redirectToUrl]);
     } else {
-      this.authService.user$.subscribe((userData: any) => {
-        console.log(userData);
-        if (userData) {
-          this.router.navigate([`/${userData.role}`]);
-          console.log('user data = ', userData);
-        } else {
-          console.log('sign out ,,,,,....')
-          this.authService.signOut();
+      this.authService.user$.subscribe({
+        next: (userData) => {
+          console.log(userData);
+          if (userData) {
+            this.router.navigate([`/${userData.role}`]);
+            console.log('user data = ', userData);
+          } else {
+            console.log('sign out ,,,,,....');
+            this.authService.signOut();
+            this.router.navigate(['login']);
+          }
+        },
+        error: (error: any) => {
+          console.log(error);
           this.router.navigate(['login']);
-        }
+        },
       });
     }
   }

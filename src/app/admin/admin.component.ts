@@ -52,7 +52,7 @@ export class AdminComponent implements OnInit {
     }
     if (event instanceof NavigationEnd) {
       setTimeout(() => {
-        // here
+     
         this.loading = false;
       }, 2000);
     }
