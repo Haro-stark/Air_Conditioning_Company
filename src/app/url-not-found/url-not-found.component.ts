@@ -38,7 +38,11 @@ export class UrlNotFoundComponent implements OnInit {
         if (userData) {
           this.router.navigate([`/${userData.role}`]);
           console.log('user data = ', userData);
-        } else this.router.navigate(['login']);
+        } else {
+          console.log('sign out ,,,,,....')
+          this.authService.signOut();
+          this.router.navigate(['login']);
+        }
       });
     }
   }

@@ -29,15 +29,19 @@ export class AuthenticationService implements OnInit {
     this.user$ = this.angularFireAuth.authState.pipe(
       switchMap((user) => {
         if (user) {
+          console.log('user is available',user)
           return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
         } else {
+          console.log('user is not available')
           return of(null);
         }
       })
     );
+
   }
   ngOnInit(): void {
     console.log(this.angularFireAuth, this.afs, this.router);
+    console.log(this.isUserEmailLoggedIn);
   }
 
   async signUp(
@@ -126,7 +130,7 @@ export class AuthenticationService implements OnInit {
     try {
       const signOut = await this.angularFireAuth
         .signOut()
-        .then(() => this.router.navigate(['/']));
+        .then(() => this.router.navigate(['/login']));
       console.log('signed out', signOut);
       this.authState = signOut;
     } catch (err: any) {

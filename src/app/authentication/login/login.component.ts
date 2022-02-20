@@ -22,12 +22,26 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.isUserEmailLoggedIn);
-    this.authService.user$.subscribe((userData) => {
-      if (userData) {
+    this.authService.user$.subscribe({
+      next: (userData) => {
+        console.log(userData);
+        if (userData) {
+          this.SigningIn = false;
+          this.isUserEmailLoggedIn = true;
+          this.router.navigate([`/${userData.role}`]);
+        } else {
+          console.log('user not login');
+          this.isUserEmailLoggedIn = false;
+          this.SigningIn = false;
+        }
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.error = error;
+        this.isUserEmailLoggedIn = false;
         this.SigningIn = false;
-        this.isUserEmailLoggedIn = true;
-        this.router.navigate([`/${userData.role}`]);
-      } else this.isUserEmailLoggedIn = false;
+        return this.errorMessage;
+      },
     });
   }
 
@@ -38,6 +52,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/login']);
     } else {
       this.isUserEmailLoggedIn = false;
+      this.SigningIn = false;
       console.log('not logged in');
     }
   }

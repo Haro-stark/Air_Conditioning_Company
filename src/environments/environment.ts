@@ -4,7 +4,7 @@
 
 export const environment = {
   // production: false,
-  /*Fawad's app*/
+  /*F */
   // firebaseConfig: {
   //   apiKey: 'AIzaSyAvgnuL_vNM-tuYOWJe09wmntZ1YNuNeZ0',
   //   authDomain: 'airconditioning-authentication.firebaseapp.com',
